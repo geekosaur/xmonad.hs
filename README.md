@@ -1,2 +1,2 @@
-# xmonad.hs
-nothing to see here, move along
+my xmonad configurations. may not be runnable by others at any given time.
+still undecided whether to put each machine in its own branch or call one of them the master copy...
