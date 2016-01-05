@@ -9,8 +9,7 @@ import           XMonad.Config.Mate
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.ManageDebug
--- import           XMonad.Hooks.ManageDocks
-import           XMonad.Hooks.HackDocks
+import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
@@ -23,6 +22,7 @@ import           XMonad.Layout.Minimize
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.OneBig
 import           XMonad.Layout.PerWorkspace
+import           XMonad.Layout.Reflect
 import           XMonad.Layout.Renamed
 import           XMonad.Layout.StackTile
 import           XMonad.Layout.Tabbed
@@ -31,7 +31,6 @@ import           XMonad.Prompt
 import           XMonad.Prompt.Shell
 import           XMonad.Util.NamedScratchpad
 import           XMonad.Util.EZConfig
-import           XMonad.Util.WorkspaceCompare
 import qualified XMonad.StackSet                                                             as W
 
 import qualified Codec.Binary.UTF8.String                                                    as UTF8
@@ -53,7 +52,7 @@ scratchpads = [NS "notes1"
                   (appName =? "notes1")
                   (setUtility <+> noTaskBar <+> customFloating (W.RationalRect 0.4 0.35 0.2 0.3))
               ,NS "timelog"
-                  "leafpad --name=timelog ~/Documents/Timelog.txt"
+                  "leafpad --name=timelog ~/Documents/SNA/timelog.txt"
                   (appName =? "timelog")
                   (setUtility <+> noTaskBar <+> customFloating (W.RationalRect 0.1 0.1 0.2 0.3))
               ,NS "notes3"
@@ -81,33 +80,15 @@ scratchpads = [NS "notes1"
                   "mate-terminal --disable-factory --hide-menubar --name=qterm"
                   (appName =? "qterm")
                   (customFloating (W.RationalRect 0.275 0 0.45 0.3))
-              ,NS "crawl"
-                  "xfce4-terminal --disable-server --hide-toolbar --hide-menubar --role=crawl --title=Crawl -e $HOME/.bin/crawloop"
-                  (appName =? "xfce4-terminal" <&&> role =? "crawl")
-                  -- @@@ fails, terminal bug? 23x79
-                  -- @@@@ or does the core not account for the border, which is *inside* the window?
-                  -- (doFloatAt 0.52 0.1)
-                  -- @@@ BEWARE this is jiggered to be 80x24
-                  (customFloating (W.RationalRect 0.52 0.1 0.43 0.43))
-              ,NS "mtr"
-                  "mate-terminal --disable-factory --hide-menubar --name=mtr --title=mtr -x sudo mtr --curses 198.58.116.136"
-                  (appName =? "mtr")
-                  (setUtility <+> noTaskBar <+> customFloating (W.RationalRect 0 0 1 0.55))
               ]
 
 workspacen :: [String]
-workspacen =  ["emacs", "irc", "mail", "chrome", "openafs", "pending", "win10", "games", "tv", "calibre", "misc", "spare"]
+workspacen =  ["1", "mail", "chrome", "emacs", "5", "6", "7", "8", "im", "0", "misc", "spare"]
 
 main = do
   -- something is undoing this. regularly.
   -- make shift-space = space
   spawn "xmodmap -e 'keycode 65 = space space space space NoSymbol NoSymbol thinspace nobreakspace'"
-  -- make a second middle button on my mouse since the scrollwheel's fiddly/oversensitive
-  -- @@@@ also 11, since it seems they swap sometimes?!
-  spawn "xinput --set-button-map  9 1 2 3 4 5 6 7 8 9 10 11 12 13; \
-        \xinput --set-button-map  9 1 2 3 4 5 6 7 8 2 10 11 12 13; \
-        \xinput --set-button-map 11 1 2 3 4 5 6 7 8 9 10 11 12 13; \
-        \xinput --set-button-map 11 1 2 3 4 5 6 7 8 2 10 11 12 13"
   -- openjdk hackaround
   putEnv "_JAVA_AWT_WM_NONREPARENTING=1"
   -- xmonad log applet
@@ -129,23 +110,23 @@ main = do
                                 maximize $
                                 avoidStruts $
                                 lessBorders OnlyFloat $
-                                onWorkspace "irc" (withIM 0.125 pidgin ims) $
-                                onWorkspace "calibre" Full $
-                                onWorkspace "games" Full $
+                                onWorkspace "im" (withIM 0.125 pidgin
+                                                  (reflectHoriz $ withIM 0.2 sipphone ims)) $
+                                onWorkspace "8" Full $
+                                onWorkspace "log" Full $
                                 TwoPane 0.03 0.5 |||
                                 -- dragPane Horizontal 0.03 0.5 |||
                                 -- Accordion |||
                                 simpleTabbed |||
                                 Full
            ,manageHook        = composeAll
-                                [appName =? "Pidgin" --> doShift "irc"
+                                [appName =? "Pidgin" --> doShift "im"
                                 ,appName =? "xmessage" --> doFloatPlace
                                 ,appName =? "trashapplet" --> doFloatPlace
+                                ,appName =? "callinfo" --> doRectFloat (W.RationalRect 0.68 0.03 0.3 0.75)
                                 -- @@@ copyToAll, but need a window parameter...
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_STICKY" --> doIgnore
                                 -- ,appName =? "Pidgin" <&&> role =? "conversation" --> boing "phone-incoming-call"
-                                -- this is a bit of a hack for the remote dcss scripts
-                                ,appName =? "xfce4-terminal" <&&> role =? "dcss" --> doRectFloat (W.RationalRect 0.52 0.1 0.43 0.43)
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
@@ -160,11 +141,13 @@ main = do
            ,startupHook       = do
              startupHook baseConfig
              when (null as) $ do
-               spawn "compton -cCfGb --backend=glx"
+               -- spawn "compton -cCfGb --backend=glx"
+               spawn "compton -cCfGb --inactive-dim=0.3 --detect-transient \
+                     \ --use-ewmh-active-win --mark-wmwin-focused --detect-client-leader \
+                     \ --glx-no-stencil --backend=glx"
                io $ threadDelay 2500000
-               -- @@@ starts multi windows, placing them automatically will not fly :/
-               -- spawnOn "mail" spawnChrome
-               -- spawnOn "irc" "pidgin"
+               spawnOn "mail" spawnChrome
+               spawnOn "irc" "pidgin"
                spawnOn "emacs" "mate-terminal"
                spawnOn "emacs" "emacs"
              -- hack: ewmh props don't get set until something forces logHook, so...
@@ -179,10 +162,9 @@ main = do
             ,("M-C-S-1",    namedScratchpadAction scratchpads "qterm")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
             ,("M-C-m",      namedScratchpadAction scratchpads "charmap")
-            ,("C-`",        namedScratchpadAction scratchpads "mtr")
-            ,("M-C-c",      namedScratchpadAction scratchpads "crawl")
-            ,("<XF86Sleep>",unGrab >> spawn "xscreensaver-command -lock")
             ,("M-C-g",      spawn spawnChrome)
+            ,("M-C-l",      spawn "$HOME/.bin/callinfo")
+            ,("M-C-c",      spawn "$HOME/.bin/callinfo --next")
             ,("M-<Right>",  moveTo Next HiddenWS)
             ,("M-<Left>",   moveTo Prev HiddenWS)
             ,("M-S-`",      withFocused $ sendMessage . maximizeRestore)
@@ -196,8 +178,6 @@ main = do
             ,("M-C-S-7",    spawn "xprop | xmessage -file -")
             ,("M-C-S-6",    withFocused $ \w -> spawn $ "xprop -id 0x" ++ showHex w "" ++ " | xmessage -file -")
             ,("M-C-S-5",    withFocused $ \w -> spawn $ "xwininfo -id 0x" ++ showHex w "" ++ " -all | xmessage -file -")
-             -- @@@ because of HackDocks
-            ,("M-b",       sendMessage ToggleStruts)
             ]
             ++
             -- greedyView -> view, so I stop breaking crawl etc. >.>
@@ -208,8 +188,6 @@ main = do
                                           ]
             ])
 
--- @@ ewmh copyTo: killAllOtherCopies >> windows (W.shift target), duh!
-
 spawnChrome   = "google-chrome --allow-file-access-from-files"
 
 myPlaceHook = inBounds $ smart (0.5, 0.5)
@@ -219,6 +197,9 @@ doFloatPlace = placeHook myPlaceHook <+> doFloat
 
 pidgin :: Property
 pidgin = Resource "Pidgin" `And` Role "buddy_list"
+
+sipphone :: Property
+sipphone = Resource "sflphone-client-gnome" `And` Title "SFLphone VoIP Client" -- aargh
 
 ims = renamed [CutWordsRight 2] $
       OneBig (4/5) (3/4) |||
