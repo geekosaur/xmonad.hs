@@ -31,6 +31,7 @@ import           XMonad.Prompt
 import           XMonad.Prompt.Shell
 import           XMonad.Util.NamedScratchpad
 import           XMonad.Util.EZConfig
+import           XMonad.Util.WorkspaceCompare
 import qualified XMonad.StackSet                                                             as W
 
 import qualified Codec.Binary.UTF8.String                                                    as UTF8
