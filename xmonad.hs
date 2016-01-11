@@ -176,7 +176,8 @@ main = do
             ,("M-C-3",      namedScratchpadAction scratchpads "notes3")
             ,("M-C-4",      namedScratchpadAction scratchpads "notes4")
             ,("M-C-5",      namedScratchpadAction scratchpads "notes5")
-            ,("M-C-S-1",    namedScratchpadAction scratchpads "qterm")
+             -- yes, I considered Prompt.Shell. usually want a terminal though...
+            ,("M-x",        namedScratchpadAction scratchpads "qterm")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
             ,("M-C-m",      namedScratchpadAction scratchpads "charmap")
             ,("C-`",        namedScratchpadAction scratchpads "mtr")
