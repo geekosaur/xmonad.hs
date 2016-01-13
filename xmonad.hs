@@ -114,6 +114,7 @@ main = do
   dbus <- D.connectSession
   getWellKnownName dbus
   -- do it to it
+  -- @@ see https://github.com/xmonad/xmonad/commit/307b82a53d519f5c86c009eb1a54044a616e4a5c
   as <- io getArgs
   xmonad $ baseConfig
            {modMask           = mod4Mask

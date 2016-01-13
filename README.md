@@ -1,2 +1,3 @@
-my xmonad configurations. may not be runnable by others at any given time.
-still undecided whether to put each machine in its own branch or call one of them the master copy...
+xmonad config on main desktop.
+neither of these is "master", I change things on one and consider
+cherrypicking to the other depending on the nature of the change.
