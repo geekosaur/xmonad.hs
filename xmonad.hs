@@ -29,8 +29,9 @@ import           XMonad.Layout.Tabbed
 import           XMonad.Layout.TwoPane
 import           XMonad.Prompt
 import           XMonad.Prompt.Shell
-import           XMonad.Util.NamedScratchpad
 import           XMonad.Util.EZConfig
+import           XMonad.Util.NamedScratchpad
+import           XMonad.Util.Ungrab
 import           XMonad.Util.WorkspaceCompare
 import qualified XMonad.StackSet                                                             as W
 
@@ -44,7 +45,6 @@ import           System.Posix.Env                         (putEnv)
 import           System.Posix.IO
 import           Control.Concurrent                       (threadDelay)
 import           Numeric                                  (showHex)
-import           Graphics.X11.Xlib.Misc                   (ungrabKeyboard, ungrabPointer)
 
 baseConfig = debugManageHookOn "M-S-d" mateConfig
 
@@ -232,9 +232,6 @@ ims = renamed [CutWordsRight 2] $
 
 role :: Query String
 role = stringProperty "WM_WINDOW_ROLE"
-
-unGrab :: X ()
-unGrab = withDisplay $ \d -> io (ungrabKeyboard d currentTime >> ungrabPointer d currentTime)
 
 -- haaaaaack
 noTaskBar :: ManageHook
