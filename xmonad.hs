@@ -15,7 +15,7 @@ import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
 import           XMonad.Layout.Accordion
-import           XMonad.Layout.DragPane
+-- import           XMonad.Layout.DragPane
 import           XMonad.Layout.GridVariants
 import           XMonad.Layout.IM
 import           XMonad.Layout.Maximize
@@ -119,7 +119,6 @@ main = do
                                 onWorkspace "log" Full $
                                 TwoPane 0.03 0.5 |||
                                 -- dragPane Horizontal 0.03 0.5 |||
-                                -- Accordion |||
                                 simpleTabbed |||
                                 Full
            ,manageHook        = composeAll
@@ -260,6 +259,7 @@ logTitle ch = dynamicLogWithPP defaultPP
                                ,ppWsSep   = " "
                                ,ppSep     = "⋮"
                                ,ppSort    = getSortByXineramaPhysicalRule
+                                -- @@@@@@ xmonad-log-applet uses pango markup
                                ,ppOutput  = dbusOutput ch
                                }
 
