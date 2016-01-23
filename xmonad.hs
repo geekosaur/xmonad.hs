@@ -15,7 +15,7 @@ import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
 import           XMonad.Layout.Accordion
-import           XMonad.Layout.DragPane
+-- import           XMonad.Layout.DragPane
 import           XMonad.Layout.GridVariants
 import           XMonad.Layout.IM
 import           XMonad.Layout.Maximize
@@ -88,7 +88,9 @@ scratchpads = [NS "notes1"
                   -- @@@@ or does the core not account for the border, which is *inside* the window?
                   -- (doFloatAt 0.52 0.1)
                   -- @@@ BEWARE this is jiggered to be 80x24
-                  (customFloating (W.RationalRect 0.52 0.1 0.43 0.43))
+                  -- @@@@ and rejiggering confirms: it's the border, and issue is in
+                  --      X.O.windows since default width isn't accounting for border
+                  (customFloating (W.RationalRect 0.52 0.1 (735/1920) (462/1080)))
               ,NS "mtr"
                   "mate-terminal --disable-factory --hide-menubar --name=mtr --title=mtr -x sudo mtr --curses 198.58.116.136"
                   (appName =? "mtr")
@@ -135,7 +137,6 @@ main = do
                                 onWorkspace "games" Full $
                                 TwoPane 0.03 0.5 |||
                                 -- dragPane Horizontal 0.03 0.5 |||
-                                -- Accordion |||
                                 simpleTabbed |||
                                 Full
            ,manageHook        = composeAll
@@ -272,6 +273,7 @@ logTitle ch = dynamicLogWithPP defaultPP
                                ,ppWsSep   = " "
                                ,ppSep     = "⋮"
                                ,ppSort    = getSortByXineramaPhysicalRule
+                                -- @@@@@@ xmonad-log-applet uses pango markup
                                ,ppOutput  = dbusOutput ch
                                }
 
