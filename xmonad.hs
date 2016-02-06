@@ -175,9 +175,9 @@ main = do
             ,("M-S-p",      mateRun)
             ,("M-p",        shellPrompt greenXPConfig {promptKeymap = emacsLikeXPKeymap})
              -- multiple-screen shot
-            ,("M-S-s",      unGrab >> spawn "scrot -m 'Downloads/screenshot-%Y%m%dT%H%M%S.png'")
+            ,("M-S-s",      unGrab >> spawn "scrot -m 'Downloads/screenshotM-%Y%m%dT%H%M%S.png'")
              -- focused window shot
-            ,("M-S-w",      unGrab >> spawn "scrot -u 'Downloads/screenshot-%Y%m%dT%H%M%S.png'")
+            ,("M-S-w",      unGrab >> spawn "scrot -u 'Downloads/screenshotF-%Y%m%dT%H%M%S.png'")
              -- debug windows; also see M-S-d above
             ,("M-C-S-7",    spawn "xprop | xmessage -file -")
             ,("M-C-S-6",    withFocused $ \w -> spawn $ "xprop -id 0x" ++ showHex w "" ++ " | xmessage -file -")
