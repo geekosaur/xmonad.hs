@@ -143,10 +143,7 @@ main = do
            ,startupHook       = do
              startupHook baseConfig
              when (null as) $ do
-               -- spawn "compton -cCfGb --backend=glx"
-               spawn "compton -cCfGb --inactive-dim=0.3 --detect-transient \
-                     \ --use-ewmh-active-win --mark-wmwin-focused --detect-client-leader \
-                     \ --glx-no-stencil --backend=glx"
+               spawn "compton -cCfGb --backend=glx"
                io $ threadDelay 2500000
                spawnOn "mail" spawnChrome
                spawnOn "irc" "pidgin"
