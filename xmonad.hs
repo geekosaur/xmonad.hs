@@ -36,7 +36,7 @@ import           XMonad.Util.WorkspaceCompare
 import qualified XMonad.StackSet                                                             as W
 
 import qualified Codec.Binary.UTF8.String                                                    as UTF8
-import           Control.Monad                            (when)
+import           Control.Monad
 import           Data.Monoid
 import qualified DBus                                                                        as D
 import qualified DBus.Client                                                                 as D
@@ -46,6 +46,12 @@ import           System.Posix.IO
 import           Control.Concurrent                       (threadDelay)
 import           Numeric                                  (showHex)
 import           Graphics.X11.Xlib.Misc                   (ungrabKeyboard, ungrabPointer)
+
+import           Graphics.X11.Xlib.Extras
+import           Foreign.Marshal.Alloc
+import           Foreign.Storable
+import           Data.Maybe                               (catMaybes)
+import           Data.Ratio                               ((%))
 
 baseConfig = debugManageHookOn "M-S-d" mateConfig
 
@@ -175,6 +181,7 @@ main = do
              -- focused window shot
             ,("M-S-w",      unGrab >> spawn "scrot -u 'Downloads/screenshotF-%Y%m%dT%H%M%S.png'")
              -- debug windows; also see M-S-d above
+            ,("M-C-S-8",    withFocused showWinRR)
             ,("M-C-S-7",    spawn "xprop | xmessage -file -")
             ,("M-C-S-6",    withFocused $ \w -> spawn $ "xprop -id 0x" ++ showHex w "" ++ " | xmessage -file -")
             ,("M-C-S-5",    withFocused $ \w -> spawn $ "xwininfo -id 0x" ++ showHex w "" ++ " -all | xmessage -file -")
@@ -219,7 +226,7 @@ unGrab = withDisplay $ \d -> io (ungrabKeyboard d currentTime >> ungrabPointer d
 
 -- haaaaaack
 noTaskBar :: ManageHook
-noTaskBar = ask >>= (>> idHook) . liftX . markNoTaskBar 
+noTaskBar = ask >>= (>> idHook) . liftX . markNoTaskBar
 
 markNoTaskBar :: Window -> X ()
 markNoTaskBar w = withDisplay $ \d -> do
@@ -256,7 +263,6 @@ logTitle ch = dynamicLogWithPP defaultPP
                                ,ppWsSep   = " "
                                ,ppSep     = "⋮"
                                ,ppSort    = getSortByXineramaPhysicalRule
-                                -- @@@@@@ xmonad-log-applet uses pango markup
                                ,ppOutput  = dbusOutput ch
                                }
 
@@ -269,8 +275,16 @@ getWellKnownName ch = do
 dbusOutput :: D.Client -> String -> IO ()
 dbusOutput ch s = do
   let sig = (D.signal "/org/xmonad/Log" "org.xmonad.Log" "Update")
-            {D.signalBody = [D.toVariant (UTF8.decodeString s)]}
+            {D.signalBody = [D.toVariant (UTF8.decodeString (unPango s))]}
   D.emit ch sig
+
+-- quick and dirty escaping of HTMLish Pango markup
+unPango :: String -> String
+unPango ('<':xs) = "&lt;" ++ unPango xs
+unPango ('&':xs) = "&amp;" ++ unPango xs
+unPango ('>':xs) = "&gt;" ++ unPango xs
+unPango (x  :xs) = x:unPango xs
+unPango []       = []
 
 -- boing :: String -> Query ()
 -- boing snd = liftX $ spawn $ "paplay /usr/share/sounds/freedesktop/stereo/" ++ snd ++ ".oga"
