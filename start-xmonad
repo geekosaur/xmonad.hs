@@ -1,0 +1,3 @@
+#! /bin/zsh
+. $HOME/.profile
+exec $HOME/.cabal/bin/xmonad ${1+"$@"}
