@@ -41,7 +41,8 @@ sub degrade {
       # making sure it's not us
       if (!open my $f, '<', "$d/xmessage") {
         # can't be us; scripts must be readable
-        $where = $d;
+        $where = "$d/xmessage";
+        last;
       } else {
 	      # only first 64 bytes, in case it is a binary
 	      binmode $f;
