@@ -1,0 +1,108 @@
+#! /usr/bin/perl
+use strict;
+use warnings;
+
+#
+# pretend to be xmessage, but run something that is utf8 aware.
+# this also means escaping what's sent to it, since most things
+# that speak utf8 also speak some kind of markup...
+# (this one assumes zenity, which uses pango markup)
+#
+
+#
+# xmessage [-buttons BUTTONDEF] [-default] [-print]
+#          [-center | -nearmouse] [-timeout SECS]
+#          [-display DPY] [-bg COLOR] [-bd COLOR] [-bw WIDTH]
+#          [-fg COLOR] [-fn|-font FONT] [-iconic]
+#          [-name RESNAME] [-class RESCLASS] [[+-]rv]
+#          [-selectionTimeout MSEC] [-synchronous]
+#          [-title TITLE] [-xnllanguage LANGUAGE]
+#          [-xrm RESOURCE]
+#          {-file NAME | MESSAGE}
+#
+# --timeout causes exit 5; map to exit 0
+# -file uses --text-info --filename=..., else --info --text=...
+# --title, --no-markup, --name, --class
+#
+# seeing -buttons|-default|-print makes us warn and run the real xmessage
+# (beware "-file -"! /dev/stdin?)
+# --no-cancel? --cancel-label=?
+# GAH we use -default okay all over the place
+#
+
+my @oldargs = @ARGV;
+
+# degrade to the real xmessage, if possible
+sub degrade {
+  # find the real xmessage
+  my $where;
+  for my $d (split /:/, $ENV{PATH}) {
+    if (-x "$d/xmessage") {
+      # making sure it's not us
+      if (!open my $f, '<', "$d/xmessage") {
+        # can't be us; scripts must be readable
+        $where = $d;
+      } else {
+	      # only first 64 bytes, in case it is a binary
+	      binmode $f;
+	      defined read $f, $_, 64
+	        or die "xmessage-wrapper: read $d/xmessage: $!";
+	      close $f;
+	      if ($_ eq '') {
+	        # in theory, could just let it go; user will find out
+	        # soon enough. in practice, it would be confusing
+	        die "xmessage-wrapper: $d/xmessage empty?\n";
+	      }
+	      elsif (/^#![^\r\n]*perl/) {
+	        # assume it's us or some other potentially unsafe wrapper
+	        warn "xmessage-wrapper: avoiding myself ($d/xmessage)\n"
+	          if exists $ENV{XMESSAGE_WRAPPER_TEST};
+	      }
+	      else {
+	        $where = $d;
+	        last;
+	      }
+      }
+    }
+  }
+  if (!defined $where) {
+    die "xmessage-wrapper: can't find real xmessage\n";
+  }
+  exec $where, @oldargs;
+  die "xmessage-wrapper: exec $where: $!\n";
+}
+
+# originally was going to try to map as much as possible.
+# now I think anything not used by xmonad/contrib should fall back
+# to minimize surprises. might want the die above to try harder
+# instead, for systems with no xmessage installed.
+my ($arg, $mfile);
+while (@ARGV) {
+  $arg = shift;
+  if ($arg eq '-default') {
+    $arg = shift;
+    if ($arg ne 'okay') {
+      degrade();
+    }
+    # else ignore it
+  }
+  elsif ($arg eq '-file') {
+    defined $mfile and degrade();
+    $mfile = shift;
+  }
+  elsif ($arg !~ /^-/) {
+    unshift @ARGV, $arg;
+    last;
+  }
+  else {
+    degrade();
+  }
+}
+
+# either @ARGV is the message, or $mfile is a file with the message.
+# @@ should I bother making --title --class --name match xmessage?
+if (defined $mfile) {
+  exec 'zenity', '--no-markup', '--text-info', "--filename=$mfile";
+} else {
+  exec 'zenity', '--no-markup', '--info', '--text=' . join(' ', @ARGV);
+}
