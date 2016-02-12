@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Xmonad
+Comment=Tiling Window Manager
+GenericName=Window Manager
+Exec=/home/allbery/.bin/start-xmonad
+Terminal=false
+Type=Application
+NoDisplay=True
+StartupNotify=False
