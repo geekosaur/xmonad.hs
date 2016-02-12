@@ -89,6 +89,9 @@ while (@ARGV) {
   elsif ($arg eq '-file') {
     defined $mfile and degrade();
     $mfile = shift;
+    if ($mfile eq '-') {
+      $mfile = '/dev/stdin';
+    }
   }
   elsif ($arg !~ /^-/) {
     unshift @ARGV, $arg;
