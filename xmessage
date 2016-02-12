@@ -59,7 +59,7 @@ sub degrade {
 	          if exists $ENV{XMESSAGE_WRAPPER_TEST};
 	      }
 	      else {
-	        $where = $d;
+	        $where = "$d/xmessage";
 	        last;
 	      }
       }
