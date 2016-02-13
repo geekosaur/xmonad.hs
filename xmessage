@@ -108,7 +108,7 @@ while (@ARGV) {
 # @@@ debian etc. may still have a zenity lacking --no-markup
 my @zenity = qw(zenity --no-markup --title=xmessage --class=Xmessage --name=xmessage);
 if (defined $mfile) {
-  exec 'zenity', '--no-markup', '--text-info', "--filename=$mfile";
+  exec @zenity, '--text-info', "--filename=$mfile";
 } else {
-  exec 'zenity', '--no-markup', '--info', '--text=' . join(' ', @ARGV);
+  exec @zenity, '--info', '--text=' . join(' ', @ARGV);
 }
