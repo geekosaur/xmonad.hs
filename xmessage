@@ -105,7 +105,8 @@ while (@ARGV) {
 
 # either $mfile is a file with the message, or @ARGV is the message
 # matching the title/class/name to keep manageHooks etc. happy
-my @zenity = qw(zenity --no-makup --title=xmessage --class=Xmessage --name=xmessage);
+# @@@ debian etc. may still have a zenity lacking --no-markup
+my @zenity = qw(zenity --no-markup --title=xmessage --class=Xmessage --name=xmessage);
 if (defined $mfile) {
   exec @zenity, '--text-info', "--filename=$mfile";
 } else {
