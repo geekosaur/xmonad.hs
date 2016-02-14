@@ -181,7 +181,7 @@ main = do
              -- focused window shot
             ,("M-S-w",      unGrab >> spawn "scrot -u 'Downloads/screenshotF-%Y%m%dT%H%M%S.png'")
              -- debug windows; also see M-S-d above
-            ,("M-C-S-8",    withFocused showWinRR)
+            -- ,("M-C-S-8",    withFocused showWinRR)
             ,("M-C-S-7",    spawn "xprop | xmessage -file -")
             ,("M-C-S-6",    withFocused $ \w -> spawn $ "xprop -id 0x" ++ showHex w "" ++ " | xmessage -file -")
             ,("M-C-S-5",    withFocused $ \w -> spawn $ "xwininfo -id 0x" ++ showHex w "" ++ " -all | xmessage -file -")
