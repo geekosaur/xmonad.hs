@@ -151,7 +151,7 @@ main = do
              when (null as) $ do
                spawn "compton -cCfGb --backend=glx"
                io $ threadDelay 2500000
-               spawnOn "mail" spawnChrome
+               spawnOn "chrome" spawnChrome
                spawnOn "irc" "pidgin"
                spawnOn "emacs" "mate-terminal"
                spawnOn "emacs" "emacs"
