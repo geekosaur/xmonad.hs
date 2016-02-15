@@ -45,6 +45,8 @@ import           System.Posix.Env                         (putEnv)
 import           System.Posix.IO
 import           Control.Concurrent                       (threadDelay)
 import           Numeric                                  (showHex)
+import           System.IO                                (hPutStrLn, hClose)
+import           XMonad.Util.Run
 
 import           Graphics.X11.Xlib.Extras
 import           Foreign.Marshal.Alloc
@@ -174,7 +176,7 @@ main = do
                -- spawnOn "mail" spawnChrome
                -- spawnOn "irc" "pidgin"
                spawnOn "emacs" "mate-terminal"
-               spawnOn "emacs" "emacs"
+               spawnOn "emacs" "atom"
              -- hack: ewmh props don't get set until something forces logHook, so...
              asks (logHook . config) >>= id
            }
@@ -309,3 +311,44 @@ unPango []       = []
 debuggering :: Event -> X All
 -- debuggering = debugEventsHook
 debuggering = idHook
+
+-- testing this
+
+-- produce a RationalRect describing a window.
+-- note that we don't use getWindowAttributes because it's broken...
+getWinRR :: Window -> X (Maybe W.RationalRect)
+getWinRR w = withDisplay $ \d -> do
+  let fi :: Integral a => a -> Integer
+      fi = fromIntegral
+  wa' <- io $ alloca $ \wa'' -> do
+    st <- xGetWindowAttributes d w wa''
+    if st == 0
+      then return Nothing
+      else peek wa'' >>= return . Just
+  case wa' of
+    Nothing -> return Nothing
+    Just wa -> do
+      dis <- gets $ W.screens . windowset
+      -- need to know which screen
+      let rs = flip map dis $ \di ->
+                let Rectangle rx' ry' rw' rh' = screenRect $ W.screenDetail di
+                    rx = fi rx'
+                    ry = fi ry'
+                    rw = fi rw'
+                    rh = fi rh'
+                    wx = fi $ wa_x wa
+                    wy = fi $ wa_y wa
+                    ww = fi (wa_width  wa) + 2 * fi (wa_border_width wa)
+                    wh = fi (wa_height wa) + 2 * fi (wa_border_width wa)
+                in if wx >= rx && wx <= rx + rw && wy >= ry && wy < ry + rh
+                  then Nothing
+                  else Just $ W.RationalRect ((wx - rx) % rw) ((wy - ry) % rh) (ww % rw) (wh % rh)
+      return $ case catMaybes rs of
+                (r:_) -> Just r
+                _     -> Nothing
+
+showWinRR :: Window -> X ()
+showWinRR w = do
+  p <- spawnPipe "xmessage"
+  getWinRR w >>= io . hPutStrLn p . show
+  io $ hClose p
