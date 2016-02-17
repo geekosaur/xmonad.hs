@@ -138,11 +138,14 @@ main = do
            ,layoutHook        = renamed [CutWordsLeft 2] $
                                 minimize $
                                 maximize $
-                                avoidStruts $
                                 lessBorders OnlyFloat $
+                                onWorkspace "win10" (avoidStrutsOn [] Full) $
+                                avoidStruts $
                                 onWorkspace "irc" (withIM 0.125 pidgin ims) $
                                 onWorkspace "calibre" Full $
                                 onWorkspace "games" Full $
+                                onWorkspace "mail" simpleTabbed $
+                                onWorkspace "openafs" simpleTabbed $
                                 TwoPane 0.03 0.5 |||
                                 -- dragPane Horizontal 0.03 0.5 |||
                                 simpleTabbed |||
