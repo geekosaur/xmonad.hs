@@ -117,14 +117,15 @@ main = do
            ,layoutHook        = renamed [CutWordsLeft 2] $
                                 minimize $
                                 maximize $
-                                avoidStruts $
                                 lessBorders OnlyFloat $
-                                onWorkspace "im" (withIM 0.125 pidgin
-                                                  (reflectHoriz $ withIM 0.2 sipphone ims)) $
-                                onWorkspace "8" Full $
-                                onWorkspace "log" Full $
+				onWorkspace "mail" (avoidStrutsOn [] Full) $
+                                avoidStruts $
+                                onWorkspace "im" (renamed [CutWordsLeft 3] $
+						    withIM 0.125 pidgin
+                                                      (reflectHoriz $ withIM 0.2 sipphone ims)) $
+--                                 onWorkspace "8" Full $
+--                                 onWorkspace "log" Full $
                                 TwoPane 0.03 0.5 |||
-                                -- dragPane Horizontal 0.03 0.5 |||
                                 simpleTabbed |||
                                 Full
            ,manageHook        = composeAll
