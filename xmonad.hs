@@ -9,8 +9,8 @@ import           XMonad.Config.Mate
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.ManageDebug
--- import           XMonad.Hooks.ManageDocks
-import           XMonad.Hooks.HackDocks
+import           XMonad.Hooks.ManageDocks
+-- import           XMonad.Hooks.HackDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
@@ -211,8 +211,8 @@ main = do
             ,("M-C-S-7",    spawn "xprop | xmessage -file -")
             ,("M-C-S-6",    withFocused $ \w -> spawn $ "xprop -id 0x" ++ showHex w "" ++ " | xmessage -file -")
             ,("M-C-S-5",    withFocused $ \w -> spawn $ "xwininfo -id 0x" ++ showHex w "" ++ " -all | xmessage -file -")
-             -- @@@ because of HackDocks
-            ,("M-b",       sendMessage ToggleStruts)
+--              -- @@@ because of HackDocks
+--             ,("M-b",       sendMessage ToggleStruts)
             ]
             ++
             -- greedyView -> view, so I stop breaking crawl etc. >.>
