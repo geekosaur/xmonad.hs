@@ -15,7 +15,6 @@ import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
 import           XMonad.Layout.Accordion
-import           XMonad.Layout.DragPane
 import           XMonad.Layout.GridVariants
 import           XMonad.Layout.IM
 import           XMonad.Layout.Maximize
@@ -26,7 +25,7 @@ import           XMonad.Layout.PerWorkspace
 import           XMonad.Layout.Renamed
 import           XMonad.Layout.StackTile
 import           XMonad.Layout.Tabbed
--- import           XMonad.Layout.TwoPane
+import           XMonad.Layout.TwoPane
 import           XMonad.Prompt
 import           XMonad.Prompt.Shell
 import           XMonad.Util.EZConfig
@@ -146,8 +145,7 @@ main = do
                                 onWorkspace "games" Full $
                                 onWorkspace "mail" simpleTabbed $
                                 onWorkspace "openafs" simpleTabbed $
-                                dragPane Vertical 0.03 0.5 |||
-                                -- TwoPane 0.03 0.5 |||
+                                TwoPane 0.03 0.5 |||
                                 simpleTabbed |||
                                 Full
            ,manageHook        = composeAll
@@ -238,7 +236,6 @@ pidgin = Resource "Pidgin" `And` Role "buddy_list"
 ims = renamed [CutWordsRight 2] $
       OneBig (4/5) (3/4) |||
       StackTile 1 (3/100) (1/2) |||
-      -- TwoPane 0.03 0.5 |||
       Grid 0.2 |||
       Accordion |||
       Full
