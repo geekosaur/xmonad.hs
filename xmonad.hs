@@ -194,6 +194,7 @@ main = do
             ,("C-`",        namedScratchpadAction scratchpads "mtr")
             ,("M-C-c",      namedScratchpadAction scratchpads "crawl")
             ,("<XF86Sleep>",unGrab >> spawn "xscreensaver-command -lock")
+            ,("M-<Print>",  unGrab >> spawn "xscreensaver-command -lock")
             ,("M-C-g",      spawn spawnChrome)
             ,("M-<Right>",  moveTo Next HiddenWS)
             ,("M-<Left>",   moveTo Prev HiddenWS)
@@ -204,6 +205,7 @@ main = do
             ,("M-S-s",      unGrab >> spawn "scrot -m 'Downloads/screenshotM-%Y%m%dT%H%M%S.png'")
              -- focused window shot
             ,("M-S-w",      unGrab >> spawn "scrot -u 'Downloads/screenshotF-%Y%m%dT%H%M%S.png'")
+            ,("<Print>",    unGrab >> spawn "scrot -u 'Downloads/screenshotF-%Y%m%dT%H%M%S.png'")
              -- debug windows; also see M-S-d above
             ,("M-C-S-8",    withFocused showWinRR)
             ,("M-C-S-7",    spawn "xprop | xmessage -file -")
