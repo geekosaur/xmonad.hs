@@ -194,7 +194,7 @@ main = do
             ,("C-`",        namedScratchpadAction scratchpads "mtr")
             ,("M-C-c",      namedScratchpadAction scratchpads "crawl")
             ,("<XF86Sleep>",unGrab >> spawn "xscreensaver-command -lock")
-            ,("M-<Print>",  unGrab >> spawn "xscreensaver-command -lock")
+            ,("M-<Scroll_lock>",unGrab >> spawn "xscreensaver-command -lock")
             ,("M-C-g",      spawn spawnChrome)
             ,("M-<Right>",  moveTo Next HiddenWS)
             ,("M-<Left>",   moveTo Prev HiddenWS)
