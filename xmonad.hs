@@ -171,7 +171,7 @@ main = do
            ,startupHook       = do
              startupHook baseConfig
              when (null as) $ do
-               spawn "compton -cCfGb --backend=glx"
+               spawn "compton -cCfGb"
                io $ threadDelay 2500000
                -- @@@ starts multi windows, placing them automatically will not fly :/
                -- spawnOn "mail" spawnChrome
