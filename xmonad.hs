@@ -99,7 +99,7 @@ scratchpads = [NS "notes1"
                   --      X.O.windows since default width isn't accounting for border
                   (customFloating (W.RationalRect 0.52 0.1 (735/1920) (462/1080)))
               ,NS "mtr"
-                  "mate-terminal --disable-factory --hide-menubar --name=mtr --title=mtr -x sudo mtr --curses 198.58.116.136"
+                  "mate-terminal --disable-factory --hide-menubar --name=mtr --title=mtr -x sudo mtr --curses 8.8.4.4"
                   (appName =? "mtr")
                   (setUtility <+> noTaskBar <+> customFloating (W.RationalRect 0 0 1 0.55))
               ]
