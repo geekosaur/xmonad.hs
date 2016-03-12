@@ -51,10 +51,20 @@ Strings can use %-escapes. Am considering also allowing $vars for the ones that
 aren't shell commands; if I don't then there will be %-escape versions of the useful
 ones. (list of %-escapes to follow later)
 
+original %-escapes, from sandboxed xmonad configs:
+    %pid    process id
+    %kind   which sandbox (empty, -test, ...)
+    %arch   2nd component of executable name xmonad%kind-%arch-%os
+    %os     3rd component of executable name xmonad%kind-%arch-%os
+    %hc     path to compiler
+    %hcver  compiler version
+this must be expanded for the new usage. in particular handling libs will be fun...
+%[-i%x | x <- %libs(:)] ?
+
 Note, if you use a non-default ghc_template, it will be up to you to ensure that the
 result is compatible with your home directory configuration; if your home directory
 is on a network share, you will want to arrange for build artifacts to live in a
-local directory (this is part of what $XDG_CACHE_DIR is about).
+local directory (this is part of what $XDG_CACHE_HOME is about).
 
 # # #
 
