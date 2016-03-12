@@ -58,32 +58,32 @@ baseConfig = debugManageHookOn "M-S-d" mateConfig
 scratchpads = [NS "notes1"
                   "leafpad --name=notes1 ~/Documents/Notepad.txt"
                   (appName =? "notes1")
-                  (setUtility <+> noTaskBar <+> customFloating (W.RationalRect 0.4 0.35 0.2 0.3))
+                  (noTaskBar <+> customFloating (W.RationalRect 0.4 0.35 0.2 0.3))
               ,NS "timelog"
                   "leafpad --name=timelog ~/Documents/Timelog.txt"
                   (appName =? "timelog")
-                  (setUtility <+> noTaskBar <+> customFloating (W.RationalRect 0.1 0.1 0.2 0.3))
+                  (noTaskBar <+> customFloating (W.RationalRect 0.1 0.1 0.2 0.3))
               ,NS "notes3"
                   "leafpad --name=notes3 ~/Documents/Notepad3.txt"
                   (appName =? "notes3")
-                  (setUtility <+> noTaskBar <+> customFloating (W.RationalRect 0.7 0.1 0.2 0.3))
+                  (noTaskBar <+> customFloating (W.RationalRect 0.7 0.1 0.2 0.3))
               ,NS "notes4"
                   "leafpad --name=notes4 ~/Documents/Notepad4.txt"
                   (appName =? "notes4")
-                  (setUtility <+> noTaskBar <+> customFloating (W.RationalRect 0.1 0.7 0.2 0.3))
+                  (noTaskBar <+> customFloating (W.RationalRect 0.1 0.7 0.2 0.3))
               ,NS "notes5"
                   "leafpad --name=notes5 ~/Documents/Notepad5.txt"
                   (appName =? "notes5")
-                  (setUtility <+> noTaskBar <+> customFloating (W.RationalRect 0.7 0.7 0.2 0.3))
+                  (noTaskBar <+> customFloating (W.RationalRect 0.7 0.7 0.2 0.3))
               ,NS "calc"
                   -- @@@ perhaps assign a specific name or role for this
                   "mate-calc"
                   (appName =? "mate-calc")
-                  (setUtility <+> noTaskBar <+> doFloatAt 0.78 0.1)
+                  (noTaskBar <+> doFloatAt 0.78 0.1)
               ,NS "charmap"
                   "gucharmap"
                   (appName =? "gucharmap")
-                  (setUtility <+> noTaskBar <+> doFloatPlace)
+                  (noTaskBar <+> doFloatPlace)
               ,NS "qterm"
                   "mate-terminal --disable-factory --hide-menubar --name=qterm"
                   (appName =? "qterm")
@@ -101,7 +101,7 @@ scratchpads = [NS "notes1"
               ,NS "mtr"
                   "mate-terminal --disable-factory --hide-menubar --name=mtr --title=mtr -x sudo mtr --curses 8.8.4.4"
                   (appName =? "mtr")
-                  (setUtility <+> noTaskBar <+> customFloating (W.RationalRect 0 0 1 0.55))
+                  (noTaskBar <+> customFloating (W.RationalRect 0 0 1 0.55))
               ]
 
 workspacen :: [String]
@@ -260,15 +260,6 @@ markNoTaskBar w = withDisplay $ \d -> do
                                 Nothing -> [fi ntb,fi npg]
                                 Just s  -> fi ntb:fi npg:s
                     io $ changeProperty32 d w ws aTOM propModeReplace wst
-
-setUtility :: ManageHook
-setUtility = ask >>= (>> idHook) . liftX . markUtility
-
-markUtility :: Window -> X ()
-markUtility w = withDisplay $ \d -> do
-                    wt <- getAtom "_NET_WM_WINDOW_TYPE"
-                    wtu <- getAtom "_NET_WM_WINDOW_TYPE_UTILITY"
-                    io $ changeProperty32 d w wt aTOM propModeReplace [fi wtu]
 
 -- sigh
 fi :: (Integral i, Num n) => i -> n
