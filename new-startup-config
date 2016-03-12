@@ -1,20 +1,19 @@
+(revision 2: can't use canned sandbox configs. cabal's is about to change.
+also rename since the new cabal won't really be a sandbox as such, and arguably
+stack already isn't. I will note that "sandbox" still applies based on the
+original usage which I still want to support in here somehow, where it is
+sandboxing multiple xmonad configs from each other for e.g. testing.)
+
 xmonad sandbox/config directory support
 
-sandbox.config
-   ${XDG_CONFIG_HOME:-$HOME/.config:${XDG_CONFIG_DIRS:-/etc/xdg}}/xmonad/sandbox.config
-   $HOME/Library/Preferences/xmonad/sandbox.config
-   $HOME/.xmonad/sandbox.config
+build.config
+   ${XDG_CONFIG_HOME:-$HOME/.config:${XDG_CONFIG_DIRS:-/etc/xdg}}/xmonad/build.config
+   $HOME/Library/Preferences/xmonad/build.config
+   $HOME/.xmonad/build.config
 
 The first of these found is used, and defines the default location for other files;
-this can be overridden via entries in sandbox.config. If none has this then we repeat
+this can be overridden via entries in build.config. If none has this then we repeat
 looking for xmonad.hs and otherwise use defaults.
-
-If the first path matches, we use (real, not Linuxtard) XDG paths. Currently no support
-planned for combining them.
-
-If the second matches, we put config files in ~/Library/Preferences/xmonad and everything
-else in ~/Library/Application Support/xmonad. Again, no mechanism planned to combine
-them.
 
 We do not use XDG_DATA_HOME / XDG_DATA_DIRS. Some contribs actually have a use for this,
 all currently operating in an ad hoc manner. (It is arguable whether xmonad.errors counts
@@ -22,20 +21,24 @@ as data or as cache. I'd been leaning toward cache but may change my mind. That 
 strict reading of XDG spec seems to agree that it should be cache. The local package tree
 may also go here.)
 
-All other files are considered generated and belong in $XDG_CACHE_HOME, unless the sandbox
-selected overrides.
+All other files are considered generated and belong in $XDG_CACHE_HOME, although it is
+up to the ghc_template to enforce this.
 
-The sandbox config is parsed with ReadP to avoid extra dependencies on a parser.
+The build.config is parsed with ReadP to avoid extra dependencies on a parser.
 
-sandbox = None | Cabal | Stack -- others possible later
 config = "" -- pathname to xmonad.hs
 errors = "" -- pathname to xmonad.errors
 xmessage = "" -- command to run for xmessage; should be UTF8 aware
-  -- this must accept a message appended to command line, or "-in" followed by
+  -- This must accept a message appended to command line, or "-in" followed by
   -- a filename, as with xmessage itself. Too many contribs assume this, sorry.
   -- see https://github.com/geekosaur/xmonad.hs/blob/master/xmessage which
   -- might go into xmonad-contrib.
-recompile = "" -- command to recompile, defaulted by sandbox or built-in
+  -- This is mostly in here because the rebuild uses it to display errors.
+  -- Strictly speaking it is not about build, and is intended to address contrib
+  -- uses as well.
+  -- THIS IS VERY MUCH EXPECTED TO CHANGE. I'd rather fix the contribs.
+recompile = "" -- command to recompile, replacing hardcoded "xmonad --recompile"
+ghc_template = "" -- what is actually run to recompile, replacing hardcoded ghc invo
 environment = [""] -- list of strings to be added to environment
 xmonad = "" -- path to xmonad executable, available as %xmonad in commands
   -- NB. prefer fixing $PATH in environment[], this is a last resort
@@ -46,13 +49,12 @@ xmonad = "" -- path to xmonad executable, available as %xmonad in commands
 
 Strings can use %-escapes. Am considering also allowing $vars for the ones that
 aren't shell commands; if I don't then there will be %-escape versions of the useful
-ones.
+ones. (list of %-escapes to follow later)
 
-Note, if you use a sandbox, we do not constrain locations beyond that of the sandbox,
-which is assumed to be the directory sandbox.config was found in (override this with
-"config" above). This will matter if your home directory is shared across machines and
-you are not using the same config in all of them; you'll have to sort out how to make
-the sandbox behave in that case yourself.
+Note, if you use a non-default ghc_template, it will be up to you to ensure that the
+result is compatible with your home directory configuration; if your home directory
+is on a network share, you will want to arrange for build artifacts to live in a
+local directory (this is part of what $XDG_CACHE_DIR is about).
 
 # # #
 
@@ -65,11 +67,11 @@ New API functions for the above:
 - getXMonadDataDir produces the cache directory.
 - getXMonadHs produces the location of xmonad.hs. This may be in a sandbox.
 - getXMonadProg produces the location of the main xmonad binary.
-- getXMessageProg produces the xmessage command line.
+- getXMessageProg produces the xmessage command line. (SUBJECT TO CHANGE)
 - expandXMonadString STR expands %-escapes in a string.
 
 # # #
 
 Additional issues to consider:
 - should the resume thing be addressed at the same time, given that the code needs to
-    be touched anyway?
+    be touched anyway? (probably not, since it is just appended.)
