@@ -1,0 +1,75 @@
+xmonad sandbox/config directory support
+
+sandbox.config
+   ${XDG_CONFIG_HOME:-$HOME/.config:${XDG_CONFIG_DIRS:-/etc/xdg}}/xmonad/sandbox.config
+   $HOME/Library/Preferences/xmonad/sandbox.config
+   $HOME/.xmonad/sandbox.config
+
+The first of these found is used, and defines the default location for other files;
+this can be overridden via entries in sandbox.config. If none has this then we repeat
+looking for xmonad.hs and otherwise use defaults.
+
+If the first path matches, we use (real, not Linuxtard) XDG paths. Currently no support
+planned for combining them.
+
+If the second matches, we put config files in ~/Library/Preferences/xmonad and everything
+else in ~/Library/Application Support/xmonad. Again, no mechanism planned to combine
+them.
+
+We do not use XDG_DATA_HOME / XDG_DATA_DIRS. Some contribs actually have a use for this,
+all currently operating in an ad hoc manner. (It is arguable whether xmonad.errors counts
+as data or as cache. I'd been leaning toward cache but may change my mind. That said,
+strict reading of XDG spec seems to agree that it should be cache. The local package tree
+may also go here.)
+
+All other files are considered generated and belong in $XDG_CACHE_HOME, unless the sandbox
+selected overrides.
+
+The sandbox config is parsed with ReadP to avoid extra dependencies on a parser.
+
+sandbox = None | Cabal | Stack -- others possible later
+config = "" -- pathname to xmonad.hs
+errors = "" -- pathname to xmonad.errors
+xmessage = "" -- command to run for xmessage; should be UTF8 aware
+  -- this must accept a message appended to command line, or "-in" followed by
+  -- a filename, as with xmessage itself. Too many contribs assume this, sorry.
+  -- see https://github.com/geekosaur/xmonad.hs/blob/master/xmessage which
+  -- might go into xmonad-contrib.
+recompile = "" -- command to recompile, defaulted by sandbox or built-in
+environment = [""] -- list of strings to be added to environment
+xmonad = "" -- path to xmonad executable, available as %xmonad in commands
+  -- NB. prefer fixing $PATH in environment[], this is a last resort
+-- more to be added later?
+
+@@@ xmonad's own recompile check expects to be able to find various files.
+@@@ this means xmonad and all .hs files in all lib directories.
+
+Strings can use %-escapes. Am considering also allowing $vars for the ones that
+aren't shell commands; if I don't then there will be %-escape versions of the useful
+ones.
+
+Note, if you use a sandbox, we do not constrain locations beyond that of the sandbox,
+which is assumed to be the directory sandbox.config was found in (override this with
+"config" above). This will matter if your home directory is shared across machines and
+you are not using the same config in all of them; you'll have to sort out how to make
+the sandbox behave in that case yourself.
+
+# # #
+
+New API functions for the above:
+
+- getXMonadDir is deprecated, and acts like getXMonadDataDir.
+- getXMonadConfigDir produces the directory with sandbox.config.
+    You should not put data files used by extensions with the xmonad config in XDG;
+      this may be a sandbox directory.
+- getXMonadDataDir produces the cache directory.
+- getXMonadHs produces the location of xmonad.hs. This may be in a sandbox.
+- getXMonadProg produces the location of the main xmonad binary.
+- getXMessageProg produces the xmessage command line.
+- expandXMonadString STR expands %-escapes in a string.
+
+# # #
+
+Additional issues to consider:
+- should the resume thing be addressed at the same time, given that the code needs to
+    be touched anyway?
