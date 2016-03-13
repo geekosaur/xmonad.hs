@@ -71,8 +71,13 @@ Original %-escapes, from sandboxed xmonad configs (see script at end):
     %hc     path to compiler
     %hcver  compiler version
 
+Likely additions:
+    %home   home dir for files vs. commands (the latter can use ~ or $HOME)
+    %f      filename for xmessage_file
+    %s      message for xmessage_short
+
 This must be expanded for the new usage. in particular handling libs will be fun...
-%[-i%x | x <- %libs(:)] ?
+%[-i%x | x <- %(:)libs] ?
 
 May also want a subset of shell expansions, so e.g. %kind doesn't need
 hardcoded magic (e.g. %{kind:--%kind}).
