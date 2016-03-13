@@ -16,10 +16,10 @@ this can be overridden via entries in build.config. If none has this then we rep
 looking for xmonad.hs and otherwise use defaults.
 
 We do not use XDG_DATA_HOME / XDG_DATA_DIRS. Some contribs actually have a use for this,
-all currently operating in an ad hoc manner. (It is arguable whether xmonad.errors counts
+all currently operating in an ad hoc manner. It is arguable whether xmonad.errors counts
 as data or as cache. I'd been leaning toward cache but may change my mind. That said,
 strict reading of XDG spec seems to agree that it should be cache. The local package tree
-may also go here.)
+may also go here.
 
 All other files are considered generated and belong in $XDG_CACHE_HOME, although it is
 up to the ghc_template to enforce this.
@@ -27,7 +27,8 @@ up to the ghc_template to enforce this.
 The build.config is parsed with ReadP to avoid extra dependencies on a parser.
 
 config = "%config/xmonad.hs" -- pathname to xmonad.hs
-errors = "%data/xmonad.errors" -- pathname to xmonad.errors
+libs = "%[%d/lib:| d <- %(:)data]%config/lib" -- path to user supplied libraries
+errors = "%cache/xmonad.errors" -- pathname to xmonad.errors
 xmessage_file = "xmessage -in" -- command to run for xmessage; should be UTF8 aware
   -- (note that xmessage itself is not! ghc output will have noise.)
   -- filename is appended to this. It should output literally; Pango-based
@@ -79,11 +80,12 @@ Original %-escapes, from sandboxed xmonad configs (see script at end):
 
 Likely additions:
     %home   home dir for files vs. commands (the latter can use ~ or $HOME)
+    %libs   :-separated list of library directories (see libs above)
     %f      filename for xmessage_file
     %s      message for xmessage_short
 
 This must be expanded for the new usage. in particular handling libs will be fun...
-%[-i%x | x <- %(:)libs] ?
+%[-i%x | x <- %(:)libs] ? Spaces are significant between the [ and |.
 
 May also want a subset of shell expansions, so e.g. %kind doesn't need
 hardcoded magic (e.g. %{kind:--%kind}).
