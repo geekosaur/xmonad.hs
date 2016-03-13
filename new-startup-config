@@ -71,6 +71,7 @@ aren't shell commands; if I don't then there will be %-escape versions of the us
 ones. (Currently leaning away from $vars.)
 
 Original %-escapes, from sandboxed xmonad configs (see script at end):
+    %%      %
     %pid    process id
     %kind   which sandbox (empty, -test, ...)
     %arch   2nd component of executable name xmonad%kind-%arch-%os
@@ -83,6 +84,8 @@ Likely additions:
     %libs   :-separated list of library directories (see libs above)
     %f      filename for xmessage_file
     %s      message for xmessage_short
+    %\...   (top level of commands only) suppress quoting of result
+    %$...   environment variable
 
 This must be expanded for the new usage. in particular handling libs will be fun...
 %[-i%x | x <- %(:)libs] ? Spaces are significant between the [ and |.
@@ -96,6 +99,7 @@ is on a network share, you will want to arrange for build artifacts to live in a
 local directory (this is part of what $XDG_CACHE_HOME is about).
 
 @@@ what do -odir and -hidir do in --make mode?
+@@@ recompile lock?
 
 # # #
 
@@ -112,7 +116,18 @@ New API functions for the above:
 - getXMessageFileProg FILE produces the xmessage command line given a filename.
 - getXMessageStrProg MESSAGE produces the xmessage command line given a short message.
 - getXMonadKind produces the kind suffix (%kind).
-- expandXMonadString STR expands %-escapes in a string.
+- xmessage (Either String FilePath) convenience wrapper
+    better, data XMsgType = ShortMsg String | FromFile FilePath
+- expandXMonadString STR expands %-escapes in a string as if a filename
+- expandPercentString STR MODE EXTRAS general form of above
+    MODE is ExpNormal  (just expand it)
+            ExpCommand (enables list comp and %\... forms, quoted result)
+            ExpCompTgt (currently same as ExpNormal)
+            ExpCompSrc (enables string splitting, produces list)
+    EXTRAS is list of tuples defining additional vars for list comp
+    produces list which is length 1 for all but ExpCompSrc
+    throws ErrorCall on parse error
+    this needs more thought re list comp semantics etc.
 
 New command line parameters:
 
