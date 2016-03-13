@@ -54,6 +54,9 @@ ghc_template = "" -- what is actually run to recompile, replacing hardcoded ghc 
 environment = [] -- list of strings to be added to environment
   -- really a list of pairs of strings...
   -- environment = [("PATH","...")]
+  -- @@@ is it worth spec-ing a list, for PATH-like things? given that one of the
+  --     things you'd want to specify is the XDG dirs, but it's kinda too late
+  --     for that. (Or is it, aside from $XDG_CONFIG_{HOME.DIRS}?)
 xmonad = "xmonad" -- path to xmonad executable, available as %xmonad in commands
   -- NB. prefer fixing $PATH in environment[], this is a last resort
 -- more to be added later?
