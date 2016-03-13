@@ -26,21 +26,33 @@ up to the ghc_template to enforce this.
 
 The build.config is parsed with ReadP to avoid extra dependencies on a parser.
 
-config = "" -- pathname to xmonad.hs
-errors = "" -- pathname to xmonad.errors
-xmessage = "" -- command to run for xmessage; should be UTF8 aware
-  -- This must accept a message appended to command line, or "-in" followed by
-  -- a filename, as with xmessage itself. Too many contribs assume this, sorry.
+config = "%config/xmonad.hs" -- pathname to xmonad.hs
+errors = "%data/xmonad.errors" -- pathname to xmonad.errors
+xmessage_file = "xmessage -in" -- command to run for xmessage; should be UTF8 aware
+  -- (note that xmessage itself is not! ghc output will have noise.)
+  -- filename is appended to this. It should output literally; Pango-based
+  -- programs such as zenity should be told not to process markup.
   -- see https://github.com/geekosaur/xmonad.hs/blob/master/xmessage which
   -- might go into xmonad-contrib.
   -- This is mostly in here because the rebuild uses it to display errors.
   -- Strictly speaking it is not about build, and is intended to address contrib
   -- uses as well.
-  -- THIS IS VERY MUCH EXPECTED TO CHANGE. I'd rather fix the contribs.
-recompile = "" -- command to recompile, replacing hardcoded "xmonad --recompile"
+  -- Likely extension will use %f for filename to allow e.g. sed pipeline.
+xmessage_short = "xmessage" -- as above but message is on command line
+  -- message will be provided as a single parameter.
+  -- Likely extension will use %s for message, as above for %f.
+recompile = "%xmonad --recompile" -- command to recompile
+  -- replacing hardcoded "xmonad --recompile". used by mod-q. the actual
+  -- recompilation is controlled by ghc_template below.
+restart = "%xmonad --restart" -- command to restart
+  -- as above for recompile.
+  -- this needs more thought as it's actually modifying what is currently a
+  -- hardcoded script that uses them and xmessage (to alert if xmonad not on $PATH).
 ghc_template = "" -- what is actually run to recompile, replacing hardcoded ghc invo
-environment = [""] -- list of strings to be added to environment
-xmonad = "" -- path to xmonad executable, available as %xmonad in commands
+  -- the actual script is rather complex even before I make it work with
+  -- sandboxes and such. see below.
+environment = [] -- list of strings to be added to environment
+xmonad = "xmonad" -- path to xmonad executable, available as %xmonad in commands
   -- NB. prefer fixing $PATH in environment[], this is a last resort
 -- more to be added later?
 
@@ -85,3 +97,38 @@ New API functions for the above:
 Additional issues to consider:
 - should the resume thing be addressed at the same time, given that the code needs to
     be touched anyway? (probably not, since it is just appended.)
+- main xmonad should accept a parameter to select a config, supplying %kind.
+
+# # #
+
+This is the recompile script from my old newXMonad, supporting config sandboxes
+(a different concept from build sandboxes like stack/nix/cabal). It's several
+years out of date, and needs adjustment for the new tricks I want it to do.
+Also it's wired for when I was using one config for standalone and another for
+running xmonad in place of kwin in KDE3.
+
+I'm afraid to ask how something like this is going to fit into ghc_template.
+Possibly it'll end up like what I propose for recompile/restart, where the
+main script is still hardcoded but uses %-escapes to handle the ghc invocation
+and xmessage (below, kdialog).
+
+(The script also handles the restart, and does so assuming it's running under
+KDE's session manager.)
+
+  cd "$HOME/.xmonad"
+  ghc -W -v0 --make -i -ilib xmonad%kind.hs -o xmonad%kind-%arch-%os >xmonad%kind.errors 2>&1
+  if [ $? -ne 0 ] || test -s xmonad%kind.errors; then
+    cat xmonad%kind.errors >&2
+    kdialog --title=xmonad%kind --sorry "$(cat xmonad%kind.errors)"
+  else
+    cd
+    kill %pid
+    sleep 1
+    if [ x%kind != x ]; then
+      xmonad%kind-%arch-%os && exit 0
+    fi
+    exec xmonad
+    kdialog --title=xmonad%kind --sorry "fallback xmonad went missing?"
+    exec /usr/bin/kwin
+  fi
+  exit 177
