@@ -37,10 +37,10 @@ xmessage_file = "xmessage -in" -- command to run for xmessage; should be UTF8 aw
   -- This is mostly in here because the rebuild uses it to display errors.
   -- Strictly speaking it is not about build, and is intended to address contrib
   -- uses as well.
-  -- Likely extension will use %f for filename to allow e.g. sed pipeline.
+  -- Use %f for filename to allow e.g. sed pipeline, else it will be appended.
 xmessage_short = "xmessage" -- as above but message is on command line
   -- message will be provided as a single parameter.
-  -- Likely extension will use %s for message, as above for %f.
+  -- Use %s for message, or it will be appended.
 recompile = "%xmonad --recompile" -- command to recompile
   -- replacing hardcoded "xmonad --recompile". used by mod-q. the actual
   -- recompilation is controlled by ghc_template below.
