@@ -63,7 +63,7 @@ Strings can use %-escapes. Am considering also allowing $vars for the ones that
 aren't shell commands; if I don't then there will be %-escape versions of the useful
 ones. (list of %-escapes to follow later)
 
-original %-escapes, from sandboxed xmonad configs:
+original %-escapes, from sandboxed xmonad configs (see script at end):
     %pid    process id
     %kind   which sandbox (empty, -test, ...)
     %arch   2nd component of executable name xmonad%kind-%arch-%os
@@ -73,10 +73,15 @@ original %-escapes, from sandboxed xmonad configs:
 this must be expanded for the new usage. in particular handling libs will be fun...
 %[-i%x | x <- %libs(:)] ?
 
+May also want a subset of shell expansions, so e.g. %kind doesn't need
+hardcoded magic (e.g. %{kind:--%kind}).
+
 Note, if you use a non-default ghc_template, it will be up to you to ensure that the
 result is compatible with your home directory configuration; if your home directory
 is on a network share, you will want to arrange for build artifacts to live in a
 local directory (this is part of what $XDG_CACHE_HOME is about).
+
+@@@ what do -odir and -hidir do in --make mode?
 
 # # #
 
@@ -89,15 +94,14 @@ New API functions for the above:
 - getXMonadDataDir produces the cache directory.
 - getXMonadHs produces the location of xmonad.hs. This may be in a sandbox.
 - getXMonadProg produces the location of the main xmonad binary.
-- getXMessageProg produces the xmessage command line. (SUBJECT TO CHANGE)
+- getXMessageFileProg FILE produces the xmessage command line given a filename.
+- getXMessageStrProg MESSAGE produces the xmessage command line given a short message.
+- getXMonadKind produces the kind suffix (%kind).
 - expandXMonadString STR expands %-escapes in a string.
 
-# # #
+New command line parameters:
 
-Additional issues to consider:
-- should the resume thing be addressed at the same time, given that the code needs to
-    be touched anyway? (probably not, since it is just appended.)
-- main xmonad should accept a parameter to select a config, supplying %kind.
+- -kind KIND specifies %kind for the compiled config.
 
 # # #
 
