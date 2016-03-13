@@ -44,6 +44,7 @@ xmessage_short = "xmessage" -- as above but message is on command line
 recompile = "%xmonad --recompile" -- command to recompile
   -- replacing hardcoded "xmonad --recompile". used by mod-q. the actual
   -- recompilation is controlled by ghc_template below.
+  -- example usage: recompile = "stack exec -- xmonad --recompile"
 restart = "%xmonad --restart" -- command to restart
   -- as above for recompile.
   -- this needs more thought as it's actually modifying what is currently a
