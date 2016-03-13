@@ -61,16 +61,17 @@ xmonad = "xmonad" -- path to xmonad executable, available as %xmonad in commands
 
 Strings can use %-escapes. Am considering also allowing $vars for the ones that
 aren't shell commands; if I don't then there will be %-escape versions of the useful
-ones. (list of %-escapes to follow later)
+ones. (Currently leaning away from $vars.)
 
-original %-escapes, from sandboxed xmonad configs (see script at end):
+Original %-escapes, from sandboxed xmonad configs (see script at end):
     %pid    process id
     %kind   which sandbox (empty, -test, ...)
     %arch   2nd component of executable name xmonad%kind-%arch-%os
     %os     3rd component of executable name xmonad%kind-%arch-%os
     %hc     path to compiler
     %hcver  compiler version
-this must be expanded for the new usage. in particular handling libs will be fun...
+
+This must be expanded for the new usage. in particular handling libs will be fun...
 %[-i%x | x <- %libs(:)] ?
 
 May also want a subset of shell expansions, so e.g. %kind doesn't need
@@ -91,7 +92,8 @@ New API functions for the above:
 - getXMonadConfigDir produces the directory with sandbox.config.
     You should not put data files used by extensions with the xmonad config in XDG;
       this may be a sandbox directory.
-- getXMonadDataDir produces the cache directory.
+- getXMonadDataDir produces the data directory.
+- getXMonadWorkDir produces the cache directory.
 - getXMonadHs produces the location of xmonad.hs. This may be in a sandbox.
 - getXMonadProg produces the location of the main xmonad binary.
 - getXMessageFileProg FILE produces the xmessage command line given a filename.
