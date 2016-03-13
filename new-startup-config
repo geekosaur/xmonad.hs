@@ -52,6 +52,8 @@ ghc_template = "" -- what is actually run to recompile, replacing hardcoded ghc 
   -- the actual script is rather complex even before I make it work with
   -- sandboxes and such. see below.
 environment = [] -- list of strings to be added to environment
+  -- really a list of pairs of strings...
+  -- environment = [("PATH","...")]
 xmonad = "xmonad" -- path to xmonad executable, available as %xmonad in commands
   -- NB. prefer fixing $PATH in environment[], this is a last resort
 -- more to be added later?
