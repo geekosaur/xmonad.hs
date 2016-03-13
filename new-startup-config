@@ -109,8 +109,8 @@ New API functions for the above:
 - getXMonadConfigDir produces the directory with sandbox.config.
     You should not put data files used by extensions with the xmonad config in XDG;
       this may be a sandbox directory.
-- getXMonadDataDir produces the data directory.
-- getXMonadWorkDir produces the cache directory.
+- getXMonadLibDir produces the data directory.
+- getXMonadDataDir produces the cache directory.
 - getXMonadHs produces the location of xmonad.hs. This may be in a sandbox.
 - getXMonadProg produces the location of the main xmonad binary.
 - getXMessageFileProg FILE produces the xmessage command line given a filename.
