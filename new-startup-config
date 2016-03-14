@@ -1,3 +1,11 @@
+[[
+no. just, no. dislike hardwiring stuff, that's what got us into the
+messes this wants to fix (about 5 bugs from the old bug tracker),
+but making something that can script around e.g. multiple lib
+directories is just too complex. will just hardcode that, and then
+90% of this goes away.
+]]
+
 xmonad sandbox/config directory support
 
 build.config
@@ -87,7 +95,9 @@ Likely additions:
     %libs   :-separated list of library directories (see libs above)
     %f      filename for xmessage_file
     %s      message for xmessage_short
-    %[...]  list comprehension, see below
+    %[...]  list comprehension
+            %[-i%x | x <- %(:)libs]
+              Spaces are significant between the [ and |.
     %\...   (top level of commands only) suppress quoting of result
     %$NAME  environment variable (conjectural at present)
     %<NAME|dir|dir...]>
@@ -107,8 +117,12 @@ Likely additions:
     %{NAME[:]+val}
             as above
 
-This must be expanded for the new usage. in particular handling libs will be fun...
-%[-i%x | x <- %(:)libs] ? Spaces are significant between the [ and |.
+Not currently planning to support other shell style expansions; ? is useless,
+%#/ seem excessive (and % might be a conflict).
+
+These things combine as follows: { must immediately follow %. \ is next if present,
+then (x), then one of name/$name/<...>/[...], then optional colon and - or +
+suffix.
 
 # # #
 
