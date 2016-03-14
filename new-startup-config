@@ -1,9 +1,3 @@
-(revision 2: can't use canned sandbox configs. cabal's is about to change.
-also rename since the new cabal won't really be a sandbox as such, and arguably
-stack already isn't. I will note that "sandbox" still applies based on the
-original usage which I still want to support in here somehow, where it is
-sandboxing multiple xmonad configs from each other for e.g. testing.)
-
 xmonad sandbox/config directory support
 
 build.config
@@ -15,17 +9,20 @@ The first of these found is used, and defines the default location for other fil
 this can be overridden via entries in build.config. If none has this then we repeat
 looking for xmonad.hs and otherwise use defaults.
 
-We do not use XDG_DATA_HOME / XDG_DATA_DIRS. Some contribs actually have a use for this,
+XDG_DATA_HOME / XDG_DATA_DIRS. Some contribs actually have a use for this,
 all currently operating in an ad hoc manner. It is arguable whether xmonad.errors counts
 as data or as cache. I'd been leaning toward cache but may change my mind. That said,
 strict reading of XDG spec seems to agree that it should be cache. The local package tree
-may also go here.
+will also go here.
 
 All other files are considered generated and belong in $XDG_CACHE_HOME, although it is
-up to the ghc_template to enforce this.
+up to the ghc_template to enforce this for recompile.
 
 The build.config is parsed with ReadP to avoid extra dependencies on a parser.
 
+layout = Flat | XDG | OSX -- note we're already committed re config file locations
+  -- as such this may go away again; while I dislike magic, we're already stuck
+  -- with some magic just to find the initial config
 config = "%config/xmonad.hs" -- pathname to xmonad.hs
 libs = "%[%d/lib:| d <- %(:)data]%config/lib" -- path to user supplied libraries
 errors = "%cache/xmonad.errors" -- pathname to xmonad.errors
@@ -47,7 +44,7 @@ recompile = "%xmonad --recompile" -- command to recompile
   -- recompilation is controlled by ghc_template below.
   -- example usage: recompile = "stack exec -- xmonad --recompile"
 restart = "%xmonad --restart" -- command to restart
-  -- as above for recompile.
+  -- as with recompile, but for restart.
   -- this needs more thought as it's actually modifying what is currently a
   -- hardcoded script that uses them and xmessage (to alert if xmonad not on $PATH).
 ghc_template = "" -- what is actually run to recompile, replacing hardcoded ghc invo
@@ -58,20 +55,26 @@ environment = [] -- list of strings to be added to environment
   -- environment = [("PATH","...")]
   -- @@@ is it worth spec-ing a list, for PATH-like things? given that one of the
   --     things you'd want to specify is the XDG dirs, but it's kinda too late
-  --     for that. (Or is it, aside from $XDG_CONFIG_{HOME.DIRS}?)
+  --     for that. (Or is it, aside from $XDG_CONFIG_{HOME,DIRS}?)
 xmonad = "xmonad" -- path to xmonad executable, available as %xmonad in commands
   -- NB. prefer fixing $PATH in environment[], this is a last resort
 -- more to be added later?
 
+Note, if you use a non-default ghc_template, it will be up to you to ensure that the
+result is compatible with your home directory configuration; if your home directory
+is on a network share, you will want to arrange for build artifacts to live in a
+local directory (this is part of what $XDG_CACHE_HOME is about).
+
+@@@ what do -odir and -hidir do in --make mode?
+@@@ recompile lock?
 @@@ xmonad's own recompile check expects to be able to find various files.
-@@@ this means xmonad and all .hs files in all lib directories.
+@@@   this means xmonad and all .hs files in all lib directories.
 
-Strings can use %-escapes. Am considering also allowing $vars for the ones that
-aren't shell commands; if I don't then there will be %-escape versions of the useful
-ones. (Currently leaning away from $vars.)
-
-Original %-escapes, from sandboxed xmonad configs (see script at end):
+Strings can use %-escapes. Original %-escapes, from sandboxed xmonad configs
+(see script at end):
     %%      %
+    %{...}  delimited to allow run-together. other modifiers go inside the braces.
+              %{[...]} is pointless but permitted.
     %pid    process id
     %kind   which sandbox (empty, -test, ...)
     %arch   2nd component of executable name xmonad%kind-%arch-%os
@@ -84,22 +87,28 @@ Likely additions:
     %libs   :-separated list of library directories (see libs above)
     %f      filename for xmessage_file
     %s      message for xmessage_short
+    %[...]  list comprehension, see below
     %\...   (top level of commands only) suppress quoting of result
-    %$...   environment variable
+    %$NAME  environment variable (conjectural at present)
+    %<NAME|dir|dir...]>
+            first instance of file NAME in directories. use %(:)ARR to
+              expand a path-like var, etc. (conjecture: prefix with + for
+              first writable --- beware this may then return an empty name)
+    %configs
+            config dirs as appropriate for layout
+    %datas  data dirs as appropriate for layout
+    %cache  cache dir
+    %config main config dir (e.g. $XDG_CONFIG_HOME)
+    %data   main data dir (e.g. $XDG_DATA_HOME)
+            be careful with these last two, XDG requires you use first writable
+              --- *_HOME is just highest priority
+    %{NAME[:]-val}
+            like in shell; : indicates set+nonempty vs. defined
+    %{NAME[:]+val}
+            as above
 
 This must be expanded for the new usage. in particular handling libs will be fun...
 %[-i%x | x <- %(:)libs] ? Spaces are significant between the [ and |.
-
-May also want a subset of shell expansions, so e.g. %kind doesn't need
-hardcoded magic (e.g. %{kind:--%kind}).
-
-Note, if you use a non-default ghc_template, it will be up to you to ensure that the
-result is compatible with your home directory configuration; if your home directory
-is on a network share, you will want to arrange for build artifacts to live in a
-local directory (this is part of what $XDG_CACHE_HOME is about).
-
-@@@ what do -odir and -hidir do in --make mode?
-@@@ recompile lock?
 
 # # #
 
@@ -128,6 +137,7 @@ New API functions for the above:
     produces list which is length 1 for all but ExpCompSrc
     throws ErrorCall on parse error
     this needs more thought re list comp semantics etc.
+      need some way to escape things like | ) ] etc.
 
 New command line parameters:
 
