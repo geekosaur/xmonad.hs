@@ -4,6 +4,8 @@ messes this wants to fix (about 5 bugs from the old bug tracker),
 but making something that can script around e.g. multiple lib
 directories is just too complex. will just hardcode that, and then
 90% of this goes away.
+
+...aaaaaand it's gone.
 ]]
 
 xmonad sandbox/config directory support
@@ -23,17 +25,10 @@ as data or as cache. I'd been leaning toward cache but may change my mind. That 
 strict reading of XDG spec seems to agree that it should be cache. The local package tree
 will also go here.
 
-All other files are considered generated and belong in $XDG_CACHE_HOME, although it is
-up to the ghc_template to enforce this for recompile.
+All other files are considered generated and belong in $XDG_CACHE_HOME.
 
 The build.config is parsed with ReadP to avoid extra dependencies on a parser.
 
-layout = Flat | XDG | OSX -- note we're already committed re config file locations
-  -- as such this may go away again; while I dislike magic, we're already stuck
-  -- with some magic just to find the initial config
-config = "%config/xmonad.hs" -- pathname to xmonad.hs
-libs = "%[%d/lib:| d <- %(:)data]%config/lib" -- path to user supplied libraries
-errors = "%cache/xmonad.errors" -- pathname to xmonad.errors
 xmessage_file = "xmessage -in" -- command to run for xmessage; should be UTF8 aware
   -- (note that xmessage itself is not! ghc output will have noise.)
   -- filename is appended to this. It should output literally; Pango-based
@@ -49,29 +44,13 @@ xmessage_short = "xmessage" -- as above but message is on command line
   -- Use %s for message, or it will be appended.
 recompile = "%xmonad --recompile" -- command to recompile
   -- replacing hardcoded "xmonad --recompile". used by mod-q. the actual
-  -- recompilation is controlled by ghc_template below.
+  -- recompilation is not directly controllable; trying to make it so
+     turned this into a nightmare, so it's gone again.
   -- example usage: recompile = "stack exec -- xmonad --recompile"
-restart = "%xmonad --restart" -- command to restart
-  -- as with recompile, but for restart.
-  -- this needs more thought as it's actually modifying what is currently a
-  -- hardcoded script that uses them and xmessage (to alert if xmonad not on $PATH).
-ghc_template = "" -- what is actually run to recompile, replacing hardcoded ghc invo
-  -- the actual script is rather complex even before I make it work with
-  -- sandboxes and such. see below.
-environment = [] -- list of strings to be added to environment
-  -- really a list of pairs of strings...
+environment = [] -- list of (name,val) strings to be added to environment
   -- environment = [("PATH","...")]
-  -- @@@ is it worth spec-ing a list, for PATH-like things? given that one of the
-  --     things you'd want to specify is the XDG dirs, but it's kinda too late
-  --     for that. (Or is it, aside from $XDG_CONFIG_{HOME,DIRS}?)
 xmonad = "xmonad" -- path to xmonad executable, available as %xmonad in commands
   -- NB. prefer fixing $PATH in environment[], this is a last resort
--- more to be added later?
-
-Note, if you use a non-default ghc_template, it will be up to you to ensure that the
-result is compatible with your home directory configuration; if your home directory
-is on a network share, you will want to arrange for build artifacts to live in a
-local directory (this is part of what $XDG_CACHE_HOME is about).
 
 @@@ what do -odir and -hidir do in --make mode?
 @@@ recompile lock?
@@ -82,47 +61,18 @@ Strings can use %-escapes. Original %-escapes, from sandboxed xmonad configs
 (see script at end):
     %%      %
     %{...}  delimited to allow run-together. other modifiers go inside the braces.
-              %{[...]} is pointless but permitted.
     %pid    process id
     %kind   which sandbox (empty, -test, ...)
     %arch   2nd component of executable name xmonad%kind-%arch-%os
     %os     3rd component of executable name xmonad%kind-%arch-%os
     %hc     path to compiler
     %hcver  compiler version
+(since most of these will not be exposed, they may go away again)
 
 Likely additions:
-    %home   home dir for files vs. commands (the latter can use ~ or $HOME)
-    %libs   :-separated list of library directories (see libs above)
     %f      filename for xmessage_file
     %s      message for xmessage_short
-    %[...]  list comprehension
-            %[-i%x | x <- %(:)libs]
-              Spaces are significant between the [ and |.
-    %\...   (top level of commands only) suppress quoting of result
     %$NAME  environment variable (conjectural at present)
-    %<NAME|dir|dir...]>
-            first instance of file NAME in directories. use %(:)ARR to
-              expand a path-like var, etc. (conjecture: prefix with + for
-              first writable --- beware this may then return an empty name)
-    %configs
-            config dirs as appropriate for layout
-    %datas  data dirs as appropriate for layout
-    %cache  cache dir
-    %config main config dir (e.g. $XDG_CONFIG_HOME)
-    %data   main data dir (e.g. $XDG_DATA_HOME)
-            be careful with these last two, XDG requires you use first writable
-              --- *_HOME is just highest priority
-    %{NAME[:]-val}
-            like in shell; : indicates set+nonempty vs. defined
-    %{NAME[:]+val}
-            as above
-
-Not currently planning to support other shell style expansions; ? is useless,
-%#/ seem excessive (and % might be a conflict).
-
-These things combine as follows: { must immediately follow %. \ is next if present,
-then (x), then one of name/$name/<...>/[...], then optional colon and - or +
-suffix.
 
 # # #
 
@@ -136,26 +86,16 @@ New API functions for the above:
 - getXMonadDataDir produces the cache directory.
 - getXMonadHs produces the location of xmonad.hs. This may be in a sandbox.
 - getXMonadProg produces the location of the main xmonad binary.
-- getXMessageFileProg FILE produces the xmessage command line given a filename.
-- getXMessageStrProg MESSAGE produces the xmessage command line given a short message.
+- getXMessageFileProg FILE produces the xmessage command line
+- getXMessageStrProg MESSAGE produces the xmessage command line.
 - getXMonadKind produces the kind suffix (%kind).
 - xmessage (Either String FilePath) convenience wrapper
     better, data XMsgType = ShortMsg String | FromFile FilePath
-- expandXMonadString STR expands %-escapes in a string as if a filename
-- expandPercentString STR MODE EXTRAS general form of above
-    MODE is ExpNormal  (just expand it)
-            ExpCommand (enables list comp and %\... forms, quoted result)
-            ExpCompTgt (currently same as ExpNormal)
-            ExpCompSrc (enables string splitting, produces list)
-    EXTRAS is list of tuples defining additional vars for list comp
-    produces list which is length 1 for all but ExpCompSrc
-    throws ErrorCall on parse error
-    this needs more thought re list comp semantics etc.
-      need some way to escape things like | ) ] etc.
+- expandXMonadString STR expands %-escapes in a string
 
 New command line parameters:
 
-- -kind KIND specifies %kind for the compiled config.
+-kind KIND specifies %kind for the compiled config.
 
 # # #
 
@@ -164,11 +104,6 @@ This is the recompile script from my old newXMonad, supporting config sandboxes
 years out of date, and needs adjustment for the new tricks I want it to do.
 Also it's wired for when I was using one config for standalone and another for
 running xmonad in place of kwin in KDE3.
-
-I'm afraid to ask how something like this is going to fit into ghc_template.
-Possibly it'll end up like what I propose for recompile/restart, where the
-main script is still hardcoded but uses %-escapes to handle the ghc invocation
-and xmessage (below, kdialog).
 
 (The script also handles the restart, and does so assuming it's running under
 KDE's session manager.)
