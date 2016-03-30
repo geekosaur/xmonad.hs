@@ -14,6 +14,7 @@ import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
+import           XMonad.Hooks.UrgencyHook
 import           XMonad.Layout.Accordion
 import           XMonad.Layout.GridVariants
 import           XMonad.Layout.IM
@@ -30,6 +31,7 @@ import           XMonad.Prompt
 import           XMonad.Prompt.Shell
 import           XMonad.Util.EZConfig
 import           XMonad.Util.NamedScratchpad
+import           XMonad.Util.NamedScratchpad.Logger
 import           XMonad.Util.Ungrab
 import           XMonad.Util.WorkspaceCompare
 import qualified XMonad.StackSet                                                             as W
@@ -47,14 +49,18 @@ import           Numeric                                  (showHex)
 import           System.IO                                (hPutStrLn, hClose)
 import           XMonad.Util.Run
 
-import           Graphics.X11.Xlib.Extras
 import           Foreign.Marshal.Alloc
 import           Foreign.Storable
 import           Data.Maybe                               (catMaybes)
 import           Data.Ratio                               ((%))
 
-baseConfig = debugManageHookOn "M-S-d" mateConfig
+baseConfig = debugManageHookOn "M-S-d" $
+             withUrgencyHook NoUrgencyHook $
+             mateConfig
 
+-- U+2460+n for missing (or U+0000)
+nspIcons = "\xE011\xE0F4\xE012\x2131\x235E\x1F42E\x21C4"
+-- \x260E phone
 scratchpads = [NS "notes1"
                   "leafpad --name=notes1 ~/Documents/Notepad.txt"
                   (appName =? "notes1")
@@ -63,18 +69,6 @@ scratchpads = [NS "notes1"
                   "leafpad --name=timelog ~/Documents/Timelog.txt"
                   (appName =? "timelog")
                   (noTaskBar <+> customFloating (W.RationalRect 0.1 0.1 0.2 0.3))
-              ,NS "notes3"
-                  "leafpad --name=notes3 ~/Documents/Notepad3.txt"
-                  (appName =? "notes3")
-                  (noTaskBar <+> customFloating (W.RationalRect 0.7 0.1 0.2 0.3))
-              ,NS "notes4"
-                  "leafpad --name=notes4 ~/Documents/Notepad4.txt"
-                  (appName =? "notes4")
-                  (noTaskBar <+> customFloating (W.RationalRect 0.1 0.7 0.2 0.3))
-              ,NS "notes5"
-                  "leafpad --name=notes5 ~/Documents/Notepad5.txt"
-                  (appName =? "notes5")
-                  (noTaskBar <+> customFloating (W.RationalRect 0.7 0.7 0.2 0.3))
               ,NS "calc"
                   -- @@@ perhaps assign a specific name or role for this
                   "mate-calc"
@@ -112,9 +106,11 @@ main = do
   -- make shift-space = space
   spawn "xmodmap -e 'keycode 65 = space space space space NoSymbol NoSymbol thinspace nobreakspace'"
   -- make a second middle button on my mouse since the scrollwheel's fiddly/oversensitive
-  -- @@@@ also 11, since it seems they swap sometimes?!
+  -- @@@@ also 10 and 11, since it seems they swap sometimes?!
   spawn "xinput --set-button-map  9 1 2 3 4 5 6 7 8 9 10 11 12 13; \
         \xinput --set-button-map  9 1 2 3 4 5 6 7 8 2 10 11 12 13; \
+        \xinput --set-button-map 10 1 2 3 4 5 6 7 8 9 10 11 12 13; \
+        \xinput --set-button-map 10 1 2 3 4 5 6 7 8 2 10 11 12 13; \
         \xinput --set-button-map 11 1 2 3 4 5 6 7 8 9 10 11 12 13; \
         \xinput --set-button-map 11 1 2 3 4 5 6 7 8 2 10 11 12 13"
   -- openjdk hackaround
@@ -143,10 +139,10 @@ main = do
                                 onWorkspace "irc" (withIM 0.125 pidgin ims) $
                                 onWorkspace "calibre" Full $
                                 onWorkspace "games" Full $
-                                onWorkspace "mail" simpleTabbed $
-                                onWorkspace "openafs" simpleTabbed $
+                                onWorkspace "mail" qSimpleTabbed $
+                                onWorkspace "openafs" qSimpleTabbed $
                                 TwoPane 0.03 0.5 |||
-                                simpleTabbed |||
+                                qSimpleTabbed |||
                                 Full
            ,manageHook        = composeAll
                                 [appName =? "Pidgin" --> doShift "irc"
@@ -167,26 +163,25 @@ main = do
            ,handleEventHook   = debuggering <+>
                                 fullscreenEventHook <+>
                                 minimizeEventHook <+>
+                                nspTrackHook scratchpads <+>
                                 handleEventHook baseConfig
            ,startupHook       = do
              startupHook baseConfig
              when (null as) $ do
-               spawn "compton -cCfGb"
+               spawn "compton -cCfGb --backend=glx"
                io $ threadDelay 2500000
                -- @@@ starts multi windows, placing them automatically will not fly :/
                -- spawnOn "mail" spawnChrome
                -- spawnOn "irc" "pidgin"
                spawnOn "emacs" "mate-terminal"
                spawnOn "emacs" "atom"
+             nspTrackStartup scratchpads
              -- hack: ewmh props don't get set until something forces logHook, so...
-             asks (logHook . config) >>= id
+             join (asks $ logHook . config)
            }
            `additionalKeysP`
            ([("M-C-n",      namedScratchpadAction scratchpads "notes1")
             ,("M-C-t",      namedScratchpadAction scratchpads "timelog")
-            ,("M-C-3",      namedScratchpadAction scratchpads "notes3")
-            ,("M-C-4",      namedScratchpadAction scratchpads "notes4")
-            ,("M-C-5",      namedScratchpadAction scratchpads "notes5")
              -- yes, I considered Prompt.Shell. usually want a terminal though...
             ,("M-x",        namedScratchpadAction scratchpads "qterm")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
@@ -240,7 +235,9 @@ ims = renamed [CutWordsRight 2] $
       StackTile 1 (3/100) (1/2) |||
       Grid 0.2 |||
       Accordion |||
-      Full
+      qSimpleTabbed
+
+qSimpleTabbed = renamed [CutWordsRight 1] simpleTabbed
 
 role :: Query String
 role = stringProperty "WM_WINDOW_ROLE"
@@ -255,11 +252,13 @@ markNoTaskBar w = withDisplay $ \d -> do
                     ntb <- getAtom "_NET_WM_STATE_SKIP_TASKBAR"
                     npg <- getAtom "_NET_WM_STATE_SKIP_PAGER"
                     wst' <- io $ getWindowProperty32 d ws w
+                    {-
                     -- @@@ possibly this could just be Prepend...
                     let wst = case wst' of
                                 Nothing -> [fi ntb,fi npg]
                                 Just s  -> fi ntb:fi npg:s
-                    io $ changeProperty32 d w ws aTOM propModeReplace wst
+                    -}
+                    io $ changeProperty32 d w ws aTOM propModePrepend [fi ntb,fi npg]
 
 -- sigh
 fi :: (Integral i, Num n) => i -> n
@@ -267,16 +266,23 @@ fi = fromIntegral
 
 logTitle :: D.Client -> X ()
 logTitle ch = dynamicLogWithPP defaultPP
-                               {ppCurrent = ("«" ++) . (++ "»")
-                               ,ppVisible = id
+                               {ppCurrent = unPango
+                               ,ppVisible = pangoInactive
                                ,ppHidden  = const ""
                                ,ppHiddenNoWindows = const ""
-                               ,ppUrgent  = ("¡" ++) . (++ "!")
+                               ,ppUrgent  = pangoBold
+                               ,ppTitle   = unPango
+                               ,ppLayout  = unPango
                                ,ppWsSep   = " "
                                ,ppSep     = "⋮"
+                               ,ppOrder   = swapIcons
+                               ,ppExtras  = [nspActiveIcon nspIcons id pangoInactive]
                                ,ppSort    = getSortByXineramaPhysicalRule
                                ,ppOutput  = dbusOutput ch
                                }
+  where swapIcons (ws:l:t:nsp:xs) = ws:l:nsp:t:xs
+        -- @@@ so why do the first 4 invocations *only* not match?!
+        swapIcons xs              = xs
 
 getWellKnownName :: D.Client -> IO ()
 getWellKnownName ch = do
@@ -287,16 +293,22 @@ getWellKnownName ch = do
 dbusOutput :: D.Client -> String -> IO ()
 dbusOutput ch s = do
   let sig = (D.signal "/org/xmonad/Log" "org.xmonad.Log" "Update")
-            {D.signalBody = [D.toVariant (UTF8.decodeString (unPango s))]}
+            {D.signalBody = [D.toVariant (UTF8.decodeString s)]}
   D.emit ch sig
 
 -- quick and dirty escaping of HTMLish Pango markup
 unPango :: String -> String
+unPango []       = []
 unPango ('<':xs) = "&lt;" ++ unPango xs
 unPango ('&':xs) = "&amp;" ++ unPango xs
 unPango ('>':xs) = "&gt;" ++ unPango xs
 unPango (x  :xs) = x:unPango xs
-unPango []       = []
+
+-- show a string as inactive
+pangoInactive s = "<span foreground=\"#7f7f7f\">" ++ unPango s ++ "</span>"
+
+-- show a string with highlight
+pangoBold s = "<span weight=\"bold\", foreground=\"#ff0000\">" ++ unPango s ++ "</span>"
 
 -- boing :: String -> Query ()
 -- boing snd = liftX $ spawn $ "paplay /usr/share/sounds/freedesktop/stereo/" ++ snd ++ ".oga"
