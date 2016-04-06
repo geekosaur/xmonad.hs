@@ -30,8 +30,8 @@ import           XMonad.Layout.TwoPane
 import           XMonad.Prompt
 import           XMonad.Prompt.Shell
 import           XMonad.Util.EZConfig
+import           XMonad.Util.Loggers.NamedScratchpad
 import           XMonad.Util.NamedScratchpad
-import           XMonad.Util.NamedScratchpad.Logger
 import           XMonad.Util.Ungrab
 import           XMonad.Util.WorkspaceCompare
 import qualified XMonad.StackSet                                                             as W
@@ -197,10 +197,10 @@ main = do
             ,("M-S-p",      mateRun)
             ,("M-p",        shellPrompt greenXPConfig {promptKeymap = emacsLikeXPKeymap})
              -- multiple-screen shot
-            ,("M-S-s",      unGrab >> spawn "scrot -m 'Downloads/screenshotM-%Y%m%dT%H%M%S.png'")
+            ,("M-S-s",      unGrab >> spawn "scrot -m ~Downloads/screenshotM-%Y%m%dT%H%M%S.png")
              -- focused window shot
-            ,("M-S-w",      unGrab >> spawn "scrot -u 'Downloads/screenshotF-%Y%m%dT%H%M%S.png'")
-            ,("<Print>",    unGrab >> spawn "scrot -u 'Downloads/screenshotF-%Y%m%dT%H%M%S.png'")
+            ,("M-S-w",      unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
+            ,("<Print>",    unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
              -- debug windows; also see M-S-d above
             ,("M-C-S-8",    withFocused showWinRR)
             ,("M-C-S-7",    spawn "xprop | xmessage -file -")
@@ -252,12 +252,6 @@ markNoTaskBar w = withDisplay $ \d -> do
                     ntb <- getAtom "_NET_WM_STATE_SKIP_TASKBAR"
                     npg <- getAtom "_NET_WM_STATE_SKIP_PAGER"
                     wst' <- io $ getWindowProperty32 d ws w
-                    {-
-                    -- @@@ possibly this could just be Prepend...
-                    let wst = case wst' of
-                                Nothing -> [fi ntb,fi npg]
-                                Just s  -> fi ntb:fi npg:s
-                    -}
                     io $ changeProperty32 d w ws aTOM propModePrepend [fi ntb,fi npg]
 
 -- sigh
