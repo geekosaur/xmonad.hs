@@ -1,8 +1,8 @@
-module XMonad.Util.NamedScratchpad.Logger (nspTrackStartup
-                                          ,nspTrackHook
-                                          ,nspActiveIcon
-                                          ,nspActive
-                                          ,nspActive') where
+module XMonad.Util.Loggers.NamedScratchpad (nspTrackStartup
+                                           ,nspTrackHook
+                                           ,nspActiveIcon
+                                           ,nspActive
+                                           ,nspActive') where
 
 import XMonad.Core
 import Graphics.X11.Xlib (Window)
