@@ -32,6 +32,7 @@ import           XMonad.Prompt.Shell
 import           XMonad.Util.EZConfig
 import           XMonad.Util.Loggers.NamedScratchpad
 import           XMonad.Util.NamedScratchpad
+import           XMonad.Util.NoTaskBar
 import           XMonad.Util.Ungrab
 import           XMonad.Util.WorkspaceCompare
 import qualified XMonad.StackSet                                                             as W
@@ -54,9 +55,7 @@ import           Foreign.Storable
 import           Data.Maybe                               (catMaybes)
 import           Data.Ratio                               ((%))
 
-baseConfig = debugManageHookOn "M-S-d" $
-             withUrgencyHook NoUrgencyHook $
-             mateConfig
+baseConfig = debugManageHookOn "M-S-d" mateConfig
 
 -- U+2460+n for missing (or U+0000)
 nspIcons = "\xE011\xE0F4\xE012\x2131\x235E\x1F42E\x21C4"
@@ -99,7 +98,7 @@ scratchpads = [NS "notes1"
               ]
 
 workspacen :: [String]
-workspacen =  ["emacs", "irc", "mail", "chrome", "openafs", "pending", "win10", "games", "tv", "calibre", "misc", "spare"]
+workspacen =  ["emacs", "irc", "refs", "smb", "openafs", "pending", "win10", "games", "tv", "calibre", "misc", "spare"]
 
 main = do
   -- something is undoing this. regularly.
@@ -121,7 +120,7 @@ main = do
   -- do it to it
   -- @@ see https://github.com/xmonad/xmonad/commit/307b82a53d519f5c86c009eb1a54044a616e4a5c
   as <- getArgs
-  xmonad $ baseConfig
+  xmonad $ withUrgencyHook NoUrgencyHook baseConfig
            {modMask           = mod4Mask
            ,workspaces        = workspacen
            ,borderWidth       = 2
@@ -139,7 +138,7 @@ main = do
                                 onWorkspace "irc" (withIM 0.125 pidgin ims) $
                                 onWorkspace "calibre" Full $
                                 onWorkspace "games" Full $
-                                onWorkspace "mail" qSimpleTabbed $
+                                onWorkspace "refs" qSimpleTabbed $
                                 onWorkspace "openafs" qSimpleTabbed $
                                 TwoPane 0.03 0.5 |||
                                 qSimpleTabbed |||
@@ -241,22 +240,6 @@ qSimpleTabbed = renamed [CutWordsRight 1] simpleTabbed
 
 role :: Query String
 role = stringProperty "WM_WINDOW_ROLE"
-
--- haaaaaack
-noTaskBar :: ManageHook
-noTaskBar = ask >>= (>> idHook) . liftX . markNoTaskBar
-
-markNoTaskBar :: Window -> X ()
-markNoTaskBar w = withDisplay $ \d -> do
-                    ws <- getAtom "_NET_WM_STATE"
-                    ntb <- getAtom "_NET_WM_STATE_SKIP_TASKBAR"
-                    npg <- getAtom "_NET_WM_STATE_SKIP_PAGER"
-                    wst' <- io $ getWindowProperty32 d ws w
-                    io $ changeProperty32 d w ws aTOM propModePrepend [fi ntb,fi npg]
-
--- sigh
-fi :: (Integral i, Num n) => i -> n
-fi = fromIntegral
 
 logTitle :: D.Client -> X ()
 logTitle ch = dynamicLogWithPP defaultPP
