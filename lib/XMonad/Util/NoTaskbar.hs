@@ -1,7 +1,7 @@
-module XMonad.Util.NoTaskBar (-- * Usage
+module XMonad.Util.NoTaskbar (-- * Usage
                               -- $usage
-                              noTaskBar
-                             ,markNoTaskBar) where
+                              noTaskbar
+                             ,markNoTaskbar) where
 
 import XMonad.Core
 import XMonad.ManageHook
@@ -18,12 +18,12 @@ import Control.Monad.Reader (ask)
 -- probably don't want to be dumped into the 'NSP' workspace).
 
 -- | A 'ManageHook' to mark a window to not be shown in pagers or taskbars.
-noTaskBar :: ManageHook
-noTaskBar = ask >>= (>> idHook) . liftX . markNoTaskBar
+noTaskbar :: ManageHook
+noTaskbar = ask >>= (>> idHook) . liftX . markNoTaskbar
 
 -- | An 'X' action to mark a window to not be shown in pagers or taskbars.
-markNoTaskBar :: Window -> X ()
-markNoTaskBar w = withDisplay $ \d -> do
+markNoTaskbar :: Window -> X ()
+markNoTaskbar w = withDisplay $ \d -> do
                     ws <- getAtom "_NET_WM_STATE"
                     ntb <- getAtom "_NET_WM_STATE_SKIP_TASKBAR"
                     npg <- getAtom "_NET_WM_STATE_SKIP_PAGER"

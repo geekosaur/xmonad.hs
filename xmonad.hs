@@ -32,7 +32,7 @@ import           XMonad.Prompt.Shell
 import           XMonad.Util.EZConfig
 import           XMonad.Util.Loggers.NamedScratchpad
 import           XMonad.Util.NamedScratchpad
-import           XMonad.Util.NoTaskBar
+import           XMonad.Util.NoTaskbar
 import           XMonad.Util.Ungrab
 import           XMonad.Util.WorkspaceCompare
 import qualified XMonad.StackSet                                                             as W
@@ -63,20 +63,20 @@ nspIcons = "\xE011\xE0F4\xE012\x2131\x235E\x1F42E\x21C4"
 scratchpads = [NS "notes1"
                   "leafpad --name=notes1 ~/Documents/Notepad.txt"
                   (appName =? "notes1")
-                  (noTaskBar <+> customFloating (W.RationalRect 0.4 0.35 0.2 0.3))
+                  (noTaskbar <+> customFloating (W.RationalRect 0.4 0.35 0.2 0.3))
               ,NS "timelog"
                   "leafpad --name=timelog ~/Documents/Timelog.txt"
                   (appName =? "timelog")
-                  (noTaskBar <+> customFloating (W.RationalRect 0.1 0.1 0.2 0.3))
+                  (noTaskbar <+> customFloating (W.RationalRect 0.1 0.1 0.2 0.3))
               ,NS "calc"
                   -- @@@ perhaps assign a specific name or role for this
                   "mate-calc"
                   (appName =? "mate-calc")
-                  (noTaskBar <+> doFloatAt 0.78 0.1)
+                  (noTaskbar <+> doFloatAt 0.78 0.1)
               ,NS "charmap"
                   "gucharmap"
                   (appName =? "gucharmap")
-                  (noTaskBar <+> doFloatPlace)
+                  (noTaskbar <+> doFloatPlace)
               ,NS "qterm"
                   "mate-terminal --disable-factory --hide-menubar --name=qterm"
                   (appName =? "qterm")
@@ -94,7 +94,7 @@ scratchpads = [NS "notes1"
               ,NS "mtr"
                   "mate-terminal --disable-factory --hide-menubar --name=mtr --title=mtr -x sudo mtr --curses 8.8.4.4"
                   (appName =? "mtr")
-                  (noTaskBar <+> customFloating (W.RationalRect 0 0 1 0.55))
+                  (noTaskbar <+> customFloating (W.RationalRect 0 0 1 0.55))
               ]
 
 workspacen :: [String]
