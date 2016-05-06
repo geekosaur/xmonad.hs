@@ -95,6 +95,10 @@ scratchpads = [NS "notes1"
                   "mate-terminal --disable-factory --hide-menubar --name=mtr --title=mtr -x sudo mtr --curses 8.8.4.4"
                   (appName =? "mtr")
                   (noTaskbar <+> customFloating (W.RationalRect 0 0 1 0.55))
+              ,NS "dclock"
+                  "dclock -miltime -utc"
+                  (appName =? "dclock")
+                  (noTaskbar <+> doFloatAt 0.1 0.1)
               ]
 
 workspacen :: [String]
@@ -173,7 +177,7 @@ main = do
                -- spawnOn "mail" spawnChrome
                -- spawnOn "irc" "pidgin"
                spawnOn "emacs" "mate-terminal"
-               spawnOn "emacs" "atom"
+               spawnOn "emacs" "emacs"
              nspTrackStartup scratchpads
              -- hack: ewmh props don't get set until something forces logHook, so...
              join (asks $ logHook . config)
@@ -187,6 +191,7 @@ main = do
             ,("M-C-m",      namedScratchpadAction scratchpads "charmap")
             ,("C-`",        namedScratchpadAction scratchpads "mtr")
             ,("M-C-c",      namedScratchpadAction scratchpads "crawl")
+            ,("M-C-u",      namedScratchpadAction scratchpads "dclock")
             ,("<XF86Sleep>",unGrab >> spawn "xscreensaver-command -lock")
             ,("M-<Scroll_lock>",unGrab >> spawn "xscreensaver-command -lock")
             ,("M-C-g",      spawn spawnChrome)
