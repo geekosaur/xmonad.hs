@@ -108,6 +108,7 @@ main = do
   -- something is undoing this. regularly.
   -- make shift-space = space
   spawn "xmodmap -e 'keycode 65 = space space space space NoSymbol NoSymbol thinspace nobreakspace'"
+{-   ditched this mouse
   -- make a second middle button on my mouse since the scrollwheel's fiddly/oversensitive
   -- @@@@ also 10 and 11, since it seems they swap sometimes?!
   spawn "xinput --set-button-map  9 1 2 3 4 5 6 7 8 9 10 11 12 13; \
@@ -116,6 +117,7 @@ main = do
         \xinput --set-button-map 10 1 2 3 4 5 6 7 8 2 10 11 12 13; \
         \xinput --set-button-map 11 1 2 3 4 5 6 7 8 9 10 11 12 13; \
         \xinput --set-button-map 11 1 2 3 4 5 6 7 8 2 10 11 12 13"
+-}
   -- openjdk hackaround
   putEnv "_JAVA_AWT_WM_NONREPARENTING=1"
   -- xmonad log applet
