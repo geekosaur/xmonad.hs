@@ -58,7 +58,7 @@ import           Data.Ratio                               ((%))
 baseConfig = debugManageHookOn "M-S-d" mateConfig
 
 -- U+2460+n for missing (or U+0000)
-nspIcons = "\xE011\xE0F4\xE012\x2131\x235E\x1F42E\x21C4"
+nspIcons = "\xE011\xE0F4\xE012\x2131\x235E\x1F42E\x21C4\x23F0"
 -- \x260E phone
 scratchpads = [NS "notes1"
                   "leafpad --name=notes1 ~/Documents/Notepad.txt"
