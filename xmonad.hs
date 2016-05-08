@@ -98,7 +98,7 @@ scratchpads = [NS "notes1"
               ,NS "dclock"
                   "dclock -miltime -utc"
                   (appName =? "dclock")
-                  (noTaskbar <+> doFloatAt 0.1 0.1)
+                  (noTaskbar <+> doFloatAt 0.0 0.05)
               ]
 
 workspacen :: [String]
