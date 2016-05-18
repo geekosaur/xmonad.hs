@@ -98,6 +98,14 @@ nspTrackHook ns (ConfigureRequestEvent {ev_window = w}) = do
     return $ if p then Just w else w'
   XS.put $ NSPTrack ws'
   return (All True)
+-- same for older clients that don't do X11R4
+nspTrackHook ns (MapRequestEvent {ev_window = w}) = do
+  NSPTrack ws <- XS.get
+  ws' <- forM (zip3 [0..] ws ns) $ \(n,w',NS _ _ q _) -> do
+    p <- runQuery q w
+    return $ if p then Just w else w'
+  XS.put $ NSPTrack ws'
+  return (All True)
 nspTrackHook _ _ = return (All True)
 
 -- | 'Logger' for scratchpads' state, using Unicode characters as "icons".
