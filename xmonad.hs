@@ -153,7 +153,7 @@ main = do
                                 [appName =? "Pidgin" --> doShift "irc"
                                 ,appName =? "xmessage" --> doFloatPlace
                                 ,appName =? "trashapplet" --> doFloatPlace
-                                -- @@@ copyToAll, but need a window parameter...
+                                -- @@@ copyToAll?
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_STICKY" --> doIgnore
                                 -- ,appName =? "Pidgin" <&&> role =? "conversation" --> boing "phone-incoming-call"
                                 -- this is a bit of a hack for the remote dcss scripts
@@ -164,7 +164,7 @@ main = do
                                 ,isDialog --> doFloatPlace
                                 ,manageHook baseConfig
                                 ]
-           ,logHook           = logTitle dbus <+> logHook baseConfig
+           ,logHook           = logTitle dbus <+> logHook baseConfig <+> setWorkArea -- @@@ HAAACK
            ,handleEventHook   = debuggering <+>
                                 fullscreenEventHook <+>
                                 minimizeEventHook <+>
@@ -173,7 +173,7 @@ main = do
            ,startupHook       = do
              startupHook baseConfig
              when (null as) $ do
-               spawn "compton -cCfGb --backend=glx"
+               spawn "exec compton -cCfGb --backend=glx"
                io $ threadDelay 2500000
                -- @@@ starts multi windows, placing them automatically will not fly :/
                -- spawnOn "mail" spawnChrome
@@ -187,7 +187,6 @@ main = do
            `additionalKeysP`
            ([("M-C-n",      namedScratchpadAction scratchpads "notes1")
             ,("M-C-t",      namedScratchpadAction scratchpads "timelog")
-             -- yes, I considered Prompt.Shell. usually want a terminal though...
             ,("M-x",        namedScratchpadAction scratchpads "qterm")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
             ,("M-C-m",      namedScratchpadAction scratchpads "charmap")
@@ -203,7 +202,7 @@ main = do
             ,("M-S-p",      mateRun)
             ,("M-p",        shellPrompt greenXPConfig {promptKeymap = emacsLikeXPKeymap})
              -- multiple-screen shot
-            ,("M-S-s",      unGrab >> spawn "scrot -m ~Downloads/screenshotM-%Y%m%dT%H%M%S.png")
+            ,("M-S-s",      unGrab >> spawn "scrot -m ~/Downloads/screenshotM-%Y%m%dT%H%M%S.png")
              -- focused window shot
             ,("M-S-w",      unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
             ,("<Print>",    unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
@@ -226,7 +225,7 @@ main = do
 
 -- @@ ewmh copyTo: killAllOtherCopies >> windows (W.shift target), duh!
 
-spawnChrome   = "google-chrome --allow-file-access-from-files"
+spawnChrome   = "exec google-chrome --allow-file-access-from-files"
 
 myPlaceHook = inBounds $ smart (0.5, 0.5)
 
@@ -289,7 +288,8 @@ unPango ('>':xs) = "&gt;" ++ unPango xs
 unPango (x  :xs) = x:unPango xs
 
 -- show a string as inactive
-pangoInactive s = "<span foreground=\"#7f7f7f\">" ++ unPango s ++ "</span>"
+-- @@@ should use gtk theme somehow...
+pangoInactive s = "<span foreground=\"#4f4f4f\">" ++ unPango s ++ "</span>"
 
 -- show a string with highlight
 pangoBold s = "<span weight=\"bold\", foreground=\"#ff0000\">" ++ unPango s ++ "</span>"
@@ -330,14 +330,22 @@ getWinRR w = withDisplay $ \d -> do
                     ww = fi (wa_width  wa) + 2 * fi (wa_border_width wa)
                     wh = fi (wa_height wa) + 2 * fi (wa_border_width wa)
                 in if wx >= rx && wx <= rx + rw && wy >= ry && wy < ry + rh
-                  then Nothing
-                  else Just $ W.RationalRect ((wx - rx) % rw) ((wy - ry) % rh) (ww % rw) (wh % rh)
+                  then Just $ W.RationalRect ((wx - rx) % rw) ((wy - ry) % rh) (ww % rw) (wh % rh)
+                  else Nothing
       return $ case catMaybes rs of
                 (r:_) -> Just r
                 _     -> Nothing
 
 showWinRR :: Window -> X ()
 showWinRR w = do
-  p <- spawnPipe "xmessage"
+  p <- spawnPipe "xmessage -file -"
   getWinRR w >>= io . hPutStrLn p . show
   io $ hClose p
+
+-- @@@@@@@@ HAAAAAAAAAACK
+setWorkArea :: X ()
+setWorkArea = withDisplay $ \dpy -> do
+    a <- getAtom "_NET_WORKAREA"
+    c <- getAtom "CARDINAL"
+    r <- asks theRoot
+    io $ changeProperty32 dpy r a c propModeReplace (concat $ replicate (length workspacen) [0, 26, 3840, 1028])
