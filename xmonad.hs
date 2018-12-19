@@ -58,7 +58,7 @@ import           Data.Ratio                               ((%))
 baseConfig = debugManageHookOn "M-S-d" mateConfig
 
 -- U+2460+n for missing (or U+0000)
-nspIcons = "\xE011\xE0F4\xE012\x2131\x235E\x1F42E\x21C4\x23F0"
+nspIcons = "\xE011\xE0F4\xE012\x2131\x235E\x2754\x1F42E\x21C4\x23F0\x23F0"
 -- \x260E phone
 scratchpads = [NS "notes1"
                   "leafpad --name=notes1 ~/Documents/Notepad.txt"
@@ -80,7 +80,11 @@ scratchpads = [NS "notes1"
               ,NS "qterm"
                   "mate-terminal --disable-factory --hide-menubar --name=qterm"
                   (appName =? "qterm")
-                  (customFloating (W.RationalRect 0.275 0 0.45 0.3))
+                  (customFloating (W.RationalRect 0.275 0 0.45 0.2))
+              ,NS "dict"
+                  "mate-dictionary"
+                  (appName =? "mate-dictionary")
+                  (noTaskbar <+> customFloating (W.RationalRect 0.45 0.3 0.25 0.3))
               ,NS "crawl"
                   "xfce4-terminal --disable-server --hide-toolbar --hide-menubar --role=crawl --title=Crawl -e $HOME/.bin/crawloop"
                   (appName =? "xfce4-terminal" <&&> role =? "crawl")
@@ -95,10 +99,15 @@ scratchpads = [NS "notes1"
                   "mate-terminal --disable-factory --hide-menubar --name=mtr --title=mtr -x sudo mtr --curses 8.8.4.4"
                   (appName =? "mtr")
                   (noTaskbar <+> customFloating (W.RationalRect 0 0 1 0.55))
-              ,NS "dclock"
-                  "dclock -miltime -utc"
-                  (appName =? "dclock")
-                  (noTaskbar <+> doFloatAt 0.0 0.05)
+              ,NS "uclock"
+                  -- freaking app-defaults...
+                  "dclock -name uclock -miltime -utc -fg chartreuse -bg DarkSlateGrey -led_off DarkGreen"
+                  (appName =? "uclock")
+                  (noTaskbar <+> doFloatAt (1694/1920) (3/1080))
+              ,NS "lclock"
+                  "dclock -name lclock -miltime -fade -fg yellow -bg sienna4 -led_off DarkGoldenrod4"
+                  (appName =? "lclock")
+                  (noTaskbar <+> doFloatAt (1694/1920) (3/1080))
               ]
 
 workspacen :: [String]
@@ -107,17 +116,8 @@ workspacen =  ["emacs", "irc", "refs", "smb", "openafs", "pending", "win10", "ga
 main = do
   -- something is undoing this. regularly.
   -- make shift-space = space
-  spawn "xmodmap -e 'keycode 65 = space space space space NoSymbol NoSymbol thinspace nobreakspace'"
-{-   ditched this mouse
-  -- make a second middle button on my mouse since the scrollwheel's fiddly/oversensitive
-  -- @@@@ also 10 and 11, since it seems they swap sometimes?!
-  spawn "xinput --set-button-map  9 1 2 3 4 5 6 7 8 9 10 11 12 13; \
-        \xinput --set-button-map  9 1 2 3 4 5 6 7 8 2 10 11 12 13; \
-        \xinput --set-button-map 10 1 2 3 4 5 6 7 8 9 10 11 12 13; \
-        \xinput --set-button-map 10 1 2 3 4 5 6 7 8 2 10 11 12 13; \
-        \xinput --set-button-map 11 1 2 3 4 5 6 7 8 9 10 11 12 13; \
-        \xinput --set-button-map 11 1 2 3 4 5 6 7 8 2 10 11 12 13"
--}
+  spawn "xmodmap -e 'keycode 65 = space space space space NoSymbol NoSymbol thinspace nobreakspace' \
+        \        -e 'keycode 174 = Scroll_Lock NoSymbol Scroll_Lock'"
   -- openjdk hackaround
   putEnv "_JAVA_AWT_WM_NONREPARENTING=1"
   -- xmonad log applet
@@ -152,7 +152,7 @@ main = do
            ,manageHook        = composeAll
                                 [appName =? "Pidgin" --> doShift "irc"
                                 ,appName =? "xmessage" --> doFloatPlace
-                                ,appName =? "trashapplet" --> doFloatPlace
+                                ,className =? "Trashapplet" --> doFloatPlace
                                 -- @@@ copyToAll?
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_STICKY" --> doIgnore
                                 -- ,appName =? "Pidgin" <&&> role =? "conversation" --> boing "phone-incoming-call"
@@ -179,7 +179,8 @@ main = do
                -- spawnOn "mail" spawnChrome
                -- spawnOn "irc" "pidgin"
                spawnOn "emacs" "mate-terminal"
-               spawnOn "emacs" "emacs"
+               -- https://emacs.stackexchange.com/questions/3650
+               spawnOn "emacs" "env XMODIFIERS=@im=none emacs"
              nspTrackStartup scratchpads
              -- hack: ewmh props don't get set until something forces logHook, so...
              join (asks $ logHook . config)
@@ -190,11 +191,13 @@ main = do
             ,("M-x",        namedScratchpadAction scratchpads "qterm")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
             ,("M-C-m",      namedScratchpadAction scratchpads "charmap")
+            ,("M-C-d",      namedScratchpadAction scratchpads "dict")
             ,("C-`",        namedScratchpadAction scratchpads "mtr")
             ,("M-C-c",      namedScratchpadAction scratchpads "crawl")
-            ,("M-C-u",      namedScratchpadAction scratchpads "dclock")
-            ,("<XF86Sleep>",unGrab >> spawn "xscreensaver-command -lock")
-            ,("M-<Scroll_lock>",unGrab >> spawn "xscreensaver-command -lock")
+            ,("M-C-u",      namedScratchpadAction scratchpads "uclock")
+            ,("M-C-l",      namedScratchpadAction scratchpads "lclock")
+            ,("<XF86Sleep>",unGrab >> spawn "xscreensaver-command -activate")
+            ,("M-<Scroll_lock>",unGrab >> spawn "xscreensaver-command -activate")
             ,("M-C-g",      spawn spawnChrome)
             ,("M-<Right>",  moveTo Next HiddenWS)
             ,("M-<Left>",   moveTo Prev HiddenWS)
@@ -211,8 +214,7 @@ main = do
             ,("M-C-S-7",    spawn "xprop | xmessage -file -")
             ,("M-C-S-6",    withFocused $ \w -> spawn $ "xprop -id 0x" ++ showHex w "" ++ " | xmessage -file -")
             ,("M-C-S-5",    withFocused $ \w -> spawn $ "xwininfo -id 0x" ++ showHex w "" ++ " -all | xmessage -file -")
---              -- @@@ because of HackDocks
---             ,("M-b",       sendMessage ToggleStruts)
+            ,("M-b",        toggleBorders >> sendMessage ToggleStruts)
             ]
             ++
             -- greedyView -> view, so I stop breaking crawl etc. >.>
@@ -224,6 +226,15 @@ main = do
             ])
 
 -- @@ ewmh copyTo: killAllOtherCopies >> windows (W.shift target), duh!
+
+-- @@@ not quite right... refresh? (hacked above)
+-- @@@@ and cast still doesn't dtrt. possibly chrome's fail
+toggleBorders = withFocused $ \w -> do
+                  d <- asks display
+                  bw <- asks $ borderWidth . config
+                  wa <- io $ getWindowAttributes d w
+                  let nbw = if wa_border_width wa == 0 then bw else 0
+                  io $ setWindowBorderWidth d w nbw
 
 spawnChrome   = "exec google-chrome --allow-file-access-from-files"
 
