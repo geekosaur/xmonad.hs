@@ -3,20 +3,18 @@
 import           XMonad
 import           XMonad.Actions.CopyWindow
 import           XMonad.Actions.CycleWS
+import           XMonad.Actions.PhysicalScreens
 import           XMonad.Actions.SpawnOn
 import           XMonad.Config.Mate
--- import           XMonad.Hooks.DebugEvents
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.ManageDebug
 import           XMonad.Hooks.ManageDocks
--- import           XMonad.Hooks.HackDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Layout.Accordion
-import           XMonad.Layout.GridVariants
 import           XMonad.Layout.IM
 import           XMonad.Layout.Maximize
 import           XMonad.Layout.Minimize
@@ -24,51 +22,45 @@ import           XMonad.Layout.NoBorders
 import           XMonad.Layout.OneBig
 import           XMonad.Layout.PerWorkspace
 import           XMonad.Layout.Renamed
+import           XMonad.Layout.Simplest
 import           XMonad.Layout.StackTile
 import           XMonad.Layout.Tabbed
 import           XMonad.Layout.TwoPane
 import           XMonad.Prompt
 import           XMonad.Prompt.Shell
 import           XMonad.Util.EZConfig
-import           XMonad.Util.Loggers.NamedScratchpad
 import           XMonad.Util.NamedScratchpad
 import           XMonad.Util.NoTaskbar
+import           XMonad.Util.Run
+import           XMonad.Util.SessionStart
 import           XMonad.Util.Ungrab
 import           XMonad.Util.WorkspaceCompare
 import qualified XMonad.StackSet                                                             as W
 
-import qualified Codec.Binary.UTF8.String                                                    as UTF8
+import           Control.Concurrent                       (threadDelay)
 import           Control.Monad
+import           Data.Maybe                               (catMaybes)
 import           Data.Monoid
+import           Data.Ratio                               ((%))
 import qualified DBus                                                                        as D
 import qualified DBus.Client                                                                 as D
-import           System.Environment                       (getArgs)
-import           System.Posix.Env                         (putEnv)
-import           System.Posix.IO
-import           Control.Concurrent                       (threadDelay)
-import           Numeric                                  (showHex)
-import           System.IO                                (hPutStrLn, hClose)
-import           XMonad.Util.Run
-
 import           Foreign.Marshal.Alloc
 import           Foreign.Storable
-import           Data.Maybe                               (catMaybes)
-import           Data.Ratio                               ((%))
+import           Numeric                                  (showHex)
+import           System.Environment                       (getArgs)
+import           System.IO                                (hPutStrLn, hClose)
+import           System.Posix.Env                         (putEnv)
+import           System.Posix.IO
 
+-- sorry, I CBA to provide types for anything parameterized by layouts
 baseConfig = debugManageHookOn "M-S-d" mateConfig
 
--- U+2460+n for missing (or U+0000)
-nspIcons = "\xE011\xE0F4\xE012\x2131\x235E\x2754\x1F42E\x21C4\x23F0\x23F0"
--- \x260E phone
-scratchpads = [NS "notes1"
-                  "leafpad --name=notes1 ~/Documents/Notepad.txt"
-                  (appName =? "notes1")
-                  (noTaskbar <+> customFloating (W.RationalRect 0.4 0.35 0.2 0.3))
-              ,NS "timelog"
-                  "leafpad --name=timelog ~/Documents/Timelog.txt"
-                  (appName =? "timelog")
-                  (noTaskbar <+> customFloating (W.RationalRect 0.1 0.1 0.2 0.3))
-              ,NS "calc"
+workspacen :: [String]
+workspacen =  ["shell", "emacs", "mail", "irc", "spare1", "updates",
+               "refs", "crawl", "games", "spare2", "spare3", "spare4"]
+
+scratchpads :: [NamedScratchpad]
+scratchpads = [NS "calc"
                   -- @@@ perhaps assign a specific name or role for this
                   "mate-calc"
                   (appName =? "mate-calc")
@@ -77,55 +69,24 @@ scratchpads = [NS "notes1"
                   "gucharmap"
                   (appName =? "gucharmap")
                   (noTaskbar <+> doFloatPlace)
-              ,NS "qterm"
-                  "mate-terminal --disable-factory --hide-menubar --name=qterm"
-                  (appName =? "qterm")
-                  (customFloating (W.RationalRect 0.275 0 0.45 0.2))
               ,NS "dict"
                   "mate-dictionary"
                   (appName =? "mate-dictionary")
-                  (noTaskbar <+> customFloating (W.RationalRect 0.45 0.3 0.25 0.3))
-              ,NS "crawl"
-                  "xfce4-terminal --disable-server --hide-toolbar --hide-menubar --role=crawl --title=Crawl -e $HOME/.bin/crawloop"
-                  (appName =? "xfce4-terminal" <&&> role =? "crawl")
-                  -- @@@ fails, terminal bug? 23x79
-                  -- @@@@ or does the core not account for the border, which is *inside* the window?
-                  -- (doFloatAt 0.52 0.1)
-                  -- @@@ BEWARE this is jiggered to be 80x24
-                  -- @@@@ and rejiggering confirms: it's the border, and issue is in
-                  --      X.O.windows since default width isn't accounting for border
-                  (customFloating (W.RationalRect 0.52 0.1 (735/1920) (462/1080)))
-              ,NS "mtr"
-                  "mate-terminal --disable-factory --hide-menubar --name=mtr --title=mtr -x sudo mtr --curses 8.8.4.4"
-                  (appName =? "mtr")
-                  (noTaskbar <+> customFloating (W.RationalRect 0 0 1 0.55))
-              ,NS "uclock"
-                  -- freaking app-defaults...
-                  "dclock -name uclock -miltime -utc -fg chartreuse -bg DarkSlateGrey -led_off DarkGreen"
-                  (appName =? "uclock")
-                  (noTaskbar <+> doFloatAt (1694/1920) (3/1080))
-              ,NS "lclock"
-                  "dclock -name lclock -miltime -fade -fg yellow -bg sienna4 -led_off DarkGoldenrod4"
-                  (appName =? "lclock")
-                  (noTaskbar <+> doFloatAt (1694/1920) (3/1080))
+                  (noTaskbar <+> doFloatPlace)
+              ,NS "qterm"
+                  "mate-terminal --disable-factory --hide-menubar --name=qterm"
+                  (appName =? "qterm")
+                  (customFloating (W.RationalRect 0.2 0 0.45 0.2))
               ]
 
-workspacen :: [String]
-workspacen =  ["emacs", "irc", "refs", "smb", "openafs", "pending", "win10", "games", "tv", "calibre", "misc", "spare"]
-
+main :: IO ()
 main = do
-  -- something is undoing this. regularly.
-  -- make shift-space = space
-  spawn "xmodmap -e 'keycode 65 = space space space space NoSymbol NoSymbol thinspace nobreakspace' \
-        \        -e 'keycode 174 = Scroll_Lock NoSymbol Scroll_Lock'"
   -- openjdk hackaround
-  putEnv "_JAVA_AWT_WM_NONREPARENTING=1"
+  putEnv "_JAVA_AWT_WM_NONREPARENTING=1"  
   -- xmonad log applet
   dbus <- D.connectSession
   getWellKnownName dbus
   -- do it to it
-  -- @@ see https://github.com/xmonad/xmonad/commit/307b82a53d519f5c86c009eb1a54044a616e4a5c
-  as <- getArgs
   xmonad $ withUrgencyHook NoUrgencyHook baseConfig
            {modMask           = mod4Mask
            ,workspaces        = workspacen
@@ -134,76 +95,80 @@ main = do
            ,normalBorderColor = "#444542" -- @@ from MATE theme, half bright
            ,focusFollowsMouse = False
            ,clickJustFocuses  = False
-            -- @@ renames are out of sync now
            ,layoutHook        = renamed [CutWordsLeft 2] $
                                 minimize $
                                 maximize $
-                                lessBorders OnlyFloat $
-                                onWorkspace "win10" (avoidStrutsOn [] Full) $
+                                lessBorders OnlyScreenFloat $
+                                -- onWorkspace "win10" (avoidStrutsOn [] Full) $
                                 avoidStruts $
-                                onWorkspace "irc" (withIM 0.125 pidgin ims) $
-                                onWorkspace "calibre" Full $
-                                onWorkspace "games" Full $
+                                onWorkspace "irc" (withIM 0.125 pidgin basic) $
+                                onWorkspace "mail" qSimpleTabbed $
+                                -- onWorkspace "calibre" Full $
                                 onWorkspace "refs" qSimpleTabbed $
-                                onWorkspace "openafs" qSimpleTabbed $
-                                TwoPane 0.03 0.5 |||
-                                qSimpleTabbed |||
-                                Full
+                                basic
            ,manageHook        = composeAll
                                 [appName =? "Pidgin" --> doShift "irc"
                                 ,appName =? "xmessage" --> doFloatPlace
                                 ,className =? "Trashapplet" --> doFloatPlace
+                                ,className =? "Evolution-alarm-notify" --> doFloatPlace
+                                ,className =? "Update-manager" --> doFloatPlace
+                                ,className =? "Mate-dictionary" --> doFloatPlace
                                 -- @@@ copyToAll?
-                                ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_STICKY" --> doIgnore
-                                -- ,appName =? "Pidgin" <&&> role =? "conversation" --> boing "phone-incoming-call"
+                                -- @@@ doIgnore is a bit heavyweight here
+                                ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_STICKY" -->
+                                 doFloatPlace
+                                ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
+                                 doFloatPlace
+                                ,appName =? "Pidgin" <&&> role =? "conversation" -->
+                                 boing "phone-incoming-call"
                                 -- this is a bit of a hack for the remote dcss scripts
-                                ,appName =? "xfce4-terminal" <&&> role =? "dcss" --> doRectFloat (W.RationalRect 0.52 0.1 0.43 0.43)
+                                -- ,appName =? "xfce4-terminal" <&&> role =? "dcss" -->
+                                --  doRectFloat (W.RationalRect 0.52 0.1 0.43 0.43)
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
                                 ,isDialog --> doFloatPlace
                                 ,manageHook baseConfig
                                 ]
-           ,logHook           = logTitle dbus <+> logHook baseConfig <+> setWorkArea -- @@@ HAAACK
+           ,logHook           = logTitle dbus <+>
+                                logHook baseConfig <+>
+                                setWorkArea -- @@@ HAAACK
            ,handleEventHook   = debuggering <+>
                                 fullscreenEventHook <+>
                                 minimizeEventHook <+>
-                                nspTrackHook scratchpads <+>
                                 handleEventHook baseConfig
            ,startupHook       = do
              startupHook baseConfig
-             when (null as) $ do
+             doOnce $ do
                spawn "exec compton -cCfGb --backend=glx"
-               io $ threadDelay 2500000
+               spawn "exec \"$HOME/.screenlayout/default.sh\""
+	       -- just to keep it all from trying to happen at once
+	       io $ threadDelay 1000000
+               spawnOn "shell" "mate-terminal"
+               spawnOn "emacs" "emacs"
+               spawnOn "irc" "hexchat-utc"
+               io $ threadDelay 3000000
                -- @@@ starts multi windows, placing them automatically will not fly :/
-               -- spawnOn "mail" spawnChrome
-               -- spawnOn "irc" "pidgin"
-               spawnOn "emacs" "mate-terminal"
-               -- https://emacs.stackexchange.com/questions/3650
-               spawnOn "emacs" "env XMODIFIERS=@im=none emacs"
-             nspTrackStartup scratchpads
-             -- hack: ewmh props don't get set until something forces logHook, so...
-             join (asks $ logHook . config)
+               spawnOn "mail" "google-chrome"
+               setSessionStarted
            }
            `additionalKeysP`
-           ([("M-C-n",      namedScratchpadAction scratchpads "notes1")
-            ,("M-C-t",      namedScratchpadAction scratchpads "timelog")
-            ,("M-x",        namedScratchpadAction scratchpads "qterm")
+           ([("M-C-g",      spawn "google-chrome")
+	    ,("M-C-e",      spawn "emacs")
+	    ,("M-C-c",      spawnAndDo doFloatPlace
+                                       "xfce4-terminal --disable-server --working-directory=Sources/crawl/crawl-ref/source \
+                                                     \ --title=DCSS --command=./crawl --geometry=81x25")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
             ,("M-C-m",      namedScratchpadAction scratchpads "charmap")
             ,("M-C-d",      namedScratchpadAction scratchpads "dict")
-            ,("C-`",        namedScratchpadAction scratchpads "mtr")
-            ,("M-C-c",      namedScratchpadAction scratchpads "crawl")
-            ,("M-C-u",      namedScratchpadAction scratchpads "uclock")
-            ,("M-C-l",      namedScratchpadAction scratchpads "lclock")
-            ,("<XF86Sleep>",unGrab >> spawn "xscreensaver-command -activate")
-            ,("M-<Scroll_lock>",unGrab >> spawn "xscreensaver-command -activate")
-            ,("M-C-g",      spawn spawnChrome)
+            ,("M-x",        namedScratchpadAction scratchpads "qterm")
+            ,("M-S-4",      io (threadDelay 2000000) >> return ())
             ,("M-<Right>",  moveTo Next HiddenWS)
             ,("M-<Left>",   moveTo Prev HiddenWS)
             ,("M-S-`",      withFocused $ sendMessage . maximizeRestore)
             ,("M-S-p",      mateRun)
             ,("M-p",        shellPrompt greenXPConfig {promptKeymap = emacsLikeXPKeymap})
+            ,("M-S-q",      spawn "mate-session-save --shutdown-dialog")
              -- multiple-screen shot
             ,("M-S-s",      unGrab >> spawn "scrot -m ~/Downloads/screenshotM-%Y%m%dT%H%M%S.png")
              -- focused window shot
@@ -229,6 +194,7 @@ main = do
 
 -- @@@ not quite right... refresh? (hacked above)
 -- @@@@ and cast still doesn't dtrt. possibly chrome's fail
+toggleBorders :: X ()
 toggleBorders = withFocused $ \w -> do
                   d <- asks display
                   bw <- asks $ borderWidth . config
@@ -236,8 +202,7 @@ toggleBorders = withFocused $ \w -> do
                   let nbw = if wa_border_width wa == 0 then bw else 0
                   io $ setWindowBorderWidth d w nbw
 
-spawnChrome   = "exec google-chrome --allow-file-access-from-files"
-
+myPlaceHook :: Placement
 myPlaceHook = inBounds $ smart (0.5, 0.5)
 
 doFloatPlace :: ManageHook
@@ -246,12 +211,7 @@ doFloatPlace = placeHook myPlaceHook <+> doFloat
 pidgin :: Property
 pidgin = Resource "Pidgin" `And` Role "buddy_list"
 
-ims = renamed [CutWordsRight 2] $
-      OneBig (4/5) (3/4) |||
-      StackTile 1 (3/100) (1/2) |||
-      Grid 0.2 |||
-      Accordion |||
-      qSimpleTabbed
+basic = TwoPane 0.03 0.5 ||| qSimpleTabbed ||| Simplest
 
 qSimpleTabbed = renamed [CutWordsRight 1] simpleTabbed
 
@@ -259,7 +219,7 @@ role :: Query String
 role = stringProperty "WM_WINDOW_ROLE"
 
 logTitle :: D.Client -> X ()
-logTitle ch = dynamicLogWithPP defaultPP
+logTitle ch = dynamicLogWithPP def
                                {ppCurrent = unPango
                                ,ppVisible = pangoInactive
                                ,ppHidden  = const ""
@@ -270,8 +230,8 @@ logTitle ch = dynamicLogWithPP defaultPP
                                ,ppWsSep   = " "
                                ,ppSep     = "⋮"
                                ,ppOrder   = swapIcons
-                               ,ppExtras  = [nspActiveIcon nspIcons id pangoInactive]
                                ,ppSort    = getSortByXineramaPhysicalRule
+                                              horizontalScreenOrderer
                                ,ppOutput  = dbusOutput ch
                                }
   where swapIcons (ws:l:t:nsp:xs) = ws:l:nsp:t:xs
@@ -287,7 +247,7 @@ getWellKnownName ch = do
 dbusOutput :: D.Client -> String -> IO ()
 dbusOutput ch s = do
   let sig = (D.signal "/org/xmonad/Log" "org.xmonad.Log" "Update")
-            {D.signalBody = [D.toVariant (UTF8.decodeString s)]}
+            {D.signalBody = [D.toVariant s]}
   D.emit ch sig
 
 -- quick and dirty escaping of HTMLish Pango markup
@@ -300,13 +260,18 @@ unPango (x  :xs) = x:unPango xs
 
 -- show a string as inactive
 -- @@@ should use gtk theme somehow...
-pangoInactive s = "<span foreground=\"#4f4f4f\">" ++ unPango s ++ "</span>"
+pangoInactive :: String -> String
+pangoInactive s = "<span foreground=\"#8f8f8f\">" ++ unPango s ++ "</span>"
 
 -- show a string with highlight
-pangoBold s = "<span weight=\"bold\", foreground=\"#ff0000\">" ++ unPango s ++ "</span>"
+pangoBold :: String -> String
+pangoBold s = "<span weight=\"bold\" foreground=\"#ff0000\">" ++ unPango s ++ "</span>"
 
--- boing :: String -> Query ()
--- boing snd = liftX $ spawn $ "paplay /usr/share/sounds/freedesktop/stereo/" ++ snd ++ ".oga"
+sounds :: String
+sounds = "/usr/share/sounds/freedesktop/stereo"
+
+boing :: String -> Query (Endo WindowSet)
+boing snd = liftX (spawn $ "paplay " ++ sounds ++ "/" ++ snd ++ ".oga") >> idHook
 
 debuggering :: Event -> X All
 -- debuggering = debugEventsHook
@@ -316,6 +281,7 @@ debuggering = idHook
 
 -- produce a RationalRect describing a window.
 -- note that we don't use getWindowAttributes because it's broken...
+-- @@@ is that still true?
 getWinRR :: Window -> X (Maybe W.RationalRect)
 getWinRR w = withDisplay $ \d -> do
   let fi :: Integral a => a -> Integer
