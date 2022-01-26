@@ -14,16 +14,13 @@ import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
 import           XMonad.Hooks.UrgencyHook
-import           XMonad.Layout.Accordion
 import           XMonad.Layout.IM
 import           XMonad.Layout.Maximize
 import           XMonad.Layout.Minimize
 import           XMonad.Layout.NoBorders
-import           XMonad.Layout.OneBig
 import           XMonad.Layout.PerWorkspace
 import           XMonad.Layout.Renamed
 import           XMonad.Layout.Simplest
-import           XMonad.Layout.StackTile
 import           XMonad.Layout.Tabbed
 import           XMonad.Layout.TwoPane
 import           XMonad.Prompt
@@ -38,7 +35,6 @@ import           XMonad.Util.WorkspaceCompare
 import qualified XMonad.StackSet                                                             as W
 
 import           Control.Concurrent                       (threadDelay)
-import           Control.Monad
 import           Data.Maybe                               (catMaybes)
 import           Data.Monoid
 import           Data.Ratio                               ((%))
@@ -47,10 +43,8 @@ import qualified DBus.Client                                                    
 import           Foreign.Marshal.Alloc
 import           Foreign.Storable
 import           Numeric                                  (showHex)
-import           System.Environment                       (getArgs)
-import           System.IO                                (hPutStrLn, hClose)
+import           System.IO                                ({-hPutStrLn,-} hClose)
 import           System.Posix.Env                         (putEnv)
-import           System.Posix.IO
 
 -- sorry, I CBA to provide types for anything parameterized by layouts
 baseConfig = debugManageHookOn "M-S-d" mateConfig
@@ -142,8 +136,8 @@ main = do
              doOnce $ do
                spawn "exec compton -cCfGb --backend=glx"
                spawn "exec \"$HOME/.screenlayout/default.sh\""
-	       -- just to keep it all from trying to happen at once
-	       io $ threadDelay 1000000
+               -- just to keep it all from trying to happen at once
+               io $ threadDelay 1000000
                spawnOn "shell" "mate-terminal"
                spawnOn "emacs" "emacs"
                spawnOn "irc" "hexchat-utc"
@@ -154,17 +148,16 @@ main = do
            }
            `additionalKeysP`
            ([("M-C-g",      spawn "google-chrome")
-	    ,("M-C-e",      spawn "emacs")
-	    ,("M-C-c",      spawnAndDo doFloatPlace
+            ,("M-C-e",      spawn "emacs")
+            ,("M-C-c",      spawnAndDo doFloatPlace
                                        "xfce4-terminal --disable-server --working-directory=Sources/crawl/crawl-ref/source \
                                                      \ --title=DCSS --command=./crawl --geometry=81x25")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
             ,("M-C-m",      namedScratchpadAction scratchpads "charmap")
             ,("M-C-d",      namedScratchpadAction scratchpads "dict")
             ,("M-x",        namedScratchpadAction scratchpads "qterm")
-            ,("M-S-4",      io (threadDelay 2000000) >> return ())
-            ,("M-<Right>",  moveTo Next HiddenWS)
-            ,("M-<Left>",   moveTo Prev HiddenWS)
+            ,("M-<Right>",  moveTo Next hiddenWS)
+            ,("M-<Left>",   moveTo Prev hiddenWS)
             ,("M-S-`",      withFocused $ sendMessage . maximizeRestore)
             ,("M-S-p",      mateRun)
             ,("M-p",        shellPrompt greenXPConfig {promptKeymap = emacsLikeXPKeymap})
@@ -240,8 +233,9 @@ logTitle ch = dynamicLogWithPP def
 
 getWellKnownName :: D.Client -> IO ()
 getWellKnownName ch = do
-  D.requestName ch (D.busName_ "org.xmonad.Log")
-                [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
+  _ <- D.requestName ch
+         (D.busName_ "org.xmonad.Log")
+         [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
   return ()
 
 dbusOutput :: D.Client -> String -> IO ()
@@ -271,7 +265,7 @@ sounds :: String
 sounds = "/usr/share/sounds/freedesktop/stereo"
 
 boing :: String -> Query (Endo WindowSet)
-boing snd = liftX (spawn $ "paplay " ++ sounds ++ "/" ++ snd ++ ".oga") >> idHook
+boing sound = liftX (spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga") >> idHook
 
 debuggering :: Event -> X All
 -- debuggering = debugEventsHook
