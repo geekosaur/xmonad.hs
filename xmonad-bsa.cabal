@@ -17,8 +17,8 @@ executable xmonad-bsa
   main-is: xmonad.hs
   ghc-options: -Wall -fno-warn-missing-signatures
   build-depends: base,
-		 unix,
-		 xmonad,
-		 xmonad-contrib,
-		 dbus,
+                 unix,
+                 xmonad,
+                 xmonad-contrib,
+                 dbus,
                  utf8-string
