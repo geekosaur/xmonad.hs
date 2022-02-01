@@ -70,7 +70,7 @@ scratchpads = [NS "calc"
               ,NS "qterm"
                   "mate-terminal --disable-factory --hide-menubar --name=qterm"
                   (appName =? "qterm")
-                  (customFloating (W.RationalRect 0.2 0 0.45 0.2))
+                  (customFloating (W.RationalRect 0.25 0 0.5 0.35))
               ]
 
 main :: IO ()
