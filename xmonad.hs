@@ -303,7 +303,7 @@ unPango (x  :xs) = x:unPango xs
 pangoInactive s = "<span foreground=\"#4f4f4f\">" ++ unPango s ++ "</span>"
 
 -- show a string with highlight
-pangoBold s = "<span weight=\"bold\", foreground=\"#ff0000\">" ++ unPango s ++ "</span>"
+pangoBold s = "<span weight=\"bold\" foreground=\"#ff0000\">" ++ unPango s ++ "</span>"
 
 -- boing :: String -> Query ()
 -- boing snd = liftX $ spawn $ "paplay /usr/share/sounds/freedesktop/stereo/" ++ snd ++ ".oga"
