@@ -47,7 +47,7 @@ import           System.IO                                ({-hPutStrLn,-} hClose
 import           System.Posix.Env                         (putEnv)
 
 -- sorry, I CBA to provide types for anything parameterized by layouts
-baseConfig = debugManageHookOn "M-S-d" mateConfig
+baseConfig = debugManageHookOn "M-S-d" $ ewmhFullscreen mateConfig
 
 workspacen :: [String]
 workspacen =  ["shell", "emacs", "mail", "irc", "spare1", "updates",
@@ -128,7 +128,6 @@ main = do
                                 logHook baseConfig <+>
                                 setWorkArea -- @@@ HAAACK
            ,handleEventHook   = debuggering <+>
-                                fullscreenEventHook <+>
                                 minimizeEventHook <+>
                                 handleEventHook baseConfig
            ,startupHook       = do
