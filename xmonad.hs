@@ -135,12 +135,10 @@ main = do
              doOnce $ do
                spawn "exec compton -cCfGb --backend=glx"
                spawn "exec \"$HOME/.screenlayout/default.sh\""
-               -- just to keep it all from trying to happen at once
-               io $ threadDelay 1000000
                spawnOn "shell" "mate-terminal"
                spawnOn "emacs" "emacs"
                spawnOn "irc" "hexchat-utc"
-               io $ threadDelay 3000000
+               io $ threadDelay 1000000
                -- @@@ starts multi windows, placing them automatically will not fly :/
                spawnOn "mail" "google-chrome"
                setSessionStarted
