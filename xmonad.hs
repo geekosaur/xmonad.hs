@@ -93,11 +93,11 @@ main = do
                                 minimize $
                                 maximize $
                                 lessBorders OnlyScreenFloat $
-                                -- onWorkspace "win10" (avoidStrutsOn [] Full) $
+                                onWorkspace "win10" (avoidStrutsOn [] Full) $
                                 avoidStruts $
                                 onWorkspace "irc" (withIM 0.125 pidgin basic) $
                                 onWorkspace "mail" qSimpleTabbed $
-                                -- onWorkspace "calibre" Full $
+                                onWorkspace "calibre" Full $
                                 onWorkspace "refs" qSimpleTabbed $
                                 basic
            ,manageHook        = composeAll
@@ -116,8 +116,8 @@ main = do
                                 ,appName =? "Pidgin" <&&> role =? "conversation" -->
                                  boing "phone-incoming-call"
                                 -- this is a bit of a hack for the remote dcss scripts
-                                -- ,appName =? "xfce4-terminal" <&&> role =? "dcss" -->
-                                --  doRectFloat (W.RationalRect 0.52 0.1 0.43 0.43)
+                                ,appName =? "xfce4-terminal" <&&> role =? "dcss" -->
+                                 doRectFloat (W.RationalRect 0.52 0.1 0.43 0.43)
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
@@ -139,7 +139,7 @@ main = do
                io $ threadDelay 1000000
                spawnOn "shell" "mate-terminal"
                spawnOn "emacs" "emacs"
-               -- spawnOn "irc" "hexchat-utc"
+               spawnOn "irc" "hexchat-utc"
                io $ threadDelay 3000000
                -- @@@ starts multi windows, placing them automatically will not fly :/
                spawnOn "mail" "google-chrome"
@@ -151,6 +151,9 @@ main = do
             ,("M-C-c",      spawnAndDo doFloatPlace
                                        "xfce4-terminal --disable-server --working-directory=Sources/crawl/crawl-ref/source \
                                                      \ --title=DCSS --command=./crawl --geometry=81x25")
+            ,("M-C-u",      spawnAndDo doFloatPlace
+                                       "xfce4-terminal --disable-server \
+                                                     \ --title=DCSS --command=cue --geometry=81x25")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
             ,("M-C-m",      namedScratchpadAction scratchpads "charmap")
             ,("M-C-d",      namedScratchpadAction scratchpads "dict")
@@ -165,7 +168,8 @@ main = do
             ,("M-S-s",      unGrab >> spawn "scrot -m ~/Downloads/screenshotM-%Y%m%dT%H%M%S.png")
              -- focused window shot
             ,("M-S-w",      unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
-            ,("<Print>",    unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
+            -- ,("<Print>",    unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
+            ,("<Print>",    unGrab >> spawn "xfce4-screenshooter")
              -- debug windows; also see M-S-d above
             ,("M-C-S-8",    withFocused showWinRR)
             ,("M-C-S-7",    spawn "xprop | xmessage -file -")
