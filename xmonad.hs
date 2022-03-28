@@ -139,7 +139,7 @@ main = do
                io $ threadDelay 1000000
                spawnOn "shell" "mate-terminal"
                spawnOn "emacs" "emacs"
-               spawnOn "irc" "hexchat-utc"
+               -- spawnOn "irc" "hexchat-utc"
                io $ threadDelay 3000000
                -- @@@ starts multi windows, placing them automatically will not fly :/
                spawnOn "mail" "google-chrome"
