@@ -50,8 +50,8 @@ import           System.Posix.Env                         (putEnv)
 baseConfig = debugManageHookOn "M-S-d" $ ewmhFullscreen mateConfig
 
 workspacen :: [String]
-workspacen =  ["shell", "emacs", "mail", "irc", "spare1", "updates",
-               "refs", "crawl", "games", "spare2", "spare3", "spare4"]
+workspacen =  ["shell", "emacs", "mail", "irc", "keep", "spare1",
+               "windows", "crawl", "games", "spare2", "spare3", "spare4"]
 
 scratchpads :: [NamedScratchpad]
 scratchpads = [NS "calc"
@@ -93,7 +93,7 @@ main = do
                                 minimize $
                                 maximize $
                                 lessBorders OnlyScreenFloat $
-                                -- onWorkspace "win10" (avoidStrutsOn [] Full) $
+                                onWorkspace "windows" (avoidStrutsOn [] Full) $
                                 avoidStruts $
                                 onWorkspace "irc" (withIM 0.125 pidgin basic) $
                                 onWorkspace "mail" qSimpleTabbed $
@@ -116,8 +116,8 @@ main = do
                                 ,appName =? "Pidgin" <&&> role =? "conversation" -->
                                  boing "phone-incoming-call"
                                 -- this is a bit of a hack for the remote dcss scripts
-                                -- ,appName =? "xfce4-terminal" <&&> role =? "dcss" -->
-                                --  doRectFloat (W.RationalRect 0.52 0.1 0.43 0.43)
+                                ,appName =? "xfce4-terminal" <&&> role =? "dcss" -->
+                                 doRectFloat (W.RationalRect 0.52 0.1 0.43 0.43)
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
@@ -135,12 +135,10 @@ main = do
              doOnce $ do
                spawn "exec compton -cCfGb --backend=glx"
                spawn "exec \"$HOME/.screenlayout/default.sh\""
-               -- just to keep it all from trying to happen at once
-               io $ threadDelay 1000000
                spawnOn "shell" "mate-terminal"
                spawnOn "emacs" "emacs"
-               -- spawnOn "irc" "hexchat-utc"
-               io $ threadDelay 3000000
+               spawnOn "irc" "hexchat-utc"
+               io $ threadDelay 1000000
                -- @@@ starts multi windows, placing them automatically will not fly :/
                spawnOn "mail" "google-chrome"
                setSessionStarted
@@ -151,6 +149,9 @@ main = do
             ,("M-C-c",      spawnAndDo doFloatPlace
                                        "xfce4-terminal --disable-server --working-directory=Sources/crawl/crawl-ref/source \
                                                      \ --title=DCSS --command=./crawl --geometry=81x25")
+            ,("M-C-u",      spawnAndDo doFloatPlace
+                                       "xfce4-terminal --disable-server \
+                                                     \ --title=DCSS --command=cue --geometry=81x25")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
             ,("M-C-m",      namedScratchpadAction scratchpads "charmap")
             ,("M-C-d",      namedScratchpadAction scratchpads "dict")
@@ -159,13 +160,14 @@ main = do
             ,("M-<Left>",   moveTo Prev hiddenWS)
             ,("M-S-`",      withFocused $ sendMessage . maximizeRestore)
             ,("M-S-p",      mateRun)
-            ,("M-p",        shellPrompt greenXPConfig {promptKeymap = emacsLikeXPKeymap})
+            ,("M-p",        shellPrompt myXPConfig)
             ,("M-S-q",      spawn "mate-session-save --shutdown-dialog")
              -- multiple-screen shot
             ,("M-S-s",      unGrab >> spawn "scrot -m ~/Downloads/screenshotM-%Y%m%dT%H%M%S.png")
              -- focused window shot
             ,("M-S-w",      unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
-            ,("<Print>",    unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
+            -- ,("<Print>",    unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
+            ,("<Print>",    unGrab >> spawn "xfce4-screenshooter")
              -- debug windows; also see M-S-d above
             ,("M-C-S-8",    withFocused showWinRR)
             ,("M-C-S-7",    spawn "xprop | xmessage -file -")
@@ -205,7 +207,13 @@ pidgin = Resource "Pidgin" `And` Role "buddy_list"
 
 basic = TwoPane 0.03 0.5 ||| qSimpleTabbed ||| Simplest
 
-qSimpleTabbed = renamed [CutWordsRight 1] simpleTabbed
+qSimpleTabbed = renamed [CutWordsRight 1] $
+                tabbed shrinkText def {fontName = "xft:Mono-8"}
+
+myXPConfig :: XPConfig
+myXPConfig = greenXPConfig {promptKeymap = emacsLikeXPKeymap
+                           ,font = "xft:Mono-9"
+                           }
 
 role :: Query String
 role = stringProperty "WM_WINDOW_ROLE"
