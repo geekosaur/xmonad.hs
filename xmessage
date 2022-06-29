@@ -2,6 +2,12 @@
 use strict;
 use warnings;
 
+$ENV{XMESSAGE_WRAPPER_TEST} = '1';
+
+if (exists $ENV{XMESSAGE_WRAPPER_TEST}) {
+  open STDERR, '>', '/tmp/xmessage.log';
+}
+
 #
 # pretend to be xmessage, but run something that is utf8 aware.
 # this also means escaping what's sent to it, since most things
@@ -83,15 +89,32 @@ while (@ARGV) {
   if ($arg eq '-default') {
     $arg = shift;
     if ($arg ne 'okay') {
+      warn "-default with unexpected \"$arg\"";
       degrade();
     }
     # else ignore it
   }
   elsif ($arg eq '-file') {
-    defined $mfile and degrade();
+    if (defined $mfile) {
+      warn "two -file arguments";
+      degrade();
+    }
     $mfile = shift;
     if ($mfile eq '-') {
       $mfile = '/dev/stdin';
+    }
+  }
+  elsif ($arg eq '-xrm') {
+    $arg = shift;
+    if ($arg =~ /^\*international\s*:\s*true\s*$/i) {
+      # ignore it
+    }
+    elsif ($arg =~ /^\*fontset\s*:/) {
+      # ignore it
+    }
+    else {
+      warn "unknown resource: \"$arg\"";
+      degrade();
     }
   }
   elsif ($arg !~ /^-/) {
@@ -99,6 +122,7 @@ while (@ARGV) {
     last;
   }
   else {
+    warn "unknown option \"$arg\"";
     degrade();
   }
 }
