@@ -1,10 +1,9 @@
 [Desktop Entry]
-Version=1.0
-Name=Xmonad
-Comment=Tiling Window Manager
-GenericName=Window Manager
-Exec=/home/allbery/.bin/start-xmonad
-Terminal=false
 Type=Application
-NoDisplay=True
-StartupNotify=False
+Name=XMonad
+Exec=/home/allbery/.config/xmonad/start-xmonad
+NoDisplay=true
+X-GNOME-WMName=XMonad
+X-GNOME-Autostart-Phase=WindowManager
+X-GNOME-Provides=windowmanager
+X-GNOME-Autostart-Notify=true
