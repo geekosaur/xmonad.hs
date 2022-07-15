@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import           XMonad
-import           XMonad.Actions.CopyWindow
+-- pending: use to implement sticky windows
+-- import           XMonad.Actions.CopyWindow
 import           XMonad.Actions.CycleWS
 import           XMonad.Actions.PhysicalScreens
 import           XMonad.Actions.SpawnOn
@@ -47,7 +48,9 @@ import           System.IO                                ({-hPutStrLn,-} hClose
 import           System.Posix.Env                         (putEnv)
 
 -- sorry, I CBA to provide types for anything parameterized by layouts
-baseConfig = debugManageHookOn "M-S-d" $ ewmhFullscreen mateConfig
+baseConfig = debugManageHookOn "M-S-d" $
+             ewmhFullscreen $
+             mateConfig
 
 workspacen :: [String]
 workspacen =  ["shell", "emacs", "mail", "irc", "keep", "spare1",
@@ -144,11 +147,17 @@ main = do
                setSessionStarted
            }
            `additionalKeysP`
-           ([("M-C-g",      spawn "google-chrome")
+           ([("M-C-g",      spawnHere "google-chrome")
             ,("M-C-e",      spawn "emacs")
+            ,("M-C-v",      spawnOn "windows" "vmplayer")
+            ,("M-C-s",      spawnHere "code")
+             -- app.element.io
+            ,("M-C-a",      spawn "/opt/google/chrome/google-chrome --profile-directory=Default --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
+             -- local crawl
             ,("M-C-c",      spawnAndDo doFloatPlace
                                        "xfce4-terminal --disable-server --working-directory=Sources/crawl/crawl-ref/source \
                                                      \ --title=DCSS --command=./crawl --geometry=81x25")
+             -- crawl on underhound.eu
             ,("M-C-u",      spawnAndDo doFloatPlace
                                        "xfce4-terminal --disable-server \
                                                      \ --title=DCSS --command=cue --geometry=81x25")
@@ -161,7 +170,7 @@ main = do
             ,("M-S-`",      withFocused $ sendMessage . maximizeRestore)
             ,("M-S-p",      mateRun)
             ,("M-p",        shellPrompt myXPConfig)
-            ,("M-S-q",      spawn "mate-session-save --shutdown-dialog")
+            ,("M-S-q",      mateShutdown)
              -- multiple-screen shot
             ,("M-S-s",      unGrab >> spawn "scrot -m ~/Downloads/screenshotM-%Y%m%dT%H%M%S.png")
              -- focused window shot
