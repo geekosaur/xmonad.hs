@@ -136,6 +136,7 @@ main = do
            ,startupHook       = do
              startupHook baseConfig
              doOnce $ do
+               mateRegister
                spawn "exec compton -cCfGb --backend=glx"
                spawn "exec \"$HOME/.screenlayout/default.sh\""
                spawnOn "shell" "mate-terminal"
