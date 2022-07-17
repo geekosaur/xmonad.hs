@@ -71,7 +71,7 @@ scratchpads = [NS "calc"
                   (appName =? "mate-dictionary")
                   (noTaskbar <+> doFloatPlace)
               ,NS "qterm"
-                  "mate-terminal --disable-factory --hide-menubar --name=qterm"
+                  "env _BSA_PSYS=qterm mate-terminal --disable-factory --hide-menubar --name=qterm"
                   (appName =? "qterm")
                   (customFloating (W.RationalRect 0.25 0 0.5 0.35))
               ]
