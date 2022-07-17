@@ -153,7 +153,7 @@ main = do
             ,("M-C-v",      spawnOn "windows" "vmplayer")
             ,("M-C-s",      spawnHere "code")
              -- app.element.io
-            ,("M-C-a",      spawn "/opt/google/chrome/google-chrome --profile-directory=Default --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
+            ,("M-C-S-m",    spawn "/opt/google/chrome/google-chrome --profile-directory=Default --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
              -- local crawl
             ,("M-C-c",      spawnAndDo doFloatPlace
                                        "xfce4-terminal --disable-server --working-directory=Sources/crawl/crawl-ref/source \
