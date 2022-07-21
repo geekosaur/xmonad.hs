@@ -3,8 +3,7 @@
 {-# HLINT ignore "Use <&>" #-}
 
 import           XMonad
--- pending: use to implement sticky windows
--- import           XMonad.Actions.CopyWindow
+import           XMonad.Actions.CopyWindow
 import           XMonad.Actions.CycleWS
 import           XMonad.Actions.PhysicalScreens
 import           XMonad.Actions.SpawnOn
@@ -113,10 +112,8 @@ main = do
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
                                 ,className =? "Mate-dictionary" --> doFloatPlace
-                                -- @@@ copyToAll?
-                                -- @@@ doIgnore is a bit heavyweight here
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_STICKY" -->
-                                 doFloatPlace
+                                 doF copyToAll <> doFloat
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
                                  doFloatPlace
                                 ,appName =? "Pidgin" <&&> role =? "conversation" -->
