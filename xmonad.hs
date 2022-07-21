@@ -217,7 +217,6 @@ pidgin = Resource "Pidgin" `And` Role "buddy_list"
 
 basic = TwoPane 0.03 0.5 ||| qSimpleTabbed ||| Simplest
 revBasic = qSimpleTabbed ||| TwoPane 0.03 0.5 ||| Simplest
-
 qSimpleTabbed = renamed [CutWordsRight 1] $
                 tabbed shrinkText def {fontName = "xft:Mono-8"}
 
