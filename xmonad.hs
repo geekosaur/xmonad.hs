@@ -1,4 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use <&>" #-}
 
 import           XMonad
 -- pending: use to implement sticky windows
@@ -44,12 +46,12 @@ import qualified DBus.Client                                                    
 import           Foreign.Marshal.Alloc
 import           Foreign.Storable
 import           Numeric                                  (showHex)
-import           System.IO                                ({-hPutStrLn,-} hClose)
+import           System.IO                                (hPrint, hClose)
 import           System.Posix.Env                         (putEnv)
 
 -- sorry, I CBA to provide types for anything parameterized by layouts
 baseConfig = debugManageHookOn "M-S-d" $
-             ewmhFullscreen $
+             ewmhFullscreen -- ($)
              mateConfig
 
 workspacen :: [String]
@@ -102,7 +104,7 @@ main = do
                                 onWorkspace "mail" qSimpleTabbed $
                                 -- onWorkspace "calibre" Full $
                                 onWorkspace "refs" qSimpleTabbed $
-                                onWorkspace "emacs" revBasic $
+                                onWorkspace "emacs" revBasic -- ($)
                                 basic
            ,manageHook        = composeAll
                                 [appName =? "Pidgin" --> doShift "irc"
@@ -329,7 +331,7 @@ getWinRR w = withDisplay $ \d -> do
 showWinRR :: Window -> X ()
 showWinRR w = do
   p <- spawnPipe "xmessage -file -"
-  getWinRR w >>= io . hPutStrLn p . show
+  getWinRR w >>= io . hPrint p
   io $ hClose p
 
 -- @@@@@@@@ HAAAAAAAAAACK
