@@ -276,7 +276,7 @@ pangoInactive s = "<span foreground=\"#8f8f8f\">" ++ unPango s ++ "</span>"
 
 -- show a string with highlight
 pangoBold :: String -> String
-pangoBold s = "<span weight=\"bold\" foreground=\"#ff0000\">" ++ unPango s ++ "</span>"
+pangoBold s = "<span weight=\"bold\" foreground=\"#ff2f2f\">" ++ unPango s ++ "</span>"
 
 sounds :: String
 sounds = "/usr/share/sounds/freedesktop/stereo"
