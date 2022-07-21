@@ -9,7 +9,7 @@ import           XMonad.Actions.CycleWS
 import           XMonad.Actions.PhysicalScreens
 import           XMonad.Actions.SpawnOn
 import           XMonad.Config.Mate
-import           XMonad.Hooks.DynamicLog
+import           XMonad.Hooks.StatusBar.PP
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.ManageDebug
 import           XMonad.Hooks.ManageDocks
