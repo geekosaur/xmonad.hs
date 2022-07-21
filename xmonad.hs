@@ -62,19 +62,19 @@ scratchpads = [NS "calc"
                   -- @@@ perhaps assign a specific name or role for this
                   "mate-calc"
                   (appName =? "mate-calc")
-                  (noTaskbar <+> doFloatAt 0.78 0.1)
+                  (noTaskbar <> doFloatAt 0.78 0.1)
               ,NS "charmap"
                   "gucharmap"
                   (appName =? "gucharmap")
-                  (noTaskbar <+> doFloatPlace)
+                  (noTaskbar <> doFloatPlace)
               ,NS "dict"
                   "mate-dictionary"
                   (appName =? "mate-dictionary")
-                  (noTaskbar <+> doFloatPlace)
+                  (noTaskbar <> doFloatPlace)
               ,NS "qterm"
                   "env _BSA_PSYS=qterm mate-terminal --disable-factory --hide-menubar --name=qterm"
                   (appName =? "qterm")
-                  (customFloating (W.RationalRect 0.25 0 0.5 0.35))
+                  (noTaskbar <> customFloating (W.RationalRect 0.25 0 0.5 0.35))
               ]
 
 main :: IO ()
