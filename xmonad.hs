@@ -102,6 +102,7 @@ main = do
                                 onWorkspace "mail" qSimpleTabbed $
                                 -- onWorkspace "calibre" Full $
                                 onWorkspace "refs" qSimpleTabbed $
+                                onWorkspace "emacs" revBasic $
                                 basic
            ,manageHook        = composeAll
                                 [appName =? "Pidgin" --> doShift "irc"
