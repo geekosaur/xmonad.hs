@@ -127,11 +127,11 @@ main = do
                                 ,isDialog --> doFloatPlace
                                 ,manageHook baseConfig
                                 ]
-           ,logHook           = logTitle dbus <+>
-                                logHook baseConfig <+>
+           ,logHook           = logTitle dbus <>
+                                logHook baseConfig <>
                                 setWorkArea -- @@@ HAAACK
-           ,handleEventHook   = debuggering <+>
-                                minimizeEventHook <+>
+           ,handleEventHook   = debuggering <>
+                                minimizeEventHook <>
                                 handleEventHook baseConfig
            ,startupHook       = do
              startupHook baseConfig
@@ -210,7 +210,7 @@ myPlaceHook :: Placement
 myPlaceHook = inBounds $ smart (0.5, 0.5)
 
 doFloatPlace :: ManageHook
-doFloatPlace = placeHook myPlaceHook <+> doFloat
+doFloatPlace = placeHook myPlaceHook <> doFloat
 
 pidgin :: Property
 pidgin = Resource "Pidgin" `And` Role "buddy_list"
