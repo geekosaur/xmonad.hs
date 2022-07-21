@@ -6,6 +6,7 @@ for pkg in X11 X11-xft xmonad xmonad-contrib; do
   (cd "$pkg"; git pull)
 done
 xmonad --recompile
+echo :q | cabal repl
 # xmonad-log-applet original repo is gone; there's a new repo
 # but it's fairly minimal-looking (but this might be a good
 # thing as it might well be more portable). need to check this
