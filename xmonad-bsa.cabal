@@ -10,7 +10,7 @@ maintainer:    brandon s allbery kf8nh <allbery.b@gmail.com>
 copyright:     Copyright (c) 2022 brandon s allbery kf8nh
 category:      Graphics
 build-type:    Simple
-cabal-version: >= 2.0
+cabal-version: 2.0
 
 ------------------------------------------------------------------------------
 executable xmonad-bsa
