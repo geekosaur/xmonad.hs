@@ -1,24 +1,24 @@
 ------------------------------------------------------------------------------
 name:          xmonad-bsa
-version:       0.3
+version:       0.4
 synopsis:      Brandon's xmonad config
 homepage:      http://xmonad.org
 license:       BSD2
 license-file:  LICENSE
-author:        Peter Jones <pjones@devalot.com>
+author:        brandon s allbery kf8nh <allbery.b@gmail.com>
 maintainer:    brandon s allbery kf8nh <allbery.b@gmail.com>
-copyright:     Copyright (c) 2021 brandon s allbery kf8nh
+copyright:     Copyright (c) 2022 brandon s allbery kf8nh
 category:      Graphics
 build-type:    Simple
-cabal-version: >=1.8
+cabal-version: >= 2.0
 
 ------------------------------------------------------------------------------
 executable xmonad-bsa
   main-is: xmonad.hs
   ghc-options: -Wall -fno-warn-missing-signatures
-  build-depends: base,
+  build-depends: base ^>= 4.14 && < 5,
                  unix,
-                 xmonad,
-                 xmonad-contrib,
+                 xmonad ^>= 0.17,
+                 xmonad-contrib ^>= 0.17,
                  dbus,
                  utf8-string
