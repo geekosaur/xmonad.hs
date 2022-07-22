@@ -2,7 +2,7 @@
 name:          xmonad-bsa
 version:       0.4
 synopsis:      Brandon's xmonad config
-homepage:      http://xmonad.org
+homepage:      http://github.com/geekosaur/xmonad.hs/tree/skkukuk
 license:       BSD2
 license-file:  LICENSE
 author:        brandon s allbery kf8nh <allbery.b@gmail.com>
