@@ -185,8 +185,8 @@ main = do
              -- debug windows; also see M-S-d above
             ,("M-C-S-8",    withFocused showWinRR)
             ,("M-C-S-7",    spawn "xprop | xmessage -file -")
-            ,("M-C-S-6",    withFocused $ \w -> spawn $ "xprop -id " ++ show w "" ++ " | xmessage -file -")
-            ,("M-C-S-5",    withFocused $ \w -> spawn $ "xwininfo -id " ++ show w "" ++ " -all | xmessage -file -")
+            ,("M-C-S-6",    withFocused $ \w -> spawn $ "xprop -id " ++ show w ++ " | xmessage -file -")
+            ,("M-C-S-5",    withFocused $ \w -> spawn $ "xwininfo -id " ++ show w ++ " -all | xmessage -file -")
             ,("M-b",        toggleBorders >> sendMessage ToggleStruts)
             ]
             ++
