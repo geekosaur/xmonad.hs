@@ -131,8 +131,8 @@ main = do
                                 ,appName =? "Pidgin" <&&> role =? "conversation" -->
                                  boing "phone-incoming-call"
                                 -- this is a bit of a hack for the remote dcss scripts
-                                ,appName =? "xfce4-terminal" <&&> role =? "dcss" -->
-                                 doRectFloat (W.RationalRect 0.52 0.1 0.43 0.43)
+                                -- ,appName =? "xfce4-terminal" <&&> role =? "dcss" -->
+                                --  doRectFloat (W.RationalRect 0.52 0.1 0.43 0.43)
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
