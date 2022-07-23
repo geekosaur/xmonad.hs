@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE BlockArguments #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use <&>" #-}
 
@@ -144,19 +145,17 @@ main = do
            ,handleEventHook   = debuggering <>
                                 minimizeEventHook <>
                                 handleEventHook baseConfig
-           ,startupHook       = do
-             startupHook baseConfig
-             doOnce $ do
-               mateRegister
-               spawn "exec compton -cCfGb --backend=glx"
-               spawn "exec \"$HOME/.screenlayout/default.sh\""
-               spawnOn "shell" "mate-terminal"
-               spawnOn "emacs" "emacs"
-               spawnOn "irc" "hexchat-utc"
-               io $ threadDelay 1000000
-               -- @@@ starts multi windows, placing them automatically will not fly :/
-               spawnOn "mail" "google-chrome"
-               setSessionStarted
+           ,startupHook       = startupHook baseConfig <> doOnce do
+                                  mateRegister
+                                  spawn "exec compton -cCfGb --backend=glx"
+                                  spawn "exec \"$HOME/.screenlayout/default.sh\""
+                                  spawnOn "shell" "mate-terminal"
+                                  spawnOn "emacs" "emacs"
+                                  spawnOn "irc" "hexchat-utc"
+                                  io $ threadDelay 1000000
+                                  -- @@@ starts multi windows, placing them automatically will not fly :/
+                                  spawnOn "mail" "google-chrome"
+                                  setSessionStarted
            }
            `additionalKeysP`
            ([("M-C-g",      spawnHere "google-chrome")
