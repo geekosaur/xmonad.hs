@@ -164,7 +164,8 @@ main = do
             ,("M-C-v",      spawnOn "windows" "vmplayer")
             ,("M-C-s",      spawnHere "code")
              -- app.element.io
-            ,("M-C-S-m",    spawn "/opt/google/chrome/google-chrome --profile-directory=Default --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
+            ,("M-C-S-m",    spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
+                                                                  \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
              -- local crawl
             ,("M-C-c",      namedScratchpadAction scratchpads "crawl-local")
             ,("M-C-u",      namedScratchpadAction scratchpads "crawl-cue")
@@ -342,4 +343,5 @@ setWorkArea = withDisplay $ \dpy -> do
     a <- getAtom "_NET_WORKAREA"
     c <- getAtom "CARDINAL"
     r <- asks theRoot
-    io $ changeProperty32 dpy r a c propModeReplace (concat $ replicate (length workspacen) [0, 26, 3840, 1028])
+    io $ changeProperty32 dpy r a c propModeReplace
+                          (concat $ replicate (length workspacen) [0, 26, 3840, 1028])
