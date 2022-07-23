@@ -45,7 +45,6 @@ import qualified DBus                                                           
 import qualified DBus.Client                                                                 as D
 import           Foreign.Marshal.Alloc
 import           Foreign.Storable
-import           Numeric                                  (showHex)
 import           System.IO                                (hPrint, hClose)
 import           System.Posix.Env                         (putEnv)
 
@@ -186,8 +185,8 @@ main = do
              -- debug windows; also see M-S-d above
             ,("M-C-S-8",    withFocused showWinRR)
             ,("M-C-S-7",    spawn "xprop | xmessage -file -")
-            ,("M-C-S-6",    withFocused $ \w -> spawn $ "xprop -id 0x" ++ showHex w "" ++ " | xmessage -file -")
-            ,("M-C-S-5",    withFocused $ \w -> spawn $ "xwininfo -id 0x" ++ showHex w "" ++ " -all | xmessage -file -")
+            ,("M-C-S-6",    withFocused $ \w -> spawn $ "xprop -id " ++ show w "" ++ " | xmessage -file -")
+            ,("M-C-S-5",    withFocused $ \w -> spawn $ "xwininfo -id " ++ show w "" ++ " -all | xmessage -file -")
             ,("M-b",        toggleBorders >> sendMessage ToggleStruts)
             ]
             ++
