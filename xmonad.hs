@@ -113,7 +113,7 @@ main = do
                                 ,className =? "Update-manager" --> doFloatPlace
                                 ,className =? "Mate-dictionary" --> doFloatPlace
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_STICKY" -->
-                                 doF copyToAll <> doFloat
+                                 doF copyToAll <> doFloatPlace
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
                                  doFloatPlace
                                 ,appName =? "Pidgin" <&&> role =? "conversation" -->
