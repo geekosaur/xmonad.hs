@@ -75,6 +75,17 @@ scratchpads = [NS "calc"
                   "env _BSA_PSYS=qterm mate-terminal --disable-factory --hide-menubar --name=qterm"
                   (appName =? "qterm")
                   (noTaskbar <> customFloating (W.RationalRect 0.25 0 0.5 0.35))
+              ,NS "crawl-local"
+                  "xfce4-terminal --disable-server --working-directory=Sources/crawl/crawl-ref/source \
+                                \ --name crawl-local --title=DCSS --command=./crawl --geometry=81x25"
+                  (appName =? "crawl-local")
+                  (noTaskbar <> doFloatPlace)
+               -- crawl on underhound.eu
+              ,NS "crawl-cue"
+                  "xfce4-terminal --disable-server \
+                                \ --name crawl-cue --title=DCSS --command=cue --geometry=81x25"
+                  (appName =? "crawl-cue")
+                  (noTaskbar <> doFloatPlace)
               ]
 
 main :: IO ()
@@ -155,13 +166,8 @@ main = do
              -- app.element.io
             ,("M-C-S-m",    spawn "/opt/google/chrome/google-chrome --profile-directory=Default --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
              -- local crawl
-            ,("M-C-c",      spawnAndDo doFloatPlace
-                                       "xfce4-terminal --disable-server --working-directory=Sources/crawl/crawl-ref/source \
-                                                     \ --title=DCSS --command=./crawl --geometry=81x25")
-             -- crawl on underhound.eu
-            ,("M-C-u",      spawnAndDo doFloatPlace
-                                       "xfce4-terminal --disable-server \
-                                                     \ --title=DCSS --command=cue --geometry=81x25")
+            ,("M-C-c",      namedScratchpadAction scratchpads "crawl-local")
+            ,("M-C-u",      namedScratchpadAction scratchpads "crawl-cue")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
             ,("M-C-m",      namedScratchpadAction scratchpads "charmap")
             ,("M-C-d",      namedScratchpadAction scratchpads "dict")
