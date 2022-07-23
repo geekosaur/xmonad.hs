@@ -84,7 +84,7 @@ scratchpads = [NS "calc"
                -- crawl on underhound.eu
               ,NS "crawl-cue"
                   "xfce4-terminal --disable-server \
-                                \ --name crawl-cue --title=DCSS --command=cue --geometry=81x25"
+                                \ --name crawl-cue --title=\"DCSS (CUE)\" --command=cue --geometry=81x25"
                   (appName =? "crawl-cue")
                   (noTaskbar <> doFloatPlace)
               ]
