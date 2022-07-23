@@ -165,7 +165,6 @@ main = do
              -- app.element.io
             ,("M-C-S-m",    spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                   \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
-             -- local crawl
             ,("M-C-c",      namedScratchpadAction scratchpads "crawl-local")
             ,("M-C-u",      namedScratchpadAction scratchpads "crawl-cue")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
