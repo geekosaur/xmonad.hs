@@ -324,7 +324,7 @@ debuggering = idHook
 
 -- produce a RationalRect describing a window.
 -- note that we don't use getWindowAttributes because it's broken...
--- @@@ is that still true?
+-- @@@ is that still true? —no: safeGetWindowAttributes
 getWinRR :: Window -> X (Maybe W.RationalRect)
 getWinRR w = withDisplay $ \d -> do
   let fi :: Integral a => a -> Integer
