@@ -86,6 +86,18 @@ scratchpads = [NS "calc"
                                 \ --name crawl-cue --title=\"DCSS (CUE)\" --command=cue --geometry=81x25"
                   (appName =? "crawl-cue")
                   (noTaskbar <> doFloatPlace)
+               -- crawl on crawl.kelbi.org
+              ,NS "crawl-cko"
+                  "xfce4-terminal --disable-server \
+                                \ --name crawl-cko --title=\"DCSS (CKO)\" --command=cko --geometry=81x25"
+                  (appName =? "crawl-cue")
+                  (noTaskbar <> doFloatPlace)
+               -- crawl on cbro.berotato.org
+              ,NS "crawl-cbro"
+                  "xfce4-terminal --disable-server \
+                                \ --name crawl-cbro --title=\"DCSS (CBRO)\" --command=cbro --geometry=81x25"
+                  (appName =? "crawl-cue")
+                  (noTaskbar <> doFloatPlace)
               ]
 
 main :: IO ()
@@ -164,8 +176,10 @@ main = do
              -- app.element.io
             ,("M-C-S-m",    spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                   \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
-            ,("M-C-c",      namedScratchpadAction scratchpads "crawl-local")
-            ,("M-C-u",      namedScratchpadAction scratchpads "crawl-cue")
+            ,("M-C-cl",     namedScratchpadAction scratchpads "crawl-local")
+            ,("M-C-cue",    namedScratchpadAction scratchpads "crawl-cue")
+            ,("M-C-cko",    namedScratchpadAction scratchpads "crawl-cko")
+            ,("M-C-cbr",    namedScratchpadAction scratchpads "crawl-cbro")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
             ,("M-C-m",      namedScratchpadAction scratchpads "charmap")
             ,("M-C-d",      namedScratchpadAction scratchpads "dict")
