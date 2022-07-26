@@ -152,7 +152,6 @@ main = do
                                 ,className =? "Trashapplet" --> doFloatPlace
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
-                                ,className =? "Mate-dictionary" --> doFloatPlace
                                  -- I may change this back: on mod-q the focused window gets
                                  -- `copyToAll`-ed (but not floated). ???
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_STICKY" -->
