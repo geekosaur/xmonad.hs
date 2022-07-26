@@ -110,6 +110,12 @@ scratchpads = [NS "calc"
                                 \ --name crawl-cxc --title=\"DCSS (CXC)\" --command=cxc --geometry=81x25"
                   (appName =? "crawl-cxc")
                   (noTaskbar <> doFloatPlace)
+               -- crawl on crawl.develz.org
+              ,NS "crawl-cdo"
+                  "xfce4-terminal --disable-server \
+                                \ --name crawl-cdo --title=\"DCSS (CDO)\" --command=cdo --geometry=81x25"
+                  (appName =? "crawl-cxc")
+                  (noTaskbar <> doFloatPlace)
               ]
 
 main :: IO ()
@@ -194,6 +200,7 @@ main = do
             ,("M-C-cbr",    namedScratchpadAction scratchpads "crawl-cbro")
             ,("M-C-cao",    namedScratchpadAction scratchpads "crawl-cao")
             ,("M-C-cxc",    namedScratchpadAction scratchpads "crawl-cxc")
+            ,("M-C-cdo",    namedScratchpadAction scratchpads "crawl-cdo")
             ,("M-C-k",      namedScratchpadAction scratchpads "calc")
             ,("M-C-m",      namedScratchpadAction scratchpads "charmap")
             ,("M-C-d",      namedScratchpadAction scratchpads "dict")
