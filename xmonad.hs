@@ -71,6 +71,7 @@ scratchpads = [NS "calc"
                   "mate-dictionary"
                   (appName =? "mate-dictionary")
                   (noTaskbar <> doFloatPlace)
+               -- _BSA_PSYS: see ~/.prompt.pl (dotty repo, if you care)
               ,NS "qterm"
                   "env _BSA_PSYS=qterm mate-terminal --disable-factory --hide-menubar --name=qterm"
                   (appName =? "qterm")
