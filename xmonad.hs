@@ -234,8 +234,6 @@ main = do
                                           ]
             ])
 
--- @@ ewmh copyTo: killAllOtherCopies >> windows (W.shift target), duh!
-
 -- @@@ not quite right... refresh? (hacked above)
 -- @@@@ and cast still doesn't dtrt. possibly chrome's fail
 toggleBorders :: X ()
