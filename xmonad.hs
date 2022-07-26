@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE LambdaCase #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use <&>" #-}
 
@@ -35,6 +36,7 @@ import           XMonad.Util.Run
 import           XMonad.Util.SessionStart
 import           XMonad.Util.Ungrab
 import           XMonad.Util.WorkspaceCompare
+import           XMonad.Prelude                           (fi, safeGetWindowAttributes)
 import qualified XMonad.StackSet                                                             as W
 
 import           Control.Concurrent                       (threadDelay)
@@ -43,8 +45,6 @@ import           Data.Monoid
 import           Data.Ratio                               ((%))
 import qualified DBus                                                                        as D
 import qualified DBus.Client                                                                 as D
-import           Foreign.Marshal.Alloc
-import           Foreign.Storable
 import           System.IO                                (hPrint, hClose)
 import           System.Posix.Env                         (putEnv)
 
@@ -322,19 +322,10 @@ debuggering = idHook
 
 -- testing this
 
--- produce a RationalRect describing a window.
--- note that we don't use getWindowAttributes because it's broken...
--- @@@ is that still true? —no: XMonad.Prelude.safeGetWindowAttributes
+-- produce a RationalRect describing a window
 getWinRR :: Window -> X (Maybe W.RationalRect)
-getWinRR w = withDisplay $ \d -> do
-  let fi :: Integral a => a -> Integer
-      fi = fromIntegral
-  wa' <- io $ alloca $ \wa'' -> do
-    st <- xGetWindowAttributes d w wa''
-    if st == 0
-      then return Nothing
-      else peek wa'' >>= return . Just
-  case wa' of
+getWinRR w = do
+  safeGetWindowAttributes w >>= \case
     Nothing -> return Nothing
     Just wa -> do
       dis <- gets $ W.screens . windowset
