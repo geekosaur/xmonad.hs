@@ -1,0 +1,55 @@
+skkukuk ⁅xmonad-test⁆ Z$ xmonad --recompile                  
+XMonad will use build script at "/home/allbery/.config/xmonad/tmp/.config/xmonad/build" to recompile.
+XMonad recompiling (forced).
+Wrote tarball sdist to
+/home/allbery/.config/xmonad/tmp/.config/xmonad/dist-newstyle/sdist/xmonad-test-0.1.tar.gz
+Resolving dependencies...
+Build profile: -w ghc-9.2.2 -O2
+In order, the following will be built (use -v for more details):
+ - random-1.2.1.1 (lib) (requires build)
+ - xmonad-contrib-0.17.0 (lib) (requires build)
+ - xmonad-test-0.1 (exe:xmonad-test) (requires build)
+Starting     random-1.2.1.1 (lib)
+Building     random-1.2.1.1 (lib)
+Installing   random-1.2.1.1 (lib)
+Completed    random-1.2.1.1 (lib)
+Starting     xmonad-contrib-0.17.0 (lib)
+Building     xmonad-contrib-0.17.0 (lib)
+Installing   xmonad-contrib-0.17.0 (lib)
+Completed    xmonad-contrib-0.17.0 (lib)
+Starting     xmonad-test-0.1 (exe:xmonad-test)
+Building     xmonad-test-0.1 (exe:xmonad-test)
+
+Failed to build exe:xmonad-test from xmonad-test-0.1.
+Build log (
+/home/allbery/.config/xmonad/tmp/.cabal/logs/ghc-9.2.2/xmonad-test-0.1-e-xmonad-test-efbff17835afe0b1cb87cb7dbb081f9eebe6e9119c3b7183865df9706c2bbc21.log
+):
+Configuring executable 'xmonad-test' for xmonad-test-0.1..
+Preprocessing executable 'xmonad-test' for xmonad-test-0.1..
+Building executable 'xmonad-test' for xmonad-test-0.1..
+[1 of 1] Compiling Main             ( xmonad.hs, dist/build/xmonad-test/xmonad-test-tmp/Main.o )
+
+xmonad.hs:1:1: error:
+    Could not find module ‘Xmonad’
+    Perhaps you meant
+      XMonad (from xmonad-0.17.0)
+      XMonad (needs flag -package-id xmonad-0.17.0.9)
+      XMonad (needs flag -package-id xmonad-0.17.0.9)
+    Use -v (or `:set -v` in ghci) to see a list of the files searched for.
+  |
+1 | import Xmonad -- deliberate error
+  | ^^^^^^^^^^^^^
+Errors detected while compiling xmonad config: /home/allbery/.config/xmonad/tmp/.config/xmonad/xmonad.hs
+$ /home/allbery/.config/xmonad/tmp/.config/xmonad/build /home/allbery/.config/xmonad/tmp/.cache/xmonad/xmonad-x86_64-linux
+Warning: The package list for 'hackage.haskell.org' is 44 days old.
+Run 'cabal update' to get the latest list of available packages.
+Warning: The package list for 'hackage.haskell.org' is 44 days old.
+Run 'cabal update' to get the latest list of available packages.
+cabal: Failed to build exe:xmonad-test from xmonad-test-0.1. See the build log
+above for details.
+
+
+Please check the file for errors.
+
+zsh: exit 1     xmonad --recompile
+xmonad --recompile  174.20s user 9.40s system 99% cpu 3:04.17 total

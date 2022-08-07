@@ -1,0 +1,21 @@
+------------------------------------------------------------------------------
+name:          xmonad-test
+version:       0.1
+synopsis:      Test xmonad config
+license:       BSD2
+license-file:  LICENSE
+author:        brandon s allbery kf8nh <allbery.b@gmail.com>
+maintainer:    brandon s allbery kf8nh <allbery.b@gmail.com>
+copyright:     Copyright (c) 2022 brandon s allbery kf8nh
+category:      Graphics
+build-type:    Simple
+cabal-version: 2.0
+
+------------------------------------------------------------------------------
+executable xmonad-test
+  main-is:          xmonad.hs
+  default-language: Haskell2010
+  build-depends:    base,
+                    unix,
+                    xmonad ^>= 0.17.0 && < 0.18,
+                    xmonad-contrib ^>= 0.17.0 && < 0.18

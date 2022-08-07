@@ -1,0 +1,11 @@
+Errors detected while compiling xmonad config: /home/allbery/.config/xmonad/tmp/.config/xmonad/xmonad.hs
+$ /home/allbery/.config/xmonad/tmp/.config/xmonad/build /home/allbery/.config/xmonad/tmp/.cache/xmonad/xmonad-x86_64-linux
+Warning: The package list for 'hackage.haskell.org' is 44 days old.
+Run 'cabal update' to get the latest list of available packages.
+Warning: The package list for 'hackage.haskell.org' is 44 days old.
+Run 'cabal update' to get the latest list of available packages.
+cabal: Failed to build exe:xmonad-test from xmonad-test-0.1. See the build log
+above for details.
+
+
+Please check the file for errors.
