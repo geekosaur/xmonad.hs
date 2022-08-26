@@ -142,9 +142,9 @@ main = do
                                 onWorkspace "windows" (avoidStrutsOn [] Full) $
                                 avoidStruts $
                                 onWorkspace "irc" (withIM 0.125 pidgin revBasic) $
-                                onWorkspace "mail" qSimpleTabbed $
+                                onWorkspace "mail" revBasic $
                                 -- onWorkspace "calibre" Full $
-                                onWorkspace "refs" qSimpleTabbed $
+                                onWorkspace "refs" revBasic $
                                 onWorkspace "emacs" revBasic -- ($)
                                 basic
            ,manageHook        = composeAll
