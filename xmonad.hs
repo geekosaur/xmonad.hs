@@ -18,6 +18,7 @@ import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
 import           XMonad.Hooks.UrgencyHook
+import           XMonad.Layout.BinarySpacePartition
 import           XMonad.Layout.IM
 import           XMonad.Layout.Maximize
 import           XMonad.Layout.Minimize
@@ -36,13 +37,14 @@ import           XMonad.Util.Run
 import           XMonad.Util.SessionStart
 import           XMonad.Util.Ungrab
 import           XMonad.Util.WorkspaceCompare
-import           XMonad.Prelude                           (fi, safeGetWindowAttributes)
+import           XMonad.Prelude                           (fi, safeGetWindowAttributes, when)
 import qualified XMonad.StackSet                                                             as W
 
 import           Control.Concurrent                       (threadDelay)
 import           Data.Maybe                               (catMaybes)
 import           Data.Monoid
 import           Data.Ratio                               ((%))
+import           Data.Traversable
 import qualified DBus                                                                        as D
 import qualified DBus.Client                                                                 as D
 import           System.IO                                (hPrint, hClose)
@@ -145,6 +147,7 @@ main = do
                                 onWorkspace "mail" revBasic $
                                 -- onWorkspace "calibre" Full $
                                 onWorkspace "refs" revBasic $
+                                onWorkspace "spare2" emptyBSP $
                                 onWorkspace "emacs" revBasic -- ($)
                                 basic
            ,manageHook        = composeAll
@@ -161,9 +164,6 @@ main = do
                                  doFloatPlace
                                 ,appName =? "Pidgin" <&&> role =? "conversation" -->
                                  boing "phone-incoming-call"
-                                -- this is a bit of a hack for the remote dcss scripts
-                                -- ,appName =? "xfce4-terminal" <&&> role =? "dcss" -->
-                                --  doRectFloat (W.RationalRect 0.52 0.1 0.43 0.43)
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
@@ -181,8 +181,12 @@ main = do
                                   spawn "exec compton -cCfGb --backend=glx"
                                   spawn "exec \"$HOME/.screenlayout/default.sh\""
                                   spawnOn "shell" "mate-terminal"
-                                  spawnOn "emacs" "emacs"
-                                  spawnOn "irc" "hexchat-utc"
+                                  -- if I have to restart xmonad because it crashed, these two will complain
+                                  -- (hexchat's configured to regain my nick, so it'll get into fights if two
+                                  -- are running; emacs complains about emacs-server and desktop file)
+                                  -- (found by discovering xmonad-contrib#753)
+                                  unlessQuery (appName =? "emacs") $ spawnOn "emacs" "emacs"
+                                  unlessQuery (appName =? "hexchat") $ spawnOn "irc" "hexchat-utc"
                                   io $ threadDelay 1000000
                                   -- @@@ starts multi windows, placing them automatically will not fly :/
                                   spawnOn "mail" "google-chrome"
@@ -225,6 +229,21 @@ main = do
             ,("M-C-S-6",    withFocused $ \w -> spawn $ "xprop -id " ++ show w ++ " | xmessage -file -")
             ,("M-C-S-5",    withFocused $ \w -> spawn $ "xwininfo -id " ++ show w ++ " -all | xmessage -file -")
             ,("M-b",        toggleBorders >> sendMessage ToggleStruts)
+             -- BSP actions
+            ,("M-C-S-p <Left>",    sendMessage $ ExpandTowards L)
+            ,("M-C-S-p <Right>",   sendMessage $ ShrinkFrom L)
+            ,("M-C-S-p <Up>",      sendMessage $ ExpandTowards U)
+            ,("M-C-S-p <Down>",    sendMessage $ ShrinkFrom U)
+            ,("M-C-S-p C-<Left>",  sendMessage $ ShrinkFrom R)
+            ,("M-C-S-p C-<Right>", sendMessage $ ExpandTowards R)
+            ,("M-C-S-p C-<Up>",    sendMessage $ ShrinkFrom D)
+            ,("M-C-S-p C-<Down>",  sendMessage $ ExpandTowards D)
+            ,("M-C-S-p s",         sendMessage   Swap)
+            ,("M-C-S-p r",         sendMessage   Rotate)
+            ,("M-C-S-p b",         sendMessage   Balance)
+            ,("M-C-S-p e",         sendMessage   Equalize)
+            ,("M-C-S-p j",         sendMessage $ SplitShift Prev)
+            ,("M-C-S-p k",         sendMessage $ SplitShift Next)
             ]
             ++
             -- greedyView -> view, so I stop breaking crawl etc. >.>
@@ -327,8 +346,6 @@ debuggering :: Event -> X All
 -- debuggering = debugEventsHook
 debuggering = idHook
 
--- testing this
-
 -- produce a RationalRect describing a window
 getWinRR :: Window -> X (Maybe W.RationalRect)
 getWinRR w = do
@@ -368,3 +385,14 @@ setWorkArea = withDisplay $ \dpy -> do
     r <- asks theRoot
     io $ changeProperty32 dpy r a c propModeReplace
                           (concat $ replicate (length workspacen) [0, 26, 3840, 1028])
+
+-- run an action only if no windows match a Query Bool.
+-- this is moderately expensive, but sometimes duplicating an action
+-- is more so…
+unlessQuery :: Query Bool -> X () -> X ()
+unlessQuery q x = do
+  d <- asks display
+  r <- asks theRoot
+  (_,_,ws) <- io $ queryTree d r
+  rs <- for ws $ runQuery q
+  when (null rs || not (or rs)) x
