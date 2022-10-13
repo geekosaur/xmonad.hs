@@ -1,0 +1,2 @@
+: sourced by Xsession
+. "$HOME/.profile"
