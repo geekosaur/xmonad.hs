@@ -12,6 +12,7 @@ EXE_NAME=
 # config
 
 output="$1"
+shift
 
 if [ "$SRC_DIR" = "" ]; then
     # look for the config directory, fall back to the old one
@@ -41,7 +42,8 @@ for exe in $EXE_NAME; do
 	  --enable-executable-stripping \
 	  --enable-optimization=2 \
 	  --installdir="$d" \
-	  --overwrite-policy=always
+	  --overwrite-policy=always \
+	  ${1+"$@"}
     # NB. a cabal bug may mean it doesn't actually get stripped
     # we assume the first executable in the list is the new xmonad
     if [ $first = 0 ]; then
