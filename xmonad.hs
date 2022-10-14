@@ -217,6 +217,7 @@ main = do
             ,("M-S-p",      mateRun)
             ,("M-p",        shellPrompt myXPConfig)
             ,("M-S-q",      mateShutdown)
+            ,("M-C-S-q",    mateLogout)
              -- multiple-screen shot
             ,("M-S-s",      unGrab >> spawn "scrot -m ~/Downloads/screenshotM-%Y%m%dT%H%M%S.png")
              -- focused window shot
