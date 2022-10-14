@@ -21,6 +21,7 @@ xmonad-*-*
 *~
 tmp
 .vscode/
+typescript*
 
 # I don't want to treat these as submodules or subtrees
 # of this repo, so just ignore them.
