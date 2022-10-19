@@ -1,4 +1,5 @@
 dist
+dist-newstyle
 cabal-dev
 *.o
 *.hi
@@ -18,3 +19,15 @@ xmonad.errors
 history
 xmonad-*-*
 *~
+tmp
+.vscode/
+typescript*
+
+# I don't want to treat these as submodules or subtrees
+# of this repo, so just ignore them.
+X11
+X11-xft
+xmonad
+xmonad-contrib
+xmonad.wiki
+xmonad-log-applet
