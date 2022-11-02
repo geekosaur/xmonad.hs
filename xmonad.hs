@@ -189,7 +189,7 @@ main = do
                                   unlessQuery (appName =? "hexchat") $ spawnOn "irc" "hexchat-utc"
                                   io $ threadDelay 1000000
                                   -- @@@ starts multi windows, placing them automatically will not fly :/
-                                  spawnOn "mail" "google-chrome"
+                                  unlessQuery (appName =? "google-chrome") $ spawnOn "mail" "google-chrome"
                                   setSessionStarted
            }
            `additionalKeysP`
