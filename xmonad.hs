@@ -289,19 +289,18 @@ role = stringProperty "WM_WINDOW_ROLE"
 
 logTitle :: D.Client -> X ()
 logTitle ch = dynamicLogWithPP def
-                               {ppCurrent = unPango
-                               ,ppVisible = pangoInactive
-                               ,ppHidden  = const ""
+                               {ppCurrent         = unPango
+                               ,ppVisible         = pangoInactive
+                               ,ppHidden          = const ""
                                ,ppHiddenNoWindows = const ""
-                               ,ppUrgent  = pangoBold
-                               ,ppTitle   = unPango
-                               ,ppLayout  = unPango
-                               ,ppWsSep   = " "
-                               ,ppSep     = "⋮"
-                               ,ppOrder   = swapIcons
-                               ,ppSort    = getSortByXineramaPhysicalRule
-                                              horizontalScreenOrderer
-                               ,ppOutput  = dbusOutput ch
+                               ,ppUrgent          = pangoBold
+                               ,ppTitle           = unPango
+                               ,ppLayout          = unPango
+                               ,ppWsSep           = " "
+                               ,ppSep             = "⋮"
+                               ,ppOrder           = swapIcons
+                               ,ppSort            = getSortByXineramaPhysicalRule horizontalScreenOrderer
+                               ,ppOutput          = dbusOutput ch
                                }
   where swapIcons (ws:l:t:nsp:xs) = ws:l:nsp:t:xs
         -- @@@ so why do the first 4 invocations *only* not match?!
@@ -310,8 +309,8 @@ logTitle ch = dynamicLogWithPP def
 getWellKnownName :: D.Client -> IO ()
 getWellKnownName ch = do
   _ <- D.requestName ch
-         (D.busName_ "org.xmonad.Log")
-         [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
+                     (D.busName_ "org.xmonad.Log")
+                     [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
   return ()
 
 dbusOutput :: D.Client -> String -> IO ()
@@ -323,9 +322,9 @@ dbusOutput ch s = do
 -- quick and dirty escaping of HTMLish Pango markup
 unPango :: String -> String
 unPango []       = []
-unPango ('<':xs) = "&lt;" ++ unPango xs
+unPango ('<':xs) = "&lt;"  ++ unPango xs
 unPango ('&':xs) = "&amp;" ++ unPango xs
-unPango ('>':xs) = "&gt;" ++ unPango xs
+unPango ('>':xs) = "&gt;"  ++ unPango xs
 unPango (x  :xs) = x:unPango xs
 
 -- show a string as inactive
