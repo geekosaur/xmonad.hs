@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-$ENV{XMESSAGE_WRAPPER_TEST} = '1';
+#$ENV{XMESSAGE_WRAPPER_TEST} = '1';
 
 if (exists $ENV{XMESSAGE_WRAPPER_TEST}) {
   open STDERR, '>', '/tmp/xmessage.log';
