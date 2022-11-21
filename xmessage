@@ -109,7 +109,7 @@ while (@ARGV) {
     if ($arg =~ /^\*international\s*:\s*true\s*$/i) {
       # ignore it
     }
-    elsif ($arg =~ /^\*fontset\s*:/) {
+    elsif ($arg =~ /^\*fontSet\s*:/) {
       # ignore it
     }
     else {
