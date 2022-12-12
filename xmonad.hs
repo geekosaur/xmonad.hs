@@ -143,13 +143,13 @@ main = do
                                 lessBorders OnlyScreenFloat $
                                 onWorkspace "windows" (avoidStrutsOn [] Full) $
                                 avoidStruts $
-                                onWorkspace "irc" (withIM 0.125 pidgin revBasic) $
+                                onWorkspace "irc" revBasic $
                                 onWorkspace "mail" revBasic $
                                 -- onWorkspace "calibre" Full $
                                 onWorkspace "refs" revBasic $
                                 onWorkspace "spare2" emptyBSP $
-                                onWorkspace "emacs" revBasic -- ($)
-                                basic
+                                onWorkspace "emacs" revBasic $
+                                id basic -- shut up hlint
            ,manageHook        = composeAll
                                 [appName =? "Pidgin" --> doShift "irc"
                                 ,appName =? "xmessage" --> doFloatPlace
@@ -162,8 +162,6 @@ main = do
                                  doF copyToAll <> doFloatPlace
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
                                  doFloatPlace
-                                ,appName =? "Pidgin" <&&> role =? "conversation" -->
-                                 boing "phone-incoming-call"
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
@@ -271,9 +269,6 @@ myPlaceHook = inBounds $ smart (0.5, 0.5)
 doFloatPlace :: ManageHook
 doFloatPlace = placeHook myPlaceHook <> doFloat
 
-pidgin :: Property
-pidgin = Resource "Pidgin" `And` Role "buddy_list"
-
 basic = TwoPane 0.03 0.5 ||| qSimpleTabbed ||| Simplest
 revBasic = qSimpleTabbed ||| TwoPane 0.03 0.5 ||| Simplest
 qSimpleTabbed = renamed [CutWordsRight 1] $
@@ -335,12 +330,6 @@ pangoInactive s = "<span foreground=\"#8f8f8f\">" ++ unPango s ++ "</span>"
 -- show a string with highlight
 pangoBold :: String -> String
 pangoBold s = "<span weight=\"bold\" foreground=\"#ff2f2f\">" ++ unPango s ++ "</span>"
-
-sounds :: String
-sounds = "/usr/share/sounds/freedesktop/stereo"
-
-boing :: String -> Query (Endo WindowSet)
-boing sound = liftX (spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga") >> idHook
 
 debuggering :: Event -> X All
 -- debuggering = debugEventsHook
