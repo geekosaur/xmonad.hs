@@ -56,7 +56,7 @@ baseConfig = debugManageHookOn "M-S-d" $
              mateConfig
 
 workspacen :: [String]
-workspacen =  ["shell", "emacs", "mail", "irc", "keep", "spare1",
+workspacen =  ["shell", "emacs", "mail", "irc", "keep", "dev",
                "windows", "crawl", "games", "spare2", "spare3", "spare4"]
 
 scratchpads :: [NamedScratchpad]
@@ -192,9 +192,9 @@ main = do
            }
            `additionalKeysP`
            ([("M-C-g",             spawnHere "google-chrome")
-            ,("M-C-e",             spawn "emacs")
+            ,("M-C-e",             spawnHere "emacs")
             ,("M-C-v",             spawnOn "windows" "vmplayer")
-            ,("M-C-s",             spawnHere "code")
+            ,("M-C-s",             spawnOn "dev" "code")
              -- app.element.io
             ,("M-C-S-m",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                          \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
