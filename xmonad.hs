@@ -123,8 +123,6 @@ scratchpads = [NS "calc"
 
 main :: IO ()
 main = do
-  -- openjdk hackaround
-  putEnv "_JAVA_AWT_WM_NONREPARENTING=1"  
   -- xmonad log applet
   dbus <- D.connectSession
   getWellKnownName dbus

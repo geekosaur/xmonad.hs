@@ -1,2 +1,5 @@
 : sourced by Xsession
 . "$HOME/.profile"
+# openjdk hackaround
+_JAVA_AWT_WM_NONREPARENTING=1  
+export _JAVA_AWT_WM_NONREPARENTING
