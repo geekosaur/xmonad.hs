@@ -19,7 +19,6 @@ import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Layout.BinarySpacePartition
-import           XMonad.Layout.IM
 import           XMonad.Layout.Maximize
 import           XMonad.Layout.Minimize
 import           XMonad.Layout.NoBorders
@@ -48,7 +47,6 @@ import           Data.Traversable
 import qualified DBus                                                                        as D
 import qualified DBus.Client                                                                 as D
 import           System.IO                                (hPrint, hClose)
-import           System.Posix.Env                         (putEnv)
 
 -- sorry, I CBA to provide types for anything parameterized by layouts
 baseConfig = debugManageHookOn "M-S-d" $
@@ -276,9 +274,6 @@ myXPConfig :: XPConfig
 myXPConfig = greenXPConfig {promptKeymap = emacsLikeXPKeymap
                            ,font = "xft:Mono-9"
                            }
-
-role :: Query String
-role = stringProperty "WM_WINDOW_ROLE"
 
 logTitle :: D.Client -> X ()
 logTitle ch = dynamicLogWithPP def
