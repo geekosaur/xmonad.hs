@@ -3,6 +3,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use <&>" #-}
+{-# HLINT ignore "Redundant id" #-}
 
 import           XMonad
 import           XMonad.Actions.CopyWindow
@@ -147,8 +148,7 @@ main = do
                                 onWorkspace "emacs" revBasic $
                                 id basic -- shut up hlint
            ,manageHook        = composeAll
-                                [appName =? "Pidgin" --> doShift "irc"
-                                ,appName =? "xmessage" --> doFloatPlace
+                                [appName =? "xmessage" --> doFloatPlace
                                 ,className =? "Trashapplet" --> doFloatPlace
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
