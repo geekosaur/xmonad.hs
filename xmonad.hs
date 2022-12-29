@@ -267,8 +267,8 @@ myPlaceHook = inBounds $ smart (0.5, 0.5)
 doFloatPlace :: ManageHook
 doFloatPlace = placeHook myPlaceHook <> doFloat
 
-basic = TwoPane 0.03 0.5 ||| qSimpleTabbed ||| Simplest
-revBasic = qSimpleTabbed ||| TwoPane 0.03 0.5 ||| Simplest
+basic = TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed ||| Simplest
+revBasic = qSimpleTabbed ||| TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5) ||| Simplest
 qSimpleTabbed = renamed [CutWordsRight 1] $
                 tabbed shrinkText def {fontName = "xft:Mono-8"}
 
