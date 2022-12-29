@@ -140,12 +140,12 @@ main = do
                                 lessBorders OnlyScreenFloat $
                                 onWorkspace "windows" (avoidStrutsOn [] Full) $
                                 avoidStruts $
-                                onWorkspace "irc" revBasic $
-                                onWorkspace "mail" revBasic $
+                                onWorkspace "irc" basic1 $
+                                onWorkspace "mail" basic2 $
                                 -- onWorkspace "calibre" Full $
-                                onWorkspace "refs" revBasic $
+                                onWorkspace "refs" basic2 $
                                 onWorkspace "spare2" emptyBSP $
-                                onWorkspace "emacs" revBasic $
+                                onWorkspace "emacs" basic2 $
                                 id basic -- shut up hlint
            ,manageHook        = composeAll
                                 [appName =? "xmessage" --> doFloatPlace
@@ -267,8 +267,11 @@ myPlaceHook = inBounds $ smart (0.5, 0.5)
 doFloatPlace :: ManageHook
 doFloatPlace = placeHook myPlaceHook <> doFloat
 
+-- we really need a way to preset a starting point in the layout rotation…
 basic = TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed ||| Simplest
-revBasic = qSimpleTabbed ||| TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5) ||| Simplest
+basic1 = Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed ||| Simplest ||| TwoPane 0.03 0.5
+basic2 = qSimpleTabbed ||| Simplest ||| TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5)
+
 qSimpleTabbed = renamed [CutWordsRight 1] $
                 tabbed shrinkText def {fontName = "xft:Mono-8"}
 
