@@ -152,6 +152,7 @@ main = do
                                 ,className =? "Trashapplet" --> doFloatPlace
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
+                                ,appName =? "sxiv" --> noTaskbar <> doShift "spare2"
                                  -- I may change this back: on mod-q the focused window gets
                                  -- `copyToAll`-ed (but not floated). ???
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_STICKY" -->
@@ -181,6 +182,7 @@ main = do
                                   -- (found by discovering xmonad-contrib#753)
                                   unlessQuery (appName =? "emacs") $ spawnOn "emacs" "emacs"
                                   unlessQuery (appName =? "hexchat") $ spawnOn "irc" "hexchat-utc"
+                                  unlessQuery (appName =? "io.github.NhekoReborn.Nheko") $ spawnOn "irc" "flatpak run nheko"
                                   io $ threadDelay 1000000
                                   -- @@@ starts multi windows, placing them automatically will not fly :/
                                   unlessQuery (appName =? "google-chrome") $ spawnOn "mail" "google-chrome"
