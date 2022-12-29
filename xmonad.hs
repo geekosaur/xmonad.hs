@@ -268,9 +268,9 @@ doFloatPlace :: ManageHook
 doFloatPlace = placeHook myPlaceHook <> doFloat
 
 -- we really need a way to preset a starting point in the layout rotation…
-basic = TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed ||| Simplest
-basic1 = Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed ||| Simplest ||| TwoPane 0.03 0.5
-basic2 = qSimpleTabbed ||| Simplest ||| TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5)
+basic = TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed
+basic1 = Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed ||| TwoPane 0.03 0.5
+basic2 = qSimpleTabbed ||| TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5)
 
 qSimpleTabbed = renamed [CutWordsRight 1] $
                 tabbed shrinkText def {fontName = "xft:Mono-8"}
