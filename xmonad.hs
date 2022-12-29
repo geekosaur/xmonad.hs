@@ -18,6 +18,7 @@ import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
+import           XMonad.Hooks.ScreenCorners
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Layout.BinarySpacePartition
 import           XMonad.Layout.Maximize
@@ -25,7 +26,6 @@ import           XMonad.Layout.Minimize
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.PerWorkspace
 import           XMonad.Layout.Renamed
-import           XMonad.Layout.Simplest
 import           XMonad.Layout.Tabbed
 import           XMonad.Layout.TwoPane
 import           XMonad.Prompt
@@ -134,7 +134,8 @@ main = do
            ,normalBorderColor = "#444542" -- @@ from MATE theme, half bright
            ,focusFollowsMouse = False
            ,clickJustFocuses  = False
-           ,layoutHook        = renamed [CutWordsLeft 2] $
+           ,layoutHook        = screenCornerLayoutHook $
+                                renamed [CutWordsLeft 2] $
                                 minimize $
                                 maximize $
                                 lessBorders OnlyScreenFloat $
@@ -170,8 +171,11 @@ main = do
                                 setWorkArea -- @@@ HAAACK
            ,handleEventHook   = debuggering <>
                                 minimizeEventHook <>
+                                screenCornerEventHook <>
                                 handleEventHook baseConfig
-           ,startupHook       = startupHook baseConfig <> doOnce do
+           ,startupHook       = startupHook baseConfig <>
+                                addScreenCorner SCUpperLeft (spawn "mate-screensaver-command --activate") <>
+                                doOnce do
                                   mateRegister
                                   spawn "exec compton -cCfGb --backend=glx"
                                   spawn "exec \"$HOME/.screenlayout/default.sh\""
