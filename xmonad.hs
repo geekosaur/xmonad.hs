@@ -174,7 +174,7 @@ main = do
                                 screenCornerEventHook <>
                                 handleEventHook baseConfig
            ,startupHook       = startupHook baseConfig <>
-                                addScreenCorner SCUpperLeft (spawn "mate-screensaver-command --activate") <>
+                                addScreenCorner SCUpperLeft (spawn "mate-screensaver-command --activate; xset dpms force off") <>
                                 doOnce do
                                   mateRegister
                                   spawn "exec compton -cCfGb --backend=glx"
