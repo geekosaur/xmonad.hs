@@ -174,7 +174,7 @@ main = do
                                 screenCornerEventHook <>
                                 handleEventHook baseConfig
            ,startupHook       = startupHook baseConfig <>
-                                addScreenCorner SCUpperLeft (spawn "xset dpms force off") <>
+                                addScreenCorner SCLowerLeft (spawn "xset dpms force off") <>
                                 doOnce do
                                   mateRegister
                                   spawn "exec compton -cCfGb --backend=glx"
