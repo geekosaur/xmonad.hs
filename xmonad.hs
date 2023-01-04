@@ -38,15 +38,15 @@ import           XMonad.Util.SessionStart
 import           XMonad.Util.Ungrab
 import           XMonad.Util.WorkspaceCompare
 import           XMonad.Prelude                           (fi, safeGetWindowAttributes, when)
-import qualified XMonad.StackSet                                                             as W
+import qualified XMonad.StackSet                                                              as W
 
 import           Control.Concurrent                       (threadDelay)
 import           Data.Maybe                               (catMaybes)
 import           Data.Monoid
 import           Data.Ratio                               ((%))
 import           Data.Traversable
-import qualified DBus                                                                        as D
-import qualified DBus.Client                                                                 as D
+import qualified DBus                                                                         as D
+import qualified DBus.Client                                                                  as D
 import           System.IO                                (hPrint, hClose)
 
 -- sorry, I CBA to provide types for anything parameterized by layouts
