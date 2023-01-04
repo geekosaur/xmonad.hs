@@ -49,6 +49,8 @@ import qualified DBus                                                           
 import qualified DBus.Client                                                                  as D
 import           System.IO                                (hPrint, hClose)
 
+import XMonad.Layout.MouseResizableTile -- testing
+
 -- sorry, I CBA to provide types for anything parameterized by layouts
 baseConfig = debugManageHookOn "M-S-d" $
              ewmhFullscreen -- ($)
@@ -146,6 +148,7 @@ main = do
                                 -- onWorkspace "calibre" Full $
                                 onWorkspace "refs" basic2 $
                                 onWorkspace "spare2" emptyBSP $
+                                onWorkspace "spare3" mouseResizableTile $
                                 onWorkspace "emacs" basic2 $
                                 id basic -- shut up hlint
            ,manageHook        = composeAll
