@@ -9,6 +9,7 @@ import           XMonad
 import           XMonad.Actions.CopyWindow
 import           XMonad.Actions.CycleWS
 import           XMonad.Actions.PhysicalScreens
+import           XMonad.Actions.TiledWindowDragging
 import           XMonad.Actions.SpawnOn
 import           XMonad.Config.Mate
 import           XMonad.Hooks.StatusBar.PP
@@ -21,6 +22,7 @@ import           XMonad.Hooks.Place
 import           XMonad.Hooks.ScreenCorners
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Layout.BinarySpacePartition
+import           XMonad.Layout.DraggingVisualizer
 import           XMonad.Layout.Maximize
 import           XMonad.Layout.Minimize
 import           XMonad.Layout.NoBorders
@@ -135,7 +137,8 @@ main = do
            ,focusFollowsMouse = False
            ,clickJustFocuses  = False
            ,layoutHook        = screenCornerLayoutHook $
-                                renamed [CutWordsLeft 2] $
+                                renamed [CutWordsLeft 3] $
+                                draggingVisualizer $
                                 minimize $
                                 maximize $
                                 lessBorders OnlyScreenFloat $
@@ -254,6 +257,8 @@ main = do
                                           ,("S-", windows . W.shift)
                                           ]
             ])
+           `additionalMouseBindings`
+           [((mod4Mask .|. controlMask, button1), dragWindow)]
 
 -- @@@ not quite right... refresh? (hacked above)
 -- @@@@ and cast still doesn't dtrt. possibly chrome's fail
