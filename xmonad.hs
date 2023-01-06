@@ -185,8 +185,8 @@ main = do
                                   -- are running; emacs complains about emacs-server and desktop file)
                                   -- (found by discovering xmonad-contrib#753)
                                   unlessQuery (appName =? "emacs") $ spawnOn "emacs" "emacs"
+                                  unlessQuery (appName =? "io.github.NhekoReborn.Nheko") $ spawnOn "irc" "flatpak run io.github.NhekoReborn.nheko"
                                   unlessQuery (appName =? "hexchat") $ spawnOn "irc" "hexchat-utc"
-                                  unlessQuery (appName =? "io.github.NhekoReborn.Nheko") $ spawnOn "irc" "flatpak run nheko"
                                   io $ threadDelay 1000000
                                   -- @@@ starts multi windows, placing them automatically will not fly :/
                                   unlessQuery (appName =? "google-chrome") $ spawnOn "mail" "google-chrome"
