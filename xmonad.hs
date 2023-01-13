@@ -175,6 +175,7 @@ main = do
            ,handleEventHook   = debuggering <>
                                 minimizeEventHook <>
                                 screenCornerEventHook <>
+                                notificationEventHook <>
                                 handleEventHook baseConfig
            ,startupHook       = startupHook baseConfig <>
                                 addScreenCorner SCLowerLeft (spawn "mate-screensaver-command --activate; xset dpms force off") <>
@@ -284,6 +285,29 @@ basic2 = qSimpleTabbed ||| TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5)
 
 qSimpleTabbed = renamed [CutWordsRight 1] $
                 tabbed shrinkText def {fontName = "xft:Mono-8"}
+ 
+sounds :: String
+sounds = "/usr/share/sounds/freedesktop/stereo"
+
+-- boing :: String -> Query (Endo WindowSet)
+-- boing sound = liftX (boing' sound) >> idHook
+
+boing' :: String -> X ()
+boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
+
+-- sadly, this doesn't work
+notificationEventHook :: Event -> X All
+notificationEventHook MapNotifyEvent {ev_window = w} = do
+  -- try to identify notification windows
+  nw <- withDisplay $ \d -> getStringProperty d w "WM_CLASS"
+  liftIO (print nw)
+  case nw of
+    Nothing -> return ()
+    -- don't ask me why the one notification you'd expect to be quiet is the
+    -- only one that's reasonably audible…
+    Just s -> when (s == "mate-notification-daemon") $ boing' "onboard-key-feedback"
+  return (All True)
+notificationEventHook _ = return (All True)
 
 myXPConfig :: XPConfig
 myXPConfig = greenXPConfig {promptKeymap = emacsLikeXPKeymap
