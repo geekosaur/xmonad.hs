@@ -200,6 +200,7 @@ main = do
            `additionalKeysP`
            ([("M-C-g",             spawnHere "google-chrome")
             ,("M-C-e",             spawnHere "emacs")
+            ,("M-C-n",             spawnOn "irc" "flatpak run io.github.NhekoReborn.Nheko")
             ,("M-C-v",             spawnOn "windows" "vmplayer")
             ,("M-C-s",             spawnOn "dev" "code")
              -- app.element.io
@@ -297,8 +298,9 @@ boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
 
 -- sadly, this doesn't work
 notificationEventHook :: Event -> X All
-notificationEventHook MapNotifyEvent {ev_window = w} = do
+notificationEventHook e@MapNotifyEvent {ev_window = w} = do
   -- try to identify notification windows
+  liftIO (print e)
   nw <- withDisplay $ \d -> getStringProperty d w "WM_CLASS"
   liftIO (print nw)
   case nw of
