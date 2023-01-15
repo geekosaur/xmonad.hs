@@ -49,7 +49,7 @@ import           Data.Ratio                               ((%))
 import           Data.Traversable
 import qualified DBus                                                                         as D
 import qualified DBus.Client                                                                  as D
-import           System.IO                                (hPrint, hClose, hFlush, stdout)
+import           System.IO                                (hPrint, hClose)
 
 -- sorry, I CBA to provide types for anything parameterized by layouts
 baseConfig = debugManageHookOn "M-S-d" $
@@ -298,16 +298,15 @@ boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
 
 -- sadly, this doesn't work
 notificationEventHook :: Event -> X All
-notificationEventHook e@MapNotifyEvent {ev_window = w} = do
+notificationEventHook MapNotifyEvent {ev_window = w} = do
   -- try to identify notification windows
-  liftIO (print e >> hFlush stdout)
   nw <- withDisplay $ \d -> getStringProperty d w "WM_CLASS"
-  liftIO (print nw >> hFlush stdout)
   case nw of
     Nothing -> return ()
     -- don't ask me why the one notification you'd expect to be quiet is the
     -- only one that's reasonably audible…
-    Just s -> when (s == "mate-notification-daemon") $ boing' "onboard-key-feedback"
+    Just s -> when (s == "mate-notification-daemon\NULMate-notification-daemon\NUL") $
+                boing' "onboard-key-feedback"
   return (All True)
 notificationEventHook _ = return (All True)
 
