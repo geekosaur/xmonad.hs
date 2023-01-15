@@ -296,7 +296,7 @@ sounds = "/usr/share/sounds/freedesktop/stereo"
 boing' :: String -> X ()
 boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
 
--- sadly, this doesn't work
+-- this needs to be cleaned up
 notificationEventHook :: Event -> X All
 notificationEventHook MapNotifyEvent {ev_window = w} = do
   -- try to identify notification windows
