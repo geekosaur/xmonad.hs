@@ -204,7 +204,7 @@ main = do
             ,("M-C-v",             spawnOn "windows" "vmplayer")
             ,("M-C-s",             spawnOn "dev" "code")
              -- app.element.io
-            ,("M-C-S-m",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
+            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                          \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
             ,("M-C-c l",           namedScratchpadAction scratchpads "crawl-local")
             ,("M-C-c u e",         namedScratchpadAction scratchpads "crawl-cue")
