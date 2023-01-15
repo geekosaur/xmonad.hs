@@ -189,7 +189,8 @@ main = do
                                   -- are running; emacs complains about emacs-server and desktop file)
                                   -- (found by discovering xmonad-contrib#753)
                                   unlessQuery (appName =? "emacs") $ spawnOn "emacs" "emacs"
-                                  unlessQuery (appName =? "io.github.NhekoReborn.Nheko") $ spawnOn "irc" "flatpak run io.github.NhekoReborn.Nheko"
+                                  unlessQuery (appName =? "io.github.NhekoReborn.Nheko") $
+                                    spawnOn "irc" "flatpak run io.github.NhekoReborn.Nheko"
                                   io $ threadDelay 3000000
                                   unlessQuery (appName =? "hexchat") $ spawnOn "irc" "hexchat-utc"
                                   io $ threadDelay 3000000
@@ -199,7 +200,8 @@ main = do
            }
            `additionalKeysP`
            ([("M-C-g",             spawnHere "google-chrome")
-            ,("M-C-e",             spawnHere "emacs")
+            ,("M-C-e",             spawnHere "emacsclient -c")
+            ,("M-C-S-e",           spawnOn "emacs" "emacs")
             ,("M-C-n",             spawnOn "irc" "flatpak run io.github.NhekoReborn.Nheko")
             ,("M-C-v",             spawnOn "windows" "vmplayer")
             ,("M-C-s",             spawnOn "dev" "code")
