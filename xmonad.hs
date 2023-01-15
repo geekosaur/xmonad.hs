@@ -49,7 +49,7 @@ import           Data.Ratio                               ((%))
 import           Data.Traversable
 import qualified DBus                                                                         as D
 import qualified DBus.Client                                                                  as D
-import           System.IO                                (hPrint, hClose)
+import           System.IO                                (hPrint, hClose, hFlush, stdout)
 
 -- sorry, I CBA to provide types for anything parameterized by layouts
 baseConfig = debugManageHookOn "M-S-d" $
@@ -300,9 +300,9 @@ boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
 notificationEventHook :: Event -> X All
 notificationEventHook e@MapNotifyEvent {ev_window = w} = do
   -- try to identify notification windows
-  liftIO (print e)
+  liftIO (print e >> hFlush stdout)
   nw <- withDisplay $ \d -> getStringProperty d w "WM_CLASS"
-  liftIO (print nw)
+  liftIO (print nw >> hFlush stdout)
   case nw of
     Nothing -> return ()
     -- don't ask me why the one notification you'd expect to be quiet is the
