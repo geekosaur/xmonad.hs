@@ -23,6 +23,7 @@ if [ "$SRC_DIR" = "" ]; then
 	SRC_DIR="$HOME/.xmonad"
     fi
 fi
+echo "\$\$ cd $SRC_DIR"
 cd "$SRC_DIR"
 
 if [ "$EXE_NAME" = "" ]; then
@@ -38,7 +39,8 @@ d="$(dirname "$output")"
 f="$(basename "$output")"
 first=0
 for exe in $EXE_NAME; do
-    cabal install exe:"$EXE_NAME" \
+    echo "\$\$ cabal v2-install exe:$EXE_NAME --emanle-executable-stripping --enable-optimizations=2 --installdir=$d --overwrite-policy=always $*"
+    cabal v2-install exe:"$EXE_NAME" \
 	  --enable-executable-stripping \
 	  --enable-optimization=2 \
 	  --installdir="$d" \
@@ -51,6 +53,7 @@ for exe in $EXE_NAME; do
 	if [ "$f" = "$exe" ]; then
 	    : someone will try it…
 	else
+	    "\$\$ ln -sf $exe $output"
 	    ln -sf "$exe" "$output"
 	fi
     elif [ "$f" = "$exe" ]; then
