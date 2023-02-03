@@ -53,7 +53,7 @@ for exe in $EXE_NAME; do
 	if [ "$f" = "$exe" ]; then
 	    : someone will try it…
 	else
-	    "\$\$ ln -sf $exe $output"
+	    echo "\$\$ ln -sf $exe $output"
 	    ln -sf "$exe" "$output"
 	fi
     elif [ "$f" = "$exe" ]; then

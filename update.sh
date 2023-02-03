@@ -4,7 +4,7 @@ read dummy
 echo '$ cabal update'
 cabal update
 for pkg in X11 X11-xft xmonad xmonad-contrib; do
-  echo '$ (cd "$pkg"; git pull)'
+  echo '$ (cd "'"$pkg"'"; git pull)'
   (cd "$pkg"; git pull)
 done
 echo '$ cabal install xmonad --overwrite-policy-always'
