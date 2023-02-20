@@ -332,6 +332,7 @@ logTitle ch = dynamicLogWithPP def
                                ,ppSort            = getSortByXineramaPhysicalRule horizontalScreenOrderer
                                ,ppOutput          = dbusOutput ch
                                }
+        -- not currently using this, but left for testing etc.
   where swapIcons (ws:l:t:nsp:xs) = ws:l:nsp:t:xs
         -- @@@ so why do the first 4 invocations *only* not match?!
         swapIcons xs              = xs
