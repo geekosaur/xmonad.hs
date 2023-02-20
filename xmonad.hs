@@ -200,69 +200,68 @@ main = do
                                   setSessionStarted
            }
            `additionalKeysP`
-           ([("M-C-g",             spawnHere "google-chrome")
-            ,("M-C-e",             spawnHere "emacsclient -c")
-            ,("M-C-S-e",           spawnOn "emacs" "emacs")
-            ,("M-C-n",             spawnOn "irc" "flatpak run io.github.NhekoReborn.Nheko")
-            ,("M-C-v",             spawnOn "windows" "vmplayer")
-            ,("M-C-s",             spawnOn "dev" "code")
+           [("M-C-g",             spawnHere "google-chrome")
+           ,("M-C-e",             spawnHere "emacsclient -c")
+           ,("M-C-S-e",           spawnOn "emacs" "emacs")
+           ,("M-C-n",             spawnOn "irc" "flatpak run io.github.NhekoReborn.Nheko")
+           ,("M-C-v",             spawnOn "windows" "vmplayer")
+           ,("M-C-s",             spawnOn "dev" "code")
              -- app.element.io
-            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
+           ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                          \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
-            ,("M-C-c l",           namedScratchpadAction scratchpads "crawl-local")
-            ,("M-C-c u e",         namedScratchpadAction scratchpads "crawl-cue")
-            ,("M-C-c k o",         namedScratchpadAction scratchpads "crawl-cko")
-            ,("M-C-c b r",         namedScratchpadAction scratchpads "crawl-cbro")
-            ,("M-C-c a o",         namedScratchpadAction scratchpads "crawl-cao")
-            ,("M-C-c x c",         namedScratchpadAction scratchpads "crawl-cxc")
-            ,("M-C-c d o",         namedScratchpadAction scratchpads "crawl-cdo")
-            ,("M-C-k",             namedScratchpadAction scratchpads "calc")
-            ,("M-C-m",             namedScratchpadAction scratchpads "charmap")
-            ,("M-C-d",             namedScratchpadAction scratchpads "dict")
-            ,("M-x",               namedScratchpadAction scratchpads "qterm")
-            ,("M-<Right>",         moveTo Next hiddenWS)
-            ,("M-<Left>",          moveTo Prev hiddenWS)
-            ,("M-S-`",             withFocused $ sendMessage . maximizeRestore)
-            ,("M-S-p",             mateRun)
-            ,("M-p",               shellPrompt myXPConfig)
-            ,("M-S-q",             mateShutdown)
-            ,("M-C-S-q",           mateLogout)
+           ,("M-C-c l",           namedScratchpadAction scratchpads "crawl-local")
+           ,("M-C-c u e",         namedScratchpadAction scratchpads "crawl-cue")
+           ,("M-C-c k o",         namedScratchpadAction scratchpads "crawl-cko")
+           ,("M-C-c b r",         namedScratchpadAction scratchpads "crawl-cbro")
+           ,("M-C-c a o",         namedScratchpadAction scratchpads "crawl-cao")
+           ,("M-C-c x c",         namedScratchpadAction scratchpads "crawl-cxc")
+           ,("M-C-c d o",         namedScratchpadAction scratchpads "crawl-cdo")
+           ,("M-C-k",             namedScratchpadAction scratchpads "calc")
+           ,("M-C-m",             namedScratchpadAction scratchpads "charmap")
+           ,("M-C-d",             namedScratchpadAction scratchpads "dict")
+           ,("M-x",               namedScratchpadAction scratchpads "qterm")
+           ,("M-<Right>",         moveTo Next hiddenWS)
+           ,("M-<Left>",          moveTo Prev hiddenWS)
+           ,("M-S-`",             withFocused $ sendMessage . maximizeRestore)
+           ,("M-S-p",             mateRun)
+           ,("M-p",               shellPrompt myXPConfig)
+           ,("M-S-q",             mateShutdown)
+           ,("M-C-S-q",           mateLogout)
              -- multiple-screen shot
-            ,("M-S-s",             unGrab >> spawn "scrot -m ~/Downloads/screenshotM-%Y%m%dT%H%M%S.png")
+           ,("M-S-s",             unGrab >> spawn "scrot -m ~/Downloads/screenshotM-%Y%m%dT%H%M%S.png")
              -- focused window shot
-            ,("M-S-w",             unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
-            -- ,("<Print>",           unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
-            ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
+           ,("M-S-w",             unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
+           ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
              -- debug windows; also see M-S-d above
-            ,("M-C-S-8",           withFocused showWinRR)
-            ,("M-C-S-7",           spawn "xprop | xmessage -file -")
-            ,("M-C-S-6",           withFocused $ \w -> spawn $ "xprop -id " ++ show w ++ " | xmessage -file -")
-            ,("M-C-S-5",           withFocused $ \w -> spawn $ "xwininfo -id " ++ show w ++ " -all | xmessage -file -")
-            ,("M-b",               toggleBorders >> sendMessage ToggleStruts)
+           ,("M-C-S-8",           withFocused showWinRR)
+           ,("M-C-S-7",           spawn "xprop | xmessage -file -")
+           ,("M-C-S-6",           withFocused $ \w -> spawn $ "xprop -id " ++ show w ++ " | xmessage -file -")
+           ,("M-C-S-5",           withFocused $ \w -> spawn $ "xwininfo -id " ++ show w ++ " -all | xmessage -file -")
+           ,("M-b",               toggleBorders >> sendMessage ToggleStruts)
              -- BSP actions
-            ,("M-C-S-p <Left>",    sendMessage $ ExpandTowards L)
-            ,("M-C-S-p <Right>",   sendMessage $ ShrinkFrom L)
-            ,("M-C-S-p <Up>",      sendMessage $ ExpandTowards U)
-            ,("M-C-S-p <Down>",    sendMessage $ ShrinkFrom U)
-            ,("M-C-S-p C-<Left>",  sendMessage $ ShrinkFrom R)
-            ,("M-C-S-p C-<Right>", sendMessage $ ExpandTowards R)
-            ,("M-C-S-p C-<Up>",    sendMessage $ ShrinkFrom D)
-            ,("M-C-S-p C-<Down>",  sendMessage $ ExpandTowards D)
-            ,("M-C-S-p s",         sendMessage   Swap)
-            ,("M-C-S-p r",         sendMessage   Rotate)
-            ,("M-C-S-p b",         sendMessage   Balance)
-            ,("M-C-S-p e",         sendMessage   Equalize)
-            ,("M-C-S-p j",         sendMessage $ SplitShift Prev)
-            ,("M-C-S-p k",         sendMessage $ SplitShift Next)
-            ]
-            ++
-            -- greedyView -> view, so I stop breaking crawl etc. >.>
-            [(otherModMasks ++ "M-" ++ [key], action tag)
+           ,("M-C-S-p <Left>",    sendMessage $ ExpandTowards L)
+           ,("M-C-S-p <Right>",   sendMessage $ ShrinkFrom L)
+           ,("M-C-S-p <Up>",      sendMessage $ ExpandTowards U)
+           ,("M-C-S-p <Down>",    sendMessage $ ShrinkFrom U)
+           ,("M-C-S-p C-<Left>",  sendMessage $ ShrinkFrom R)
+           ,("M-C-S-p C-<Right>", sendMessage $ ExpandTowards R)
+           ,("M-C-S-p C-<Up>",    sendMessage $ ShrinkFrom D)
+           ,("M-C-S-p C-<Down>",  sendMessage $ ExpandTowards D)
+           ,("M-C-S-p s",         sendMessage   Swap)
+           ,("M-C-S-p r",         sendMessage   Rotate)
+           ,("M-C-S-p b",         sendMessage   Balance)
+           ,("M-C-S-p e",         sendMessage   Equalize)
+           ,("M-C-S-p j",         sendMessage $ SplitShift Prev)
+           ,("M-C-S-p k",         sendMessage $ SplitShift Next)
+           ]
+           ++
+           -- greedyView -> view, so I stop breaking crawl etc. >.>
+           [(otherModMasks ++ "M-" ++ [key], action tag)
              | (tag, key)              <- zip workspacen "1234567890-="
              , (otherModMasks, action) <- [("", windows . W.view) -- was W.greedyView
-                                          ,("S-", windows . W.shift)
-                                          ]
-            ])
+                                         ,("S-", windows . W.shift)
+                                         ]
+           ]
            `additionalMouseBindings`
            [((mod4Mask .|. controlMask, button1), dragWindow)]
 
