@@ -259,8 +259,8 @@ main = do
            [(otherModMasks ++ "M-" ++ [key], action tag)
              | (tag, key)              <- zip workspacen "1234567890-="
              , (otherModMasks, action) <- [("", windows . W.view) -- was W.greedyView
-                                         ,("S-", windows . W.shift)
-                                         ]
+                                          ,("S-", windows . W.shift)
+                                          ]
            ]
            `additionalMouseBindings`
            [((mod4Mask .|. controlMask, button1), dragWindow)]
