@@ -256,7 +256,7 @@ main = do
            ]
            ++
            -- greedyView -> view, so I stop breaking crawl etc. >.>
-           [(otherModMasks ++ "M-" ++ [key], action tag)
+           [ (otherModMasks ++ "M-" ++ [key], action tag)
            | (tag, key)              <- zip workspacen "1234567890-="
            , (otherModMasks, action) <- [("", windows . W.view) -- was W.greedyView
                                         ,("S-", windows . W.shift)
