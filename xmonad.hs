@@ -150,7 +150,7 @@ main = do
                                 onWorkspace "refs" basic2 $
                                 onWorkspace "spare2" emptyBSP $
                                 onWorkspace "emacs" basic2 $
-                                id basic -- shut up hlint
+                                id basic -- shut up hlint (I append layout modifiers for testing a lot)
            ,manageHook        = composeAll
                                 [appName =? "xmessage" --> doFloatPlace
                                 ,className =? "Trashapplet" --> doFloatPlace
