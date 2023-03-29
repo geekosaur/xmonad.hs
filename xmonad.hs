@@ -157,8 +157,6 @@ main = do
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
                                 ,appName =? "sxiv" --> noTaskbar <> doShift "spare2"
-                                 -- I may change this back: on mod-q the focused window gets
-                                 -- `copyToAll`-ed (but not floated). ???
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_STICKY" -->
                                  doF copyToAll <> doFloatPlace
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
