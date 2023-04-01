@@ -120,6 +120,11 @@ scratchpads = [NS "calc"
                                 \ --name crawl-cdo --title=\"DCSS (CDO)\" --command=cdo --geometry=81x25"
                   (appName =? "crawl-cxc")
                   (noTaskbar <> doFloatPlace)
+              ,NS "uclock"
+                  -- freaking app-defaults...
+                  "dclock -name uclock -miltime -utc -fg chartreuse -bg DarkSlateGrey -led_off DarkGreen"
+                  (appName =? "uclock")
+                  (noTaskbar <+> doFloatAt (1694/1920) (3/1080))
               ]
 
 main :: IO ()
@@ -189,7 +194,7 @@ main = do
                                   -- (found by discovering xmonad-contrib#753)
                                   unlessQuery (appName =? "emacs") $ spawnOn "emacs" "emacs"
                                   unlessQuery (appName =? "io.github.NhekoReborn.Nheko") $
-                                    spawnOn "irc" "flatpak run io.github.NhekoReborn.Nheko"
+                                    spawnOn "irc" "flatpak run --parent-expose-pids io.github.NhekoReborn.Nheko"
                                   io $ threadDelay 3000000
                                   unlessQuery (appName =? "hexchat") $ spawnOn "irc" "hexchat-utc"
                                   io $ threadDelay 3000000
@@ -201,7 +206,7 @@ main = do
            [("M-C-g",             spawnHere "google-chrome")
            ,("M-C-e",             spawnHere "emacsclient -c")
            ,("M-C-S-e",           spawnOn "emacs" "emacs")
-           ,("M-C-n",             spawnOn "irc" "flatpak run io.github.NhekoReborn.Nheko")
+           ,("M-C-n",             spawnOn "irc" "flatpak run --parent-expose-pids io.github.NhekoReborn.Nheko")
            ,("M-C-v",             spawnOn "windows" "vmplayer")
            ,("M-C-s",             spawnOn "dev" "code")
              -- app.element.io
@@ -218,6 +223,7 @@ main = do
            ,("M-C-m",             namedScratchpadAction scratchpads "charmap")
            ,("M-C-d",             namedScratchpadAction scratchpads "dict")
            ,("M-x",               namedScratchpadAction scratchpads "qterm")
+           ,("M-C-u",             namedScratchpadAction scratchpads "uclock")
            ,("M-<Right>",         moveTo Next hiddenWS)
            ,("M-<Left>",          moveTo Prev hiddenWS)
            ,("M-S-`",             withFocused $ sendMessage . maximizeRestore)
