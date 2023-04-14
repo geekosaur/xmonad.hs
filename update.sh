@@ -7,8 +7,8 @@ for pkg in X11 X11-xft xmonad xmonad-contrib; do
   echo '$ (cd "'"$pkg"'"; git pull)'
   (cd "$pkg" && git pull)
 done
-echo '$ cabal install xmonad --overwrite-policy=always'
-cabal install xmonad --overwrite-policy=always
+echo '$ cabal install xmonad --enable-optimization=2 --overwrite-policy=always'
+cabal install xmonad --enable-optimization=2 --overwrite-policy=always
 hash -r
 echo '$ xmonad --recompile'
 xmonad --recompile
