@@ -166,6 +166,7 @@ main = do
                                  doF copyToAll <> doFloatPlace
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
                                  doFloatPlace
+                                ,appName =? "xfce4-terminal" --> doCenterFloat
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
