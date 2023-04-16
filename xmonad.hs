@@ -81,43 +81,43 @@ scratchpads = [NS "calc"
                   (noTaskbar <> customFloating (W.RationalRect 0.25 0 0.5 0.35))
               ,NS "crawl-local"
                   "xfce4-terminal --disable-server --working-directory=Sources/crawl/crawl-ref/source \
-                                \ --name crawl-local --title=DCSS --command=./crawl --geometry=81x25"
+                                \ --role crawl-local --title=DCSS --command=./crawl --geometry=81x25"
                   (appName =? "crawl-local")
                   (noTaskbar <> doFloatPlace)
                -- crawl on underhound.eu
               ,NS "crawl-cue"
                   "xfce4-terminal --disable-server \
-                                \ --name crawl-cue --title=\"DCSS (CUE)\" --command=cue --geometry=81x25"
+                                \ --role crawl-cue --title=\"DCSS (CUE)\" --command=cue --geometry=81x25"
                   (appName =? "crawl-cue")
                   (noTaskbar <> doFloatPlace)
                -- crawl on crawl.kelbi.org
               ,NS "crawl-cko"
                   "xfce4-terminal --disable-server \
-                                \ --name crawl-cko --title=\"DCSS (CKO)\" --command=cko --geometry=81x25"
+                                \ --role crawl-cko --title=\"DCSS (CKO)\" --command=cko --geometry=81x25"
                   (appName =? "crawl-cue")
                   (noTaskbar <> doFloatPlace)
                -- crawl on cbro.berotato.org
               ,NS "crawl-cbro"
                   "xfce4-terminal --disable-server \
-                                \ --name crawl-cbro --title=\"DCSS (CBRO)\" --command=cbro --geometry=81x25"
+                                \ --role crawl-cbro --title=\"DCSS (CBRO)\" --command=cbro --geometry=81x25"
                   (appName =? "crawl-cue")
                   (noTaskbar <> doFloatPlace)
                -- crawl on crawl.akrasiac.org
               ,NS "crawl-cao"
                   "xfce4-terminal --disable-server \
-                                \ --name crawl-cao --title=\"DCSS (CAO)\" --command=cao --geometry=81x25"
+                                \ --role crawl-cao --title=\"DCSS (CAO)\" --command=cao --geometry=81x25"
                   (appName =? "crawl-cao")
                   (noTaskbar <> doFloatPlace)
                -- crawl on crawl.xtahua.com
               ,NS "crawl-cxc"
                   "xfce4-terminal --disable-server \
-                                \ --name crawl-cxc --title=\"DCSS (CXC)\" --command=cxc --geometry=81x25"
+                                \ --role crawl-cxc --title=\"DCSS (CXC)\" --command=cxc --geometry=81x25"
                   (appName =? "crawl-cxc")
                   (noTaskbar <> doFloatPlace)
                -- crawl on crawl.develz.org
               ,NS "crawl-cdo"
                   "xfce4-terminal --disable-server \
-                                \ --name crawl-cdo --title=\"DCSS (CDO)\" --command=cdo --geometry=81x25"
+                                \ --role crawl-cdo --title=\"DCSS (CDO)\" --command=cdo --geometry=81x25"
                   (appName =? "crawl-cxc")
                   (noTaskbar <> doFloatPlace)
               ,NS "uclock"
