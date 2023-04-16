@@ -43,6 +43,7 @@ import           XMonad.Prelude                           (fi, safeGetWindowAttr
 import qualified XMonad.StackSet                                                              as W
 
 import           Control.Concurrent                       (threadDelay)
+import           Data.List                                (isPrefixOf)
 import           Data.Maybe                               (catMaybes)
 import           Data.Monoid
 import           Data.Ratio                               ((%))
@@ -166,7 +167,9 @@ main = do
                                  doF copyToAll <> doFloatPlace
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
                                  doFloatPlace
-                                ,appName =? "xfce4-terminal" --> doCenterFloat
+                                ,appName =? "xfce4-terminal" <&&>
+                                 fmap ("crawl-" `isPrefixOf`) (stringProperty "WM_WINDOW_ROLE") -->
+                                 doCenterFloat
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
