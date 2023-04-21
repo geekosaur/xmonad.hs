@@ -83,43 +83,43 @@ scratchpads = [NS "calc"
               ,NS "crawl-local"
                   "xfce4-terminal --disable-server --working-directory=Sources/crawl/crawl-ref/source \
                                 \ --role crawl-local --title=DCSS --command=./crawl --geometry=81x25"
-                  (appName =? "crawl-local")
+                  (role =? "crawl-local")
                   (noTaskbar <> doFloatPlace)
                -- crawl on underhound.eu
               ,NS "crawl-cue"
                   "xfce4-terminal --disable-server \
                                 \ --role crawl-cue --title=\"DCSS (CUE)\" --command=cue --geometry=81x25"
-                  (appName =? "crawl-cue")
+                  (role =? "crawl-cue")
                   (noTaskbar <> doFloatPlace)
                -- crawl on crawl.kelbi.org
               ,NS "crawl-cko"
                   "xfce4-terminal --disable-server \
                                 \ --role crawl-cko --title=\"DCSS (CKO)\" --command=cko --geometry=81x25"
-                  (appName =? "crawl-cue")
+                  (role =? "crawl-cue")
                   (noTaskbar <> doFloatPlace)
                -- crawl on cbro.berotato.org
               ,NS "crawl-cbro"
                   "xfce4-terminal --disable-server \
                                 \ --role crawl-cbro --title=\"DCSS (CBRO)\" --command=cbro --geometry=81x25"
-                  (appName =? "crawl-cue")
+                  (role =? "crawl-cue")
                   (noTaskbar <> doFloatPlace)
                -- crawl on crawl.akrasiac.org
               ,NS "crawl-cao"
                   "xfce4-terminal --disable-server \
                                 \ --role crawl-cao --title=\"DCSS (CAO)\" --command=cao --geometry=81x25"
-                  (appName =? "crawl-cao")
+                  (role =? "crawl-cao")
                   (noTaskbar <> doFloatPlace)
                -- crawl on crawl.xtahua.com
               ,NS "crawl-cxc"
                   "xfce4-terminal --disable-server \
                                 \ --role crawl-cxc --title=\"DCSS (CXC)\" --command=cxc --geometry=81x25"
-                  (appName =? "crawl-cxc")
+                  (role =? "crawl-cxc")
                   (noTaskbar <> doFloatPlace)
                -- crawl on crawl.develz.org
               ,NS "crawl-cdo"
                   "xfce4-terminal --disable-server \
                                 \ --role crawl-cdo --title=\"DCSS (CDO)\" --command=cdo --geometry=81x25"
-                  (appName =? "crawl-cxc")
+                  (role =? "crawl-cxc")
                   (noTaskbar <> doFloatPlace)
               ,NS "uclock"
                   -- freaking app-defaults...
@@ -168,8 +168,7 @@ main = do
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
                                  doFloatPlace
                                 ,appName =? "xfce4-terminal" <&&>
-                                 fmap ("crawl-" `isPrefixOf`) (stringProperty "WM_WINDOW_ROLE") -->
-                                 doCenterFloat
+                                 fmap ("crawl-" `isPrefixOf`) role --> doCenterFloat
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
@@ -282,6 +281,9 @@ toggleBorders = withFocused $ \w -> do
                   wa <- io $ getWindowAttributes d w
                   let nbw = if wa_border_width wa == 0 then bw else 0
                   io $ setWindowBorderWidth d w nbw
+
+role :: Query String
+role = stringProperty "WM_WINDOW_ROLE"
 
 myPlaceHook :: Placement
 myPlaceHook = inBounds $ smart (0.5, 0.5)
