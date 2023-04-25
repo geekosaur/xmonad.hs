@@ -6,7 +6,6 @@
 {-# HLINT ignore "Redundant id" #-}
 
 import           XMonad
-import           XMonad.Actions.CopyWindow
 import           XMonad.Actions.CycleWS
 import           XMonad.Actions.PhysicalScreens
 import           XMonad.Actions.TiledWindowDragging
@@ -162,6 +161,7 @@ main = do
                                 ,className =? "Trashapplet" --> doFloatPlace
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
+                                ,className =? "io.github.NhekoReborn.Nheko" --> doShift "irc"
                                 ,appName =? "sxiv" --> noTaskbar <> doShift "spare2"
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
                                  doFloatPlace
@@ -195,7 +195,7 @@ main = do
                                   -- (found by discovering xmonad-contrib#753)
                                   unlessQuery (appName =? "emacs") $ spawnOn "emacs" "emacs"
                                   unlessQuery (appName =? "io.github.NhekoReborn.Nheko") $
-                                    spawnOn "irc" "flatpak run --parent-expose-pids io.github.NhekoReborn.Nheko"
+                                    spawnOn "irc" "flatpak run io.github.NhekoReborn.Nheko"
                                   io $ threadDelay 3000000
                                   unlessQuery (appName =? "hexchat") $ spawnOn "irc" "hexchat-utc"
                                   io $ threadDelay 3000000
@@ -207,7 +207,7 @@ main = do
            [("M-C-g",             spawnHere "google-chrome")
            ,("M-C-e",             spawnHere "emacsclient -c")
            ,("M-C-S-e",           spawnOn "emacs" "emacs")
-           ,("M-C-n",             spawnOn "irc" "flatpak run --parent-expose-pids io.github.NhekoReborn.Nheko")
+           ,("M-C-n",             spawn "flatpak run io.github.NhekoReborn.Nheko")
            ,("M-C-v",             spawnOn "windows" "vmplayer")
            ,("M-C-s",             spawnOn "dev" "code")
              -- app.element.io
