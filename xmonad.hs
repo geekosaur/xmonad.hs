@@ -163,8 +163,6 @@ main = do
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
                                 ,appName =? "sxiv" --> noTaskbar <> doShift "spare2"
-                                ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_STICKY" -->
-                                 doF copyToAll <> doFloatPlace
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
                                  doFloatPlace
                                 ,appName =? "xfce4-terminal" <&&>
