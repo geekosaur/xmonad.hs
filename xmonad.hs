@@ -161,7 +161,7 @@ main = do
                                 ,className =? "Trashapplet" --> doFloatPlace
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
-                                ,className =? "io.github.NhekoReborn.Nheko" --> doShift "irc"
+                                ,className =? "nheko" --> doShift "irc"
                                 ,appName =? "sxiv" --> noTaskbar <> doShift "spare2"
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
                                  doFloatPlace
