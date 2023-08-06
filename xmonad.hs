@@ -186,7 +186,7 @@ main = do
                                                                    \xset dpms force off") <>
                                 doOnce do
                                   mateRegister
-                                  spawn "exec picom -cfb --backend=glx"
+                                  spawn "exec picom -cfb --backend=glx --experimental-backends"
                                   spawn "exec \"$HOME/.screenlayout/default.sh\""
                                   spawnOn "shell" "mate-terminal"
                                   -- if I have to restart xmonad because it crashed, these two will complain
