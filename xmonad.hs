@@ -194,8 +194,7 @@ main = do
                                   -- are running; emacs complains about emacs-server and desktop file)
                                   -- (found by discovering xmonad-contrib#753)
                                   unlessQuery (appName =? "emacs") $ spawnOn "emacs" "emacs"
-                                  unlessQuery (appName =? "io.github.NhekoReborn.Nheko") $
-                                    spawnOn "irc" "flatpak run io.github.NhekoReborn.Nheko"
+                                  unlessQuery (appName =? "io.github.NhekoReborn.Nheko") startNheko
                                   io $ threadDelay 3000000
                                   unlessQuery (appName =? "hexchat") $ spawnOn "irc" "hexchat-utc"
                                   io $ threadDelay 3000000
@@ -207,7 +206,7 @@ main = do
            [("M-C-g",             spawnHere "google-chrome")
            ,("M-C-e",             spawnHere "emacsclient -c")
            ,("M-C-S-e",           spawnOn "emacs" "emacs")
-           ,("M-C-n",             spawn "flatpak run io.github.NhekoReborn.Nheko")
+           ,("M-C-n",             startNheko)
            ,("M-C-v",             spawnOn "windows" "vmplayer")
            ,("M-C-s",             spawnOn "dev" "code")
              -- app.element.io
@@ -305,6 +304,12 @@ sounds = "/usr/share/sounds/freedesktop/stereo"
 
 boing' :: String -> X ()
 boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
+
+startNheko :: X ()
+startNheko =
+  spawnOn "irc" "flatpak run --env=TZ=UTC0 io.github.NhekoReborn.Nheko"
+  -- getProcessId >>= \p -> spawnOn "irc" ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
+  --                                       show p ++ " io.github.NhekoReborn.Nheko")
 
 -- this needs to be cleaned up
 notificationEventHook :: Event -> X All
