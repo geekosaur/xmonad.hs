@@ -58,7 +58,7 @@ baseConfig = debugManageHookOn "M-S-d" $
 
 workspacen :: [String]
 workspacen =  ["shell", "emacs", "mail", "irc", "keep", "dev",
-               "windows", "crawl", "games", "spare2", "spare3", "spare4"]
+               "windows", "crawl", "games", "spare", "calibre", "xmonadtrack"]
 
 scratchpads :: [NamedScratchpad]
 scratchpads = [NS "calc"
@@ -151,7 +151,7 @@ main = do
                                 avoidStruts $
                                 onWorkspace "irc" basic1 $
                                 onWorkspace "mail" basic2 $
-                                -- onWorkspace "calibre" Full $
+                                onWorkspace "calibre" Full $
                                 onWorkspace "refs" basic2 $
                                 onWorkspace "spare2" emptyBSP $
                                 onWorkspace "emacs" basic2 $
@@ -162,7 +162,7 @@ main = do
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
                                 ,className =? "nheko" --> doShift "irc"
-                                ,appName =? "sxiv" --> noTaskbar <> doShift "spare2"
+                                ,appName =? "sxiv" --> noTaskbar <> doShift "spare"
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
                                  doFloatPlace
                                 ,appName =? "xfce4-terminal" <&&>
