@@ -153,7 +153,7 @@ main = do
                                 onWorkspace "mail" basic2 $
                                 onWorkspace "calibre" Full $
                                 onWorkspace "refs" basic2 $
-                                onWorkspace "spare2" emptyBSP $
+                                onWorkspace "spare" emptyBSP $
                                 onWorkspace "emacs" basic2 $
                                 id basic -- shut up hlint (I append layout modifiers for testing a lot)
            ,manageHook        = composeAll
