@@ -56,9 +56,24 @@ baseConfig = debugManageHookOn "M-S-d" $
              ewmhFullscreen -- ($)
              mateConfig
 
+shellWs, emacsWs, mailWs, chatWs, refsWs, devWs :: String
+winWs, crawlWs, gamesWs, spareWs, booksWs, botsWs :: String
+shellWs = "shell"
+emacsWs = "emacs"
+mailWs = "mail"
+chatWs = "irc"
+refsWs = "keep"
+devWs = "dev"
+winWs = "windows"
+crawlWs = "crawl"
+gamesWs = "games"
+spareWs = "spare"
+booksWs = "calibre"
+botsWs = "xmonadtrack"
+
 workspacen :: [String]
-workspacen =  ["shell", "emacs", "mail", "irc", "keep", "dev",
-               "windows", "crawl", "games", "spare", "calibre", "xmonadtrack"]
+workspacen =  [shellWs, emacsWs, mailWs, chatWs, refsWs, devWs,
+               winWs, crawlWs, gamesWs, spareWs, booksWs, botsWs]
 
 scratchpads :: [NamedScratchpad]
 scratchpads = [NS "calc"
@@ -147,22 +162,22 @@ main = do
                                 minimize $
                                 maximize $
                                 lessBorders OnlyScreenFloat $
-                                onWorkspace "windows" (avoidStrutsOn [] Full) $
+                                onWorkspace winWs (avoidStrutsOn [] Full) $
                                 avoidStruts $
-                                onWorkspace "irc" basic1 $
-                                onWorkspace "mail" basic2 $
-                                onWorkspace "calibre" Full $
-                                onWorkspace "refs" basic2 $
-                                onWorkspace "spare" emptyBSP $
-                                onWorkspace "emacs" basic2 $
+                                onWorkspace chatWs basic1 $
+                                onWorkspace mailWs basic2 $
+                                onWorkspace booksWs Full $
+                                onWorkspace refsWs basic2 $
+                                onWorkspace spareWs emptyBSP $
+                                onWorkspace emacsWs basic2 $
                                 id basic -- shut up hlint (I append layout modifiers for testing a lot)
            ,manageHook        = composeAll
                                 [appName =? "xmessage" --> doCenterFloat
                                 ,className =? "Trashapplet" --> doFloatPlace
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
-                                ,className =? "nheko" --> doShift "irc"
-                                ,appName =? "sxiv" --> noTaskbar <> doShift "spare"
+                                ,className =? "nheko" --> doShift chatWs
+                                ,appName =? "sxiv" --> noTaskbar <> doShift spareWs
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
                                  doFloatPlace
                                 ,appName =? "xfce4-terminal" <&&>
@@ -193,22 +208,22 @@ main = do
                                   -- (hexchat's configured to regain my nick, so it'll get into fights if two
                                   -- are running; emacs complains about emacs-server and desktop file)
                                   -- (found by discovering xmonad-contrib#753)
-                                  unlessQuery (appName =? "emacs") $ spawnOn "emacs" "emacs"
+                                  unlessQuery (appName =? "emacs") $ spawnOn emacsWs "emacs"
                                   unlessQuery (appName =? "io.github.NhekoReborn.Nheko") startNheko
                                   io $ threadDelay 3000000
-                                  unlessQuery (appName =? "hexchat") $ spawnOn "irc" "hexchat-utc"
+                                  unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
                                   io $ threadDelay 3000000
                                   -- @@@ starts multi windows, placing them automatically will not fly :/
-                                  unlessQuery (appName =? "google-chrome") $ spawnOn "mail" "google-chrome"
+                                  unlessQuery (appName =? "google-chrome") $ spawnOn mailWs "google-chrome"
                                   setSessionStarted
            }
            `additionalKeysP`
            [("M-C-g",             spawnHere "google-chrome")
            ,("M-C-e",             spawnHere "emacsclient -c")
-           ,("M-C-S-e",           spawnOn "emacs" "emacs")
+           ,("M-C-S-e",           spawnOn emacsWs "emacs")
            ,("M-C-n",             startNheko)
-           ,("M-C-v",             spawnOn "windows" "vmplayer")
-           ,("M-C-s",             spawnOn "dev" "code")
+           ,("M-C-v",             spawnOn winWs "vmplayer")
+           ,("M-C-s",             spawnOn devWs "code")
              -- app.element.io
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                          \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
