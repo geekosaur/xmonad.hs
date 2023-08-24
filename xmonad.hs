@@ -42,7 +42,7 @@ import           XMonad.Prelude                           (fi, safeGetWindowAttr
 import qualified XMonad.StackSet                                                              as W
 
 import           Control.Concurrent                       (threadDelay)
-import           Data.List                                (isPrefixOf)
+-- import           Data.List                                (isPrefixOf)
 import           Data.Maybe                               (catMaybes)
 import           Data.Monoid
 import           Data.Ratio                               ((%))
@@ -182,10 +182,10 @@ main = do
                                 -- needed until and unless the new startNheko works
                                 ,className =? "nheko" --> doShift chatWs
                                 ,appName =? "sxiv" --> noTaskbar <> doShift spareWs
-                                ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
-                                 doFloatPlace
-                                ,appName =? "xfce4-terminal" <&&>
-                                 fmap ("crawl-" `isPrefixOf`) role --> doCenterFloat
+                                ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" --> doFloatPlace
+                                -- does this collide with the scratchpads?
+                                -- ,appName =? "xfce4-terminal" <&&>
+                                --  fmap ("crawl-" `isPrefixOf`) role --> doCenterFloat
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
