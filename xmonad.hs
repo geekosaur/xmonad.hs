@@ -179,7 +179,7 @@ main = do
                                 ,className =? "Trashapplet" --> doFloatPlace
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
-                                ,className =? "nheko" --> doShift chatWs
+                                -- ,className =? "nheko" --> doShift chatWs
                                 ,appName =? "sxiv" --> noTaskbar <> doShift spareWs
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" -->
                                  doFloatPlace
@@ -325,7 +325,7 @@ boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
 
 startNheko :: X ()
 startNheko =
-  spawnOn "irc" "flatpak run --env=TZ=UTC0 io.github.NhekoReborn.Nheko"
+  spawnOn chatWs "flatpak run --env=TZ=UTC0 io.github.NhekoReborn.Nheko"
   -- getProcessId >>= \p -> spawnOn "irc" ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
   --                                       show p ++ " io.github.NhekoReborn.Nheko")
 
