@@ -74,7 +74,9 @@ botsWs = "xmonadtrack"
 
 workspacen :: [String]
 workspacen =  [shellWs, emacsWs, mailWs, chatWs, refsWs, devWs,
-               winWs, crawlWs, gamesWs, spareWs, booksWs, botsWs]
+               winWs, crawlWs, gamesWs, spareWs, booksWs, botsWs,
+               -- these 4 are for testing
+               "spare1", "spare2", "spare3", "spare4"]
 
 scratchpads :: [NamedScratchpad]
 scratchpads = [NS "calc"
@@ -276,8 +278,8 @@ main = do
            ]
            ++
            -- greedyView -> view, so I stop breaking crawl etc. >.>
-           [ (otherModMasks ++ "M-" ++ [key], action tag)
-           | (tag, key)              <- zip workspacen "1234567890-="
+           [ (otherModMasks ++ "M-" ++ key, action tag)
+           | (tag, key) <- zip workspacen (words "1 2 3 4 5 6 7 8 9 0 - = <F1> <F2> <F3> <F4>")
            , (otherModMasks, action) <- [("", windows . W.view) -- was W.greedyView
                                         ,("S-", windows . W.shift)
                                         ]
