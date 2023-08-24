@@ -256,7 +256,7 @@ main = do
            ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
              -- debug windows; also see M-S-d above
            ,("M-C-S-8",           withFocused showWinRR)
-           ,("M-C-S-7",           spawn "xprop | xmessage -file -")
+           ,("M-C-S-7",           spawn "xprop | ${XMONAD_XMESSAGE:-xmessage} -file -")
            ,("M-C-S-6",           withFocused $ \w -> spawn $ "xprop -id " ++ show w ++ " | ${XMONAD_XMESSAGE:-xmessage} -file -")
            ,("M-C-S-5",           withFocused $ \w -> spawn $ "xwininfo -id " ++ show w ++ " -all | ${XMONAD_XMESSAGE:-xmessage} -file -")
            ,("M-b",               toggleBorders >> sendMessage ToggleStruts)
@@ -429,7 +429,7 @@ getWinRR w = do
 
 showWinRR :: Window -> X ()
 showWinRR w = do
-  p <- spawnPipe "xmessage -file -"
+  p <- spawnPipe "${XMONAD_XMESSAGE:-xmessage} -file -"
   getWinRR w >>= io . hPrint p
   io $ hClose p
 
