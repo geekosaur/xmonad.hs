@@ -58,6 +58,7 @@ baseConfig = debugManageHookOn "M-S-d" $
 
 shellWs, emacsWs, mailWs, chatWs, refsWs, devWs :: String
 winWs, crawlWs, gamesWs, spareWs, booksWs, botsWs :: String
+-- names subject to change next time I restart my session
 shellWs = "shell"
 emacsWs = "emacs"
 mailWs = "mail"
