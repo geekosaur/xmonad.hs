@@ -102,7 +102,7 @@ scratchpads = [NS "calc"
                   "mate-dictionary"
                   (appName =? "mate-dictionary")
                   (noTaskbar <> doFloatPlace)
-               -- _BSA_PSYS: see ~/.prompt.pl (dotty repo, if you care)
+               -- _BSA_PSYS: see ~/.prompt.pl and ~/.zshenv (dotty repo, if you care)
               ,NS "qterm"
                   "env _BSA_PSYS=qterm mate-terminal --disable-factory --hide-menubar --name=qterm"
                   (appName =? "qterm")
@@ -119,6 +119,10 @@ scratchpads = [NS "calc"
               ,remoteCrawl "cxc" -- xtahua.com
               ,remoteCrawl "cdo" -- develz.org
               ,remoteCrawl "cdi" -- dcss.io experimentals/debugging server
+               -- if you're wondering, the missing ones are:
+               --   cpo (Australia, and tiles-only)
+               --   ckr (Korean)
+               --   lld (Japanese)
               ,NS "uclock"
                   "dclock -name uclock -miltime -utc -fg chartreuse -bg DarkSlateGrey -led_off DarkGreen"
                   (appName =? "uclock")
