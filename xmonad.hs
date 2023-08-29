@@ -38,7 +38,10 @@ import           XMonad.Util.Run
 import           XMonad.Util.SessionStart
 import           XMonad.Util.Ungrab
 import           XMonad.Util.WorkspaceCompare
-import           XMonad.Prelude                           (fi, safeGetWindowAttributes, when)
+import           XMonad.Prelude                           (fi
+                                                          ,safeGetWindowAttributes
+                                                          ,when
+                                                          ,toUpper)
 import qualified XMonad.StackSet                                                              as W
 
 import           Control.Concurrent                       (threadDelay)
@@ -78,6 +81,14 @@ workspacen =  [shellWs, emacsWs, mailWs, chatWs, refsWs, devWs,
                -- these 4 are for testing
                "spare1", "spare2", "spare3", "spare4"]
 
+-- helper for crawl named scratchpads
+remoteCrawl svr = NS ("crawl-" ++ svr)
+                     ("xfce4-terminal --disable-server --role crawl-" ++ svr ++
+                      " --title=\"DCSS (" ++ map toUpper svr ++ ")\" --command=" ++
+                      svr ++ " --geometry=80x25")
+                     (role =? ("crawl-" ++ svr))
+                     (noTaskbar <> doFloatPlace)
+
 scratchpads :: [NamedScratchpad]
 scratchpads = [NS "calc"
                   -- @@@ perhaps assign a specific name or role for this
@@ -102,42 +113,13 @@ scratchpads = [NS "calc"
                                 \ --role crawl-local --title=DCSS --command=./crawl --geometry=81x25"
                   (role =? "crawl-local")
                   (noTaskbar <> doFloatPlace)
-               -- crawl on underhound.eu
-              ,NS "crawl-cue"
-                  "xfce4-terminal --disable-server \
-                                \ --role crawl-cue --title=\"DCSS (CUE)\" --command=cue --geometry=81x25"
-                  (role =? "crawl-cue")
-                  (noTaskbar <> doFloatPlace)
-               -- crawl on crawl.kelbi.org
-              ,NS "crawl-cko"
-                  "xfce4-terminal --disable-server \
-                                \ --role crawl-cko --title=\"DCSS (CKO)\" --command=cko --geometry=81x25"
-                  (role =? "crawl-cue")
-                  (noTaskbar <> doFloatPlace)
-               -- crawl on cbro.berotato.org
-              ,NS "crawl-cbro"
-                  "xfce4-terminal --disable-server \
-                                \ --role crawl-cbro --title=\"DCSS (CBRO)\" --command=cbro --geometry=81x25"
-                  (role =? "crawl-cue")
-                  (noTaskbar <> doFloatPlace)
-               -- crawl on crawl.akrasiac.org
-              ,NS "crawl-cao"
-                  "xfce4-terminal --disable-server \
-                                \ --role crawl-cao --title=\"DCSS (CAO)\" --command=cao --geometry=81x25"
-                  (role =? "crawl-cao")
-                  (noTaskbar <> doFloatPlace)
-               -- crawl on crawl.xtahua.com
-              ,NS "crawl-cxc"
-                  "xfce4-terminal --disable-server \
-                                \ --role crawl-cxc --title=\"DCSS (CXC)\" --command=cxc --geometry=81x25"
-                  (role =? "crawl-cxc")
-                  (noTaskbar <> doFloatPlace)
-               -- crawl on crawl.develz.org
-              ,NS "crawl-cdo"
-                  "xfce4-terminal --disable-server \
-                                \ --role crawl-cdo --title=\"DCSS (CDO)\" --command=cdo --geometry=81x25"
-                  (role =? "crawl-cxc")
-                  (noTaskbar <> doFloatPlace)
+              ,remoteCrawl "cue" -- underhound.eu
+              ,remoteCrawl "cko" -- kelbi.org
+              ,remoteCrawl "cbro" -- berotato.org
+              ,remoteCrawl "cao" -- akrasiac.org
+              ,remoteCrawl "cxc" -- xtahua.com
+              ,remoteCrawl "cdo" -- develz.org
+              ,remoteCrawl "cdi" -- dcss.io experimentals/debugging server
               ,NS "uclock"
                   -- freaking app-defaults...
                   "dclock -name uclock -miltime -utc -fg chartreuse -bg DarkSlateGrey -led_off DarkGreen"
