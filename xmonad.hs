@@ -45,7 +45,6 @@ import           XMonad.Prelude                           (fi
 import qualified XMonad.StackSet                                                              as W
 
 import           Control.Concurrent                       (threadDelay)
--- import           Data.List                                (isPrefixOf)
 import           Data.Maybe                               (catMaybes)
 import           Data.Monoid
 import           Data.Ratio                               ((%))
@@ -121,7 +120,6 @@ scratchpads = [NS "calc"
               ,remoteCrawl "cdo" -- develz.org
               ,remoteCrawl "cdi" -- dcss.io experimentals/debugging server
               ,NS "uclock"
-                  -- freaking app-defaults...
                   "dclock -name uclock -miltime -utc -fg chartreuse -bg DarkSlateGrey -led_off DarkGreen"
                   (appName =? "uclock")
                   (noTaskbar <+> doFloatAt (1694/1920) (3/1080))
@@ -165,9 +163,6 @@ main = do
                                 ,className =? "nheko" --> doShift chatWs
                                 ,appName =? "sxiv" --> noTaskbar <> doShift spareWs
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" --> doFloatPlace
-                                -- does this collide with the scratchpads?
-                                -- ,appName =? "xfce4-terminal" <&&>
-                                --  fmap ("crawl-" `isPrefixOf`) role --> doCenterFloat
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
