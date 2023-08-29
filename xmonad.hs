@@ -184,6 +184,7 @@ main = do
                                 notificationEventHook <>
                                 handleEventHook baseConfig
            ,startupHook       = startupHook baseConfig <>
+                                -- this is reportedly the wrong way to do it. But it works.
                                 addScreenCorner SCLowerLeft (spawn "mate-screensaver-command --activate;\
                                                                    \xset dpms force off") <>
                                 doOnce do
