@@ -41,17 +41,19 @@ import           XMonad.Util.WorkspaceCompare
 import           XMonad.Prelude                           (fi
                                                           ,safeGetWindowAttributes
                                                           ,when
-                                                          ,toUpper)
+                                                          ,toUpper
+                                                          ,findM)
 import qualified XMonad.StackSet                                                              as W
 
 import           Control.Concurrent                       (threadDelay)
-import           Data.Maybe                               (catMaybes)
+import           Data.Maybe                               (catMaybes
+                                                          ,isNothing)
 import           Data.Monoid
 import           Data.Ratio                               ((%))
-import           Data.Traversable
 import qualified DBus                                                                         as D
 import qualified DBus.Client                                                                  as D
-import           System.IO                                (hPrint, hClose)
+import           System.IO                                (hPrint
+                                                          ,hClose)
 
 -- sorry, I CBA to provide types for anything parameterized by layouts
 baseConfig = debugManageHookOn "M-S-d" $
@@ -433,5 +435,6 @@ unlessQuery q x = do
   d <- asks display
   r <- asks theRoot
   (_,_,ws) <- io $ queryTree d r
-  rs <- for ws $ runQuery q
-  when (null rs || not (or rs)) x
+  -- [Leary] is offended by my quick and dirty code :p
+  match <- findM (runQuery q) ws
+  when (isNothing match) x
