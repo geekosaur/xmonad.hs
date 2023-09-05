@@ -222,6 +222,7 @@ main = do
            ,("M-C-c a o",         namedScratchpadAction scratchpads "crawl-cao")
            ,("M-C-c x c",         namedScratchpadAction scratchpads "crawl-cxc")
            ,("M-C-c d o",         namedScratchpadAction scratchpads "crawl-cdo")
+           ,("M-C-c d i",         namedScratchpadAction scratchpads "crawl-cdi")
            ,("M-C-k",             namedScratchpadAction scratchpads "calc")
            ,("M-C-m",             namedScratchpadAction scratchpads "charmap")
            ,("M-C-d",             namedScratchpadAction scratchpads "dict")
