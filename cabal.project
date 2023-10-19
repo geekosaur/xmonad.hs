@@ -1,5 +1,1 @@
 packages: ./ X11/ X11-xft/ xmonad/ xmonad-contrib/
-optimization: 2
-
-package *
-  ghc-options: -split-sections -O2
