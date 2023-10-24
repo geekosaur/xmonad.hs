@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings #-} -- dbus insists on it. and it appears to be partial :(
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
@@ -364,7 +364,9 @@ getWellKnownName ch = do
 
 dbusOutput :: D.Client -> String -> IO ()
 dbusOutput ch s = do
-  let sig = (D.signal "/org/xmonad/Log" "org.xmonad.Log" "Update")
+  let sig = (D.signal "/org/xmonad/Log"
+                      "org.xmonad.Log"
+                      "Update")
             {D.signalBody = [D.toVariant s]}
   D.emit ch sig
 
