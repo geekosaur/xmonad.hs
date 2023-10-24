@@ -39,12 +39,13 @@ d="$(dirname "$output")"
 f="$(basename "$output")"
 first=0
 for exe in $EXE_NAME; do
-    echo "\$\$ cabal v2-install exe:$EXE_NAME --enable-executable-stripping --enable-optimizations=2 --installdir=$d --overwrite-policy=always $*"
+    echo "\$\$ cabal v2-install exe:$EXE_NAME --enable-executable-stripping --enable-optimizations=2 --installdir=$d --overwrite-policy=always --install-method=copy $*"
     cabal v2-install exe:"$EXE_NAME" \
 	  --enable-executable-stripping \
 	  --enable-optimization=2 \
 	  --installdir="$d" \
 	  --overwrite-policy=always \
+	  --install-method=copy \
 	  ${1+"$@"}
     # NB. a cabal bug may mean it doesn't actually get stripped
     # we assume the first executable in the list is the new xmonad
