@@ -191,7 +191,10 @@ main = do
                                   mateRegister
                                   spawn "exec picom -cfb --backend=glx"
                                   spawn "exec \"$HOME/.screenlayout/default.sh\""
-                                  spawnOn "shell" "mate-terminal"
+                                  spawnOn shellWs "mate-terminal --disable-factory"
+                                  spawnOn shellWs "mate-terminal --disable-factory"
+                                  spawnOn botsWs "mate-terminal --disable-factory"
+                                  spawnOn botsWs "mate-terminal --disable-factory"
                                   -- if I have to restart xmonad because it crashed, these two will complain
                                   -- (hexchat's configured to regain my nick, so it'll get into fights if two
                                   -- are running; emacs complains about emacs-server and desktop file)
