@@ -187,7 +187,7 @@ main = do
                                 handleEventHook baseConfig
            ,startupHook       = startupHook baseConfig <>
                                 -- this is reportedly the wrong way to do it. But it works.
-                                addScreenCorner SCLowerLeft (spawn "mate-screensaver-command --activate;\
+                                addScreenCorner SCLowerRight (spawn "mate-screensaver-command --activate;\
                                                                    \xset dpms force off") <>
                                 doOnce do
                                   mateRegister
@@ -235,7 +235,7 @@ main = do
            ,("M-C-u",             namedScratchpadAction scratchpads "uclock")
            ,("M-<Right>",         moveTo Next hiddenWS)
            ,("M-<Left>",          moveTo Prev hiddenWS)
-           ,("M-S-`",             withFocused $ sendMessage . maximizeRestore)
+           ,("M-C-`",             withFocused $ sendMessage . maximizeRestore)
            ,("M-S-p",             mateRun)
            ,("M-p",               shellPrompt myXPConfig)
            ,("M-S-q",             mateShutdown)
@@ -303,7 +303,7 @@ basic1 = Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed ||| TwoPane 0.03 0.5
 basic2 = qSimpleTabbed ||| TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5)
 
 qSimpleTabbed = renamed [CutWordsRight 1] $
-                tabbed shrinkText def {fontName = "xft:Mono-8"}
+                tabbed shrinkText def {fontName = "xft:Mono-7"}
  
 sounds :: String
 sounds = "/usr/share/sounds/freedesktop/stereo"
@@ -337,7 +337,7 @@ notificationEventHook _ = return (All True)
 
 myXPConfig :: XPConfig
 myXPConfig = greenXPConfig {promptKeymap = emacsLikeXPKeymap
-                           ,font         = "xft:Mono-9"
+                           ,font         = "xft:Mono-7"
                            }
 
 logTitle :: D.Client -> X ()
