@@ -337,7 +337,7 @@ notificationEventHook _ = return (All True)
 
 myXPConfig :: XPConfig
 myXPConfig = greenXPConfig {promptKeymap = emacsLikeXPKeymap
-                           ,font         = "xft:Mono-7"
+                           ,font         = "xft:Mono-6"
                            }
 
 logTitle :: D.Client -> X ()
