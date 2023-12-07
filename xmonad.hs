@@ -188,7 +188,7 @@ main = do
            ,startupHook       = startupHook baseConfig <>
                                 -- this is reportedly the wrong way to do it. But it works.
                                 addScreenCorner SCLowerRight (spawn "mate-screensaver-command --activate;\
-                                                                   \xset dpms force off") <>
+                                                                    \xset dpms force off") <>
                                 doOnce do
                                   mateRegister
                                   spawn "exec picom -cfb --backend=glx"
