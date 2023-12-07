@@ -146,6 +146,7 @@ main = do
            ,normalBorderColor = "#444542" -- @@ from MATE theme
            ,focusFollowsMouse = False
            ,clickJustFocuses  = False
+           ,terminal          = terminal baseConfig ++ " --disable-factory"
            ,layoutHook        = screenCornerLayoutHook $
                                 renamed [CutWordsLeft 3] $
                                 draggingVisualizer $
@@ -169,8 +170,6 @@ main = do
                                 -- needed until and unless the new startNheko works
                                 ,className =? "nheko" --> doShift chatWs
                                 ,appName =? "sxiv" --> noTaskbar <> doShift spareWs
-                                ,role =? "shell" --> doShift shellWs
-                                ,role =? "bot" --> doShift botsWs
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" --> doFloatPlace
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
@@ -194,10 +193,10 @@ main = do
                                   mateRegister
                                   spawn "exec picom -cfb --backend=glx"
                                   spawn "exec \"$HOME/.screenlayout/default.sh\""
-                                  spawn "mate-terminal --role=shell"
-                                  spawn "mate-terminal --role=shell"
-                                  spawn "mate-terminal --role=bot"
-                                  spawn "mate-terminal --role=bot"
+                                  asks (terminal . config) >>= spawnOn shellWs
+                                  asks (terminal . config) >>= spawnOn shellWs
+                                  asks (terminal . config) >>= spawnOn botsWs
+                                  asks (terminal . config) >>= spawnOn botsWs
                                   -- if I have to restart xmonad because it crashed, these two will complain
                                   -- (hexchat's configured to regain my nick, so it'll get into fights if two
                                   -- are running; emacs complains about emacs-server and desktop file)
