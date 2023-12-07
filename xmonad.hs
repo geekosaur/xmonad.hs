@@ -83,6 +83,7 @@ workspacen =  [shellWs, emacsWs, mailWs, chatWs, refsWs, devWs,
                "spare1", "spare2", "spare3", "spare4"]
 
 -- helper for crawl named scratchpads
+remoteCrawl :: [Char] -> NamedScratchpad
 remoteCrawl svr = NS ("crawl-" ++ svr)
                      ("xfce4-terminal --disable-server --role crawl-" ++ svr ++
                       " --title=\"DCSS (" ++ map toUpper svr ++ ")\" --command=" ++
