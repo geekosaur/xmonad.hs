@@ -36,7 +36,6 @@ import           XMonad.Util.NamedScratchpad
 import           XMonad.Util.NoTaskbar
 import           XMonad.Util.Run
 import           XMonad.Util.SessionStart
-import           XMonad.Util.Ungrab
 import           XMonad.Util.WorkspaceCompare
 import           XMonad.Prelude                           (fi
                                                           ,safeGetWindowAttributes
