@@ -54,6 +54,8 @@ import qualified DBus.Client                                                    
 import           System.IO                                (hPrint
                                                           ,hClose)
 
+import XMonad.Layout.ToggleLayouts
+
 -- sorry, I CBA to provide types for anything parameterized by layouts
 baseConfig = debugManageHookOn "M-S-d" $
              ewmhFullscreen -- ($)
@@ -152,6 +154,7 @@ main = do
                                 minimize $
                                 maximize $
                                 lessBorders OnlyScreenFloat $
+                                toggleLayouts Full (
                                 onWorkspace winWs (avoidStrutsOn [] Full) $
                                 avoidStruts $
                                 onWorkspace chatWs basic1 $
@@ -161,6 +164,7 @@ main = do
                                 onWorkspace spareWs emptyBSP $
                                 onWorkspace emacsWs basic2 $
                                 id basic -- shut up hlint (I append layout modifiers for testing a lot)
+                                )
            ,manageHook        = composeAll
                                 [appName =? "xmessage" --> doCenterFloat
                                 ,className =? "Trashapplet" --> doFloatPlace
@@ -216,6 +220,7 @@ main = do
            ,("M-C-n",             startNheko)
            ,("M-C-v",             spawnOn winWs "vmplayer")
            ,("M-C-s",             spawnOn devWs "code")
+           ,("M-C-f", sendMessage ToggleLayout)
              -- app.element.io
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                          \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
