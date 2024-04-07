@@ -115,12 +115,11 @@ scratchpads = [NS "calc"
                   (role =? "crawl-local")
                   (noTaskbar <> doFloatPlace)
               ,remoteCrawl "cue" -- underhound.eu
-              ,remoteCrawl "cko" -- kelbi.org
               ,remoteCrawl "cbro" -- berotato.org
               ,remoteCrawl "cao" -- akrasiac.org
               ,remoteCrawl "cxc" -- xtahua.com
               ,remoteCrawl "cdo" -- develz.org
-              ,remoteCrawl "cdi" -- dcss.io experimentals/debugging server
+              ,remoteCrawl "cdi" -- dcss.io
                -- if you're wondering, the missing ones are:
                --   cpo (Australia, and tiles-only)
                --   ckr (Korean)
