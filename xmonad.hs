@@ -138,7 +138,7 @@ main = do
   getWellKnownName dbus
   -- do it to it
   xmonad $ withUrgencyHook NoUrgencyHook
-         $ rescreenHook badHdmiConnector
+         $ rescreenHook (RescreenConfig reApplyARandR reApplyARandR)
          $ baseConfig
            {modMask           = mod4Mask
            ,workspaces        = workspacen
@@ -322,9 +322,6 @@ startNheko =
   spawn "flatpak run --env=TZ=UTC0 im.nheko.Nheko"
   -- getProcessId >>= \p -> spawnOn chatWs ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
   --                                       show p ++ " io.github.NhekoReborn.Nheko")
-
-badHdmiConnector :: RescreenConfig
-badHdmiConnector = RescreenConfig reApplyARandR reApplyARandR
 
 reApplyARandR :: X ()
 reApplyARandR = spawn "exec \"$HOME/.screenlayout/default.sh\""
