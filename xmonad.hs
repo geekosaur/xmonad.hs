@@ -18,6 +18,7 @@ import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
+import           XMonad.Hooks.Rescreen
 import           XMonad.Hooks.ScreenCorners
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Layout.BinarySpacePartition
@@ -136,7 +137,9 @@ main = do
   dbus <- D.connectSession
   getWellKnownName dbus
   -- do it to it
-  xmonad $ withUrgencyHook NoUrgencyHook baseConfig
+  xmonad $ withUrgencyHook NoUrgencyHook
+         $ rescreenHook badHdmiConnector
+         $ baseConfig
            {modMask           = mod4Mask
            ,workspaces        = workspacen
            ,borderWidth       = 2
@@ -190,7 +193,7 @@ main = do
                                 doOnce do
                                   mateRegister
                                   spawn "exec picom -cfb --backend=glx"
-                                  spawn "exec \"$HOME/.screenlayout/default.sh\""
+                                  reApplyARandR
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn botsWs
@@ -319,6 +322,12 @@ startNheko =
   spawn "flatpak run --env=TZ=UTC0 im.nheko.Nheko"
   -- getProcessId >>= \p -> spawnOn chatWs ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
   --                                       show p ++ " io.github.NhekoReborn.Nheko")
+
+badHdmiConnector :: RescreenConfig
+badHdmiConnector = RescreenConfig reApplyARandR reApplyARandR
+
+reApplyARandR :: X ()
+reApplyARandR = spawn "exec \"$HOME/.screenlayout/default.sh\""
 
 -- this needs to be cleaned up
 notificationEventHook :: Event -> X All
