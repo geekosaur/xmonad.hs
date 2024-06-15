@@ -197,7 +197,6 @@ main = do
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn botsWs
-                                  asks (terminal . config) >>= spawnOn botsWs
                                   -- if I have to restart xmonad because it crashed, these two will complain
                                   -- (hexchat's configured to regain my nick, so it'll get into fights if two
                                   -- are running; emacs complains about emacs-server and desktop file)
