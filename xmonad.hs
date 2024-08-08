@@ -123,7 +123,7 @@ scratchpads = [NS "calc"
               ,remoteCrawl "cdi" -- dcss.io
                -- if you're wondering, the missing ones are:
                --   cpo (Australia, and tiles-only)
-               --   ckr (Korean)
+               --   cnc (Korean)
                --   lld (Japanese)
               ,NS "uclock"
                   "dclock -name uclock -miltime -utc -fg chartreuse -bg DarkSlateGrey -led_off DarkGreen"
@@ -276,7 +276,8 @@ main = do
                                         ]
            ]
            `additionalMouseBindings`
-           [((mod4Mask .|. controlMask, button1), dragWindow)]
+           [((mod4Mask .|. controlMask, button1), dragWindow)
+           ]
 
 -- @@@ not quite right... refresh? (hacked above)
 -- @@@@ and cast still doesn't dtrt. possibly chrome's fail
@@ -317,8 +318,9 @@ boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
 startNheko :: X ()
 startNheko =
   -- spawnOn won't work unless the pid is exposed, but I have low confidence in that version
+  -- XDG_CURRENT_DESKTOP works around a crash on right-click
   -- spawn "flatpak run --env=TZ=UTC0 io.github.NhekoReborn.Nheko"
-  spawn "flatpak run --env=TZ=UTC0 im.nheko.Nheko"
+  spawn "flatpak run --env=TZ=UTC0 --env=XDG_CURRENT_DESKTOP= im.nheko.Nheko"
   -- getProcessId >>= \p -> spawnOn chatWs ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
   --                                       show p ++ " io.github.NhekoReborn.Nheko")
 

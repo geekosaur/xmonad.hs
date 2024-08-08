@@ -18,7 +18,8 @@ executable xmonad-bsa
   default-language: Haskell2010
   ghc-options:      -Wall -fno-warn-missing-signatures
   build-depends:    base >= 4.14 && < 5,
-                    unix >= 2.7 && < 3,
+		    -- api change in 2.8
+                    unix ^>= 2.7,
                     xmonad >= 0.18.0.9 && < 0.19,
                     xmonad-contrib >= 0.18.0.9 && < 0.19,
                     dbus >= 1.2.22 && < 1.3,
