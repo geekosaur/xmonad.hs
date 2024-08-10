@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-} -- dbus insists on it. and it appears to be partial :(
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use <&>" #-}
 {-# HLINT ignore "Redundant id" #-}
@@ -38,14 +39,18 @@ import           XMonad.Util.NoTaskbar
 import           XMonad.Util.Run
 import           XMonad.Util.SessionStart
 import           XMonad.Util.WorkspaceCompare
+
 import           XMonad.Prelude                           (fi
                                                           ,safeGetWindowAttributes
                                                           ,when
                                                           ,toUpper
-                                                          ,findM)
+                                                          ,findM
+                                                          ,void)
 import qualified XMonad.StackSet                                                              as W
 
 import           Control.Concurrent                       (threadDelay)
+import           Control.Exception                        (handle
+                                                          ,IOException)
 import           Data.Maybe                               (catMaybes
                                                           ,isNothing)
 import           Data.Monoid
@@ -54,6 +59,7 @@ import qualified DBus                                                           
 import qualified DBus.Client                                                                  as D
 import           System.IO                                (hPrint
                                                           ,hClose)
+import           System.Posix.IO
 
 -- sorry, I CBA to provide types for anything parameterized by layouts
 baseConfig = debugManageHookOn "M-S-d" $
@@ -133,6 +139,14 @@ scratchpads = [NS "calc"
 
 main :: IO ()
 main = do
+  -- gdm is logging to syslog, which is also being mangled by some amdgpu
+  -- misconfiguration I'm still trying to sort out
+  void $ handle (\(_ :: IOException) -> return ()) $ closeFd stdInput
+  void $ openFd "/dev/null" ReadOnly Nothing defaultFileFlags
+  void $ handle (\(_ :: IOException) -> return ()) $ closeFd stdOutput
+  void $ openFd "/home/allbery/.cache/xmonad/xmonad.log" ReadWrite (Just 0o644) defaultFileFlags {trunc = True}
+  void $ handle (\(_ :: IOException) -> return ()) $ closeFd stdError
+  void $ dupTo stdOutput stdError
   -- xmonad log applet
   dbus <- D.connectSession
   getWellKnownName dbus
