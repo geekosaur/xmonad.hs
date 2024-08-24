@@ -316,8 +316,15 @@ basic = TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed
 basic1 = Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed ||| TwoPane 0.03 0.5
 basic2 = qSimpleTabbed ||| TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5)
 
+-- note on the font here and in `myXPConfig`: I've got a QHD laptop. had to
+-- replace the external monitor (formerly fullHD) with QHD to get any semblance
+-- of sanity from X11, and it's still not very; I need very small font sizes
+-- (and other UI elements when possible) to avoid everything being in "easy
+-- reader" mode.
+--
+-- suffice it to say I'm now one of those waiting on xmonad-for-wayland…
 qSimpleTabbed = renamed [CutWordsRight 1] $
-                tabbed shrinkText def {fontName = "xft:Mono-7"}
+                tabbed shrinkText def {fontName = "xft:Mono-6"}
  
 sounds :: String
 sounds = "/usr/share/sounds/freedesktop/stereo"
