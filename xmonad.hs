@@ -254,10 +254,6 @@ main = do
            ,("M-p",               shellPrompt myXPConfig)
            ,("M-S-q",             mateShutdown)
            ,("M-C-S-q",           mateLogout)
-             -- multiple-screen shot
-           ,("M-S-s",             unGrab >> spawn "scrot -m ~/Downloads/screenshotM-%Y%m%dT%H%M%S.png")
-             -- focused window shot
-           ,("M-S-w",             unGrab >> spawn "scrot -u ~/Downloads/screenshotF-%Y%m%dT%H%M%S.png")
            ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
              -- debug windows; also see M-S-d above
            ,("M-C-S-8",           withFocused showWinRR)
