@@ -233,7 +233,7 @@ main = do
            ,("M-C-s",             spawnOn devWs "code")
              -- app.element.io
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
-                                                                         \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
+                                                                        \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
            ,("M-C-c l",           namedScratchpadAction scratchpads "crawl-local")
            ,("M-C-c u e",         namedScratchpadAction scratchpads "crawl-cue")
            ,("M-C-c k o",         namedScratchpadAction scratchpads "crawl-cko")
