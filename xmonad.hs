@@ -225,6 +225,7 @@ main = do
            }
            `additionalKeysP`
            [("M-C-g",             spawnHere "google-chrome")
+           ,("M-C-S-g",           spawnHere "firefox")
            ,("M-C-e",             spawnHere "emacsclient -c")
            ,("M-C-S-e",           spawnOn emacsWs "emacs")
            ,("M-C-n",             startNheko)
