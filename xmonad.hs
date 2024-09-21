@@ -254,6 +254,7 @@ main = do
            ,("M-p",               shellPrompt myXPConfig)
            ,("M-S-q",             mateShutdown)
            ,("M-C-S-q",           mateLogout)
+           ,("M-C-S-u",           spawn "update-manager")
            ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
              -- debug windows; also see M-S-d above
            ,("M-C-S-8",           withFocused showWinRR)
