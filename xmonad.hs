@@ -135,6 +135,10 @@ scratchpads = [NS "calc"
                   "dclock -name uclock -miltime -utc -fg chartreuse -bg DarkSlateGrey -led_off DarkGreen"
                   (appName =? "uclock")
                   (noTaskbar <> doFloatAt (1694/1920) (3/1080))
+              ,NS "lclock"
+                  "dclock -name lclock -miltime -fade -fg yellow -bg sienna4 -led_off DarkGoldenrod4"
+                  (appName =? "lclock")
+                  (noTaskbar <> doFloatAt (1694/1920) (3/1080))
               ]
 
 main :: IO ()
@@ -249,6 +253,7 @@ main = do
            ,("M-C-d",             namedScratchpadAction scratchpads "dict")
            ,("M-x",               namedScratchpadAction scratchpads "qterm")
            ,("M-C-u",             namedScratchpadAction scratchpads "uclock")
+           ,("M-C-l",             namedScratchpadAction scratchpads "lclock")
            ,("M-<Right>",         moveTo Next hiddenWS)
            ,("M-<Left>",          moveTo Prev hiddenWS)
            ,("M-C-`",             withFocused $ sendMessage . maximizeRestore)
