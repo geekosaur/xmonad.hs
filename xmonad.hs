@@ -257,6 +257,7 @@ main = do
            ,("M-S-q",             mateShutdown)
            ,("M-C-S-q",           mateLogout)
            ,("M-C-S-u",           spawn "update-manager")
+           ,("M-C-S-s",           spawn "mate-control-center")
            ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
              -- debug windows; also see M-S-d above
            ,("M-C-S-w r",         withFocused showWinRR)
