@@ -215,6 +215,7 @@ main = do
                                   -- are running; emacs complains about emacs-server and desktop file)
                                   -- (found by discovering xmonad-contrib#753)
                                   -- unlessQuery (appName =? "emacs") $ spawnOn emacsWs "emacs"
+                                  unlessQuery (appName =? "sublime_text") $ spawnOn emacsWs "subl"
                                   unlessQuery (appName =? "io.github.NhekoReborn.Nheko") startNheko
                                   io $ threadDelay 3000000
                                   unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
@@ -230,7 +231,7 @@ main = do
            ,("M-C-S-e",           spawnOn emacsWs "emacs")
            ,("M-C-n",             startNheko)
            ,("M-C-v",             spawnOn winWs "vmplayer")
-           ,("M-C-s",             spawnOn emacsWs "code")
+           ,("M-C-s",             spawnOn devWs "code")
              -- app.element.io
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                         \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
@@ -257,10 +258,10 @@ main = do
            ,("M-C-S-u",           spawn "update-manager")
            ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
              -- debug windows; also see M-S-d above
-           ,("M-C-S-8",           withFocused showWinRR)
-           ,("M-C-S-7",           spawn "xprop | ${XMONAD_XMESSAGE:-xmessage} -file -")
-           ,("M-C-S-6",           withFocused $ \w -> spawn $ "xprop -id " ++ show w ++ " | ${XMONAD_XMESSAGE:-xmessage} -file -")
-           ,("M-C-S-5",           withFocused $ \w -> spawn $ "xwininfo -id " ++ show w ++ " -all | ${XMONAD_XMESSAGE:-xmessage} -file -")
+           ,("M-C-S-w r",         withFocused showWinRR)
+           ,("M-C-S-w p",         spawn "xprop | ${XMONAD_XMESSAGE:-xmessage} -file -")
+           ,("M-C-S-w f",         withFocused $ \w -> spawn $ "xprop -id " ++ show w ++ " | ${XMONAD_XMESSAGE:-xmessage} -file -")
+           ,("M-C-S-w i",         withFocused $ \w -> spawn $ "xwininfo -id " ++ show w ++ " -all | ${XMONAD_XMESSAGE:-xmessage} -file -")
            ,("M-b",               toggleBorders >> sendMessage ToggleStruts)
              -- BSP actions
            ,("M-C-S-p <Left>",    sendMessage $ ExpandTowards L)
