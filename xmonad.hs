@@ -214,7 +214,7 @@ main = do
                                   -- (hexchat's configured to regain my nick, so it'll get into fights if two
                                   -- are running; emacs complains about emacs-server and desktop file)
                                   -- (found by discovering xmonad-contrib#753)
-                                  unlessQuery (appName =? "emacs") $ spawnOn emacsWs "emacs"
+                                  -- unlessQuery (appName =? "emacs") $ spawnOn emacsWs "emacs"
                                   unlessQuery (appName =? "io.github.NhekoReborn.Nheko") startNheko
                                   io $ threadDelay 3000000
                                   unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
@@ -230,7 +230,7 @@ main = do
            ,("M-C-S-e",           spawnOn emacsWs "emacs")
            ,("M-C-n",             startNheko)
            ,("M-C-v",             spawnOn winWs "vmplayer")
-           ,("M-C-s",             spawnOn devWs "code")
+           ,("M-C-s",             spawnOn emacsWs "code")
              -- app.element.io
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                         \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
@@ -374,7 +374,7 @@ logTitle ch = dynamicLogWithPP def
                                ,ppTitle           = unPango
                                ,ppLayout          = unPango
                                ,ppWsSep           = " "
-                               ,ppSep             = "⋮"
+                               ,ppSep             = " ⋮ "
                                ,ppOrder           = swapIcons
                                ,ppSort            = getSortByXineramaPhysicalRule horizontalScreenOrderer
                                ,ppOutput          = dbusOutput ch
