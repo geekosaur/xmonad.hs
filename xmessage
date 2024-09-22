@@ -130,7 +130,9 @@ while (@ARGV) {
 # either $mfile is a file with the message, or @ARGV is the message
 # matching the title/class/name to keep manageHooks etc. happy
 # @@@ debian etc. may still have a zenity lacking --no-markup
-my @zenity = qw(zenity --no-markup --title=xmessage --class=Xmessage --name=xmessage);
+# @@@ ubuntu 24.04 no longer has --class or --name; screws manageHook!
+#my @zenity = qw(zenity --no-markup --title=xmessage --class=Xmessage --name=xmessage);
+my @zenity = qw(zenity --no-markup --title=xmessage);
 if (defined $mfile) {
   exec @zenity, '--text-info', "--filename=$mfile";
 } else {

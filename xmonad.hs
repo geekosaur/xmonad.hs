@@ -179,6 +179,7 @@ main = do
                                 id basic -- shut up hlint (I append layout modifiers for testing a lot)
            ,manageHook        = composeAll
                                 [appName =? "xmessage" --> doCenterFloat
+                                ,appName =? "zenity" --> doCenterFloat
                                 ,className =? "Trashapplet" --> doFloatPlace
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
