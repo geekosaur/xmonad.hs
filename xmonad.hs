@@ -340,12 +340,13 @@ startNheko =
   -- spawnOn won't work unless the pid is exposed, but I have low confidence in that version
   -- XDG_CURRENT_DESKTOP works around a crash on right-click
   -- spawn "flatpak run --env=TZ=UTC0 io.github.NhekoReborn.Nheko"
-  spawn "flatpak run --env=TZ=UTC0 --env=XDG_CURRENT_DESKTOP= im.nheko.Nheko"
+  spawn "flatpak run --env=TZ=UTC0 --env=XDG_CURRENT_DESKTOP= --env=QT_SCALE_FACTOR=1.5 im.nheko.Nheko"
   -- getProcessId >>= \p -> spawnOn chatWs ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
   --                                       show p ++ " io.github.NhekoReborn.Nheko")
 
 reApplyARandR :: X ()
-reApplyARandR = spawn "exec \"$HOME/.screenlayout/default.sh\""
+-- reApplyARandR = spawn "exec \"$HOME/.screenlayout/default.sh\""
+reApplyARandR = return () -- apparently MATE finally fixed mate-display-properties!
 
 -- this needs to be cleaned up
 notificationEventHook :: Event -> X All
