@@ -134,11 +134,11 @@ scratchpads = [NS "calc"
               ,NS "uclock"
                   "dclock -name uclock -miltime -utc -fg chartreuse -bg DarkSlateGrey -led_off DarkGreen"
                   (appName =? "uclock")
-                  (noTaskbar <> doFloatAt (1694/1920) (3/1080))
+                  (noTaskbar <> doFloatAt (1730/1920) (6/1080))
               ,NS "lclock"
                   "dclock -name lclock -miltime -fade -fg yellow -bg sienna4 -led_off DarkGoldenrod4"
                   (appName =? "lclock")
-                  (noTaskbar <> doFloatAt (1694/1920) (3/1080))
+                  (noTaskbar <> doFloatAt (1730/1920) (6/1080))
               ]
 
 main :: IO ()
