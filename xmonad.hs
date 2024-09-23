@@ -207,7 +207,7 @@ main = do
                                 handleEventHook baseConfig
            ,startupHook       = startupHook baseConfig <>
                                 -- this is reportedly the wrong way to do it. But it works.
-                                addScreenCorner SCLowerRight (spawn "mate-screensaver-command --activate;\
+                                addScreenCorner SCUpperRight (spawn "mate-screensaver-command --activate;\
                                                                     \xset dpms force off") <>
                                 doOnce do
                                   mateRegister
