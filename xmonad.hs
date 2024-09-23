@@ -351,8 +351,8 @@ startNheko =
   --                                       show p ++ " io.github.NhekoReborn.Nheko")
 
 reApplyARandR :: X ()
--- reApplyARandR = spawn "exec \"$HOME/.screenlayout/default.sh\""
-reApplyARandR = return () -- apparently MATE finally fixed mate-display-properties!
+reApplyARandR = spawn "exec \"$HOME/.screenlayout/default.sh\"" -- whoops: worked exactly once
+-- reApplyARandR = return () -- apparently MATE finally fixed mate-display-properties!
 
 -- this needs to be cleaned up
 notificationEventHook :: Event -> X All
