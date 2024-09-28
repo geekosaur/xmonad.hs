@@ -62,7 +62,7 @@ import           System.IO                                (hPrint
 import           System.Posix.IO
 
 -- sorry, I CBA to provide types for anything parameterized by layouts
-baseConfig = debugManageHookOn "M-S-d" $
+baseConfig = debugManageHook $ -- On "M-S-d" $
              ewmhFullscreen -- ($)
              mateConfig
 
@@ -226,11 +226,11 @@ main = do
                                   unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
                                   io $ threadDelay 3000000
                                   -- @@@ starts multi windows, placing them automatically will not fly :/
-                                  unlessQuery (appName =? "google-chrome") $ spawnOn mailWs "google-chrome"
+                                  unlessQuery (appName =? "google-chrome") $ spawnOn mailWs "google-chrome --force-device-scale-factor=1.5"
                                   setSessionStarted
            }
            `additionalKeysP`
-           [("M-C-g",             spawnHere "google-chrome")
+           [("M-C-g",             spawnHere "google-chrome --force-device-scale-factor=1.5")
            ,("M-C-S-g",           spawnHere "firefox")
            ,("M-C-e",             spawnHere "emacsclient -c")
            ,("M-C-S-e",           spawnOn emacsWs "emacs")
@@ -239,6 +239,7 @@ main = do
            ,("M-C-s",             spawnOn devWs "code")
              -- app.element.io
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
+                                                                        \ --force-device-scale-factor=1.5 \
                                                                         \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
            ,("M-C-c l",           namedScratchpadAction scratchpads "crawl-local")
            ,("M-C-c u e",         namedScratchpadAction scratchpads "crawl-cue")
