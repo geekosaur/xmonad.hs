@@ -117,6 +117,9 @@ while (@ARGV) {
       degrade();
     }
   }
+  elsif ($arg eq '-center') {
+    # ignore it
+  }
   elsif ($arg !~ /^-/) {
     unshift @ARGV, $arg;
     last;
