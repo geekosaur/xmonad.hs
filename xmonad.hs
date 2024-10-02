@@ -13,6 +13,7 @@ import           XMonad.Actions.TiledWindowDragging
 import           XMonad.Actions.SpawnOn
 import           XMonad.Config.Mate
 import           XMonad.Hooks.StatusBar.PP
+-- import           XMonad.Hooks.DebugEvents
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.ManageDebug
 import           XMonad.Hooks.ManageDocks
