@@ -3,5 +3,5 @@ count=$(xrandr --listactivemonitors | sed '1{;s/Monitors: //;q;}')
 if [ "$count" -eq 1 ]; then
     xrandr --output eDP --primary --mode 2256x1504 --pos 0x0 --rotate normal --output DisplayPort-0 --off --output DisplayPort-1 --off --output DisplayPort-2 --off --output DisplayPort-3 --off --output DisplayPort-4 --off --output DisplayPort-5 --off --output DisplayPort-6 --off --output DisplayPort-7 --off
 else
-    xrandr --output eDP --primary --mode 2256x1504 --pos 2560x0 --rotate normal --output DisplayPort-0 --off --output DisplayPort-1 --mode 1920x1080 --pos 4816x0 --rotate normal --scale 1.5 --output DisplayPort-2 --mode 2560x1440 --pos 0x0 --rotate normal --output DisplayPort-3 --off --output DisplayPort-4 --off --output DisplayPort-5 --off --output DisplayPort-6 --off --output DisplayPort-7 --off
+    xrandr --output eDP --primary --mode 2256x1504 --pos 3840x0 --rotate normal --output DisplayPort-0 --off --output DisplayPort-1 --off --output DisplayPort-2 --mode 2560x1440 --pos 0x0 --rotate normal --output DisplayPort-3 --off --output DisplayPort-4 --off --output DisplayPort-5 --off --output DisplayPort-6 --off --output DisplayPort-7 --off --output DisplayPort-8 --off --output DisplayPort-9 --off --output DisplayPort-10 --off --output DisplayPort-11 --mode 2560x1440 --pos 6096x0 --rotate normal
 fi
