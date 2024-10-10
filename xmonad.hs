@@ -21,6 +21,7 @@ import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
 import           XMonad.Hooks.Rescreen
+import           XMonad.Hooks.ScreenCorners
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Layout.BinarySpacePartition
 import           XMonad.Layout.DraggingVisualizer
@@ -166,7 +167,8 @@ main = do
            ,focusFollowsMouse = False
            ,clickJustFocuses  = False
            ,terminal          = terminal baseConfig ++ " --disable-factory"
-           ,layoutHook        = renamed [CutWordsLeft 3] $
+           ,layoutHook        = screenCornerLayoutHook $
+                                renamed [CutWordsLeft 3] $
                                 draggingVisualizer $
                                 minimize $
                                 maximize $
@@ -201,9 +203,11 @@ main = do
                                 setWorkArea -- @@@ HAAACK
            ,handleEventHook   = debuggering <>
                                 minimizeEventHook <>
+                                screenCornerEventHook <>
                                 notificationEventHook <>
                                 handleEventHook baseConfig
            ,startupHook       = startupHook baseConfig <>
+                                addScreenCorner SCUpperRight (spawn "mate-screensaver-command --activate") <>
                                 doOnce do
                                   mateRegister
                                   spawn "exec picom -cfb --backend=glx"
