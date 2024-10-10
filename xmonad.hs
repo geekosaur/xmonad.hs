@@ -227,20 +227,20 @@ main = do
                                   unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
                                   io $ threadDelay 3000000
                                   -- @@@ starts multi windows, placing them automatically will not fly :/
-                                  unlessQuery (appName =? "google-chrome") $ spawnOn mailWs "google-chrome --force-device-scale-factor=1.5"
+                                  unlessQuery (appName =? "google-chrome") $ spawnOn mailWs "google-chrome --force-device-scale-factor=1.0"
                                   setSessionStarted
            }
            `additionalKeysP`
-           [("M-C-g",             spawnHere "google-chrome --force-device-scale-factor=1.5")
+           [("M-C-g",             spawnHere "google-chrome --force-device-scale-factor=1.0")
            ,("M-C-S-g",           spawnHere "firefox")
            ,("M-C-e",             spawnHere "emacsclient -c")
            ,("M-C-S-e",           spawnOn emacsWs "emacs")
            ,("M-C-n",             startNheko)
            ,("M-C-v",             spawnOn winWs "vmplayer")
-           ,("M-C-s",             spawnOn devWs "code")
+           ,("M-C-s",             spawnOn devWs "code --force-device-scale-factor=1.5")
              -- app.element.io
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
-                                                                        \ --force-device-scale-factor=1.5 \
+                                                                        \ --force-device-scale-factor=1.0 \
                                                                         \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
            ,("M-C-c l",           namedScratchpadAction scratchpads "crawl-local")
            ,("M-C-c u e",         namedScratchpadAction scratchpads "crawl-cue")
@@ -348,7 +348,7 @@ startNheko =
   -- spawnOn won't work unless the pid is exposed, but I have low confidence in that version
   -- XDG_CURRENT_DESKTOP works around a crash on right-click
   -- spawn "flatpak run --env=TZ=UTC0 io.github.NhekoReborn.Nheko"
-  spawn "flatpak run --env=TZ=UTC0 --env=XDG_CURRENT_DESKTOP= --env=QT_SCALE_FACTOR=1.5 im.nheko.Nheko"
+  spawn "flatpak run --env=TZ=UTC0 --env=XDG_CURRENT_DESKTOP= --env=QT_SCALE_FACTOR=2.0 im.nheko.Nheko"
   -- getProcessId >>= \p -> spawnOn chatWs ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
   --                                       show p ++ " io.github.NhekoReborn.Nheko")
 
