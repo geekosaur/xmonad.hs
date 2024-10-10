@@ -21,7 +21,6 @@ import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Minimize
 import           XMonad.Hooks.Place
 import           XMonad.Hooks.Rescreen
-import           XMonad.Hooks.ScreenCorners
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Layout.BinarySpacePartition
 import           XMonad.Layout.DraggingVisualizer
@@ -167,8 +166,7 @@ main = do
            ,focusFollowsMouse = False
            ,clickJustFocuses  = False
            ,terminal          = terminal baseConfig ++ " --disable-factory"
-           ,layoutHook        = screenCornerLayoutHook $
-                                renamed [CutWordsLeft 3] $
+           ,layoutHook        = renamed [CutWordsLeft 3] $
                                 draggingVisualizer $
                                 minimize $
                                 maximize $
@@ -203,13 +201,9 @@ main = do
                                 setWorkArea -- @@@ HAAACK
            ,handleEventHook   = debuggering <>
                                 minimizeEventHook <>
-                                screenCornerEventHook <>
                                 notificationEventHook <>
                                 handleEventHook baseConfig
            ,startupHook       = startupHook baseConfig <>
-                                -- this is reportedly the wrong way to do it. But it works.
-                                addScreenCorner SCUpperRight (spawn "mate-screensaver-command --activate;\
-                                                                    \xset dpms force off") <>
                                 doOnce do
                                   mateRegister
                                   spawn "exec picom -cfb --backend=glx"
@@ -237,7 +231,7 @@ main = do
            ,("M-C-S-e",           spawnOn emacsWs "emacs")
            ,("M-C-n",             startNheko)
            ,("M-C-v",             spawnOn winWs "vmplayer")
-           ,("M-C-s",             spawnOn devWs "code --force-device-scale-factor=1.5")
+           ,("M-C-s",             spawnOn devWs "code")
              -- app.element.io
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                         \ --force-device-scale-factor=1.0 \
@@ -348,7 +342,7 @@ startNheko =
   -- spawnOn won't work unless the pid is exposed, but I have low confidence in that version
   -- XDG_CURRENT_DESKTOP works around a crash on right-click
   -- spawn "flatpak run --env=TZ=UTC0 io.github.NhekoReborn.Nheko"
-  spawn "flatpak run --env=TZ=UTC0 --env=XDG_CURRENT_DESKTOP= --env=QT_SCALE_FACTOR=2.0 im.nheko.Nheko"
+  spawn "flatpak run --env=TZ=UTC0 --env=XDG_CURRENT_DESKTOP= --env=QT_SCALE_FACTOR=1.5 im.nheko.Nheko"
   -- getProcessId >>= \p -> spawnOn chatWs ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
   --                                       show p ++ " io.github.NhekoReborn.Nheko")
 
