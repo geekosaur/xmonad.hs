@@ -235,7 +235,7 @@ main = do
            ,("M-C-S-e",           spawnOn emacsWs "emacs")
            ,("M-C-n",             startNheko)
            ,("M-C-v",             spawnOn winWs "vmplayer")
-           ,("M-C-s",             spawnOn devWs "code")
+           ,("M-C-s",             spawnOn devWs "codium")
              -- app.element.io
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                         \ --force-device-scale-factor=1.0 \
