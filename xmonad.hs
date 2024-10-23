@@ -63,8 +63,9 @@ import           System.IO                                (hPrint
 import           System.Posix.IO
 
 -- sorry, I CBA to provide types for anything parameterized by layouts
-baseConfig = debugManageHook $ -- On "M-S-d" $
-             ewmhFullscreen -- ($)
+baseConfig = debugManageHookOn "M-S-d" $
+             ewmhFullscreen $
+             setEwmhActivateHook doAskUrgent -- ($)
              mateConfig
 
 shellWs, emacsWs, mailWs, chatWs, refsWs, devWs :: String
