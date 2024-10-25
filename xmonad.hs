@@ -158,7 +158,8 @@ main = do
   getWellKnownName dbus
   -- do it to it
   xmonad $ withUrgencyHook NoUrgencyHook
-         $ rescreenHook (RescreenConfig reApplyARandR reApplyARandR)
+         $ addAfterRescreenHook reApplyARandR
+         $ addRandrChangeHook reApplyARandR
          $ baseConfig
            {modMask           = mod4Mask
            ,workspaces        = workspacen
