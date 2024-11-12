@@ -220,8 +220,8 @@ main = do
                                   -- (hexchat's configured to regain my nick, so it'll get into fights if two
                                   -- are running; emacs complains about emacs-server and desktop file)
                                   -- (found by discovering xmonad-contrib#753)
-                                  -- unlessQuery (appName =? "emacs") $ spawnOn emacsWs "emacs"
-                                  unlessQuery (appName =? "sublime_text") $ spawnOn emacsWs "subl"
+                                  unlessQuery (appName =? "emacs") $ spawnOn emacsWs "emacs"
+                                  -- unlessQuery (appName =? "sublime_text") $ spawnOn emacsWs "subl"
                                   unlessQuery (appName =? "io.github.NhekoReborn.Nheko") startNheko
                                   io $ threadDelay 3000000
                                   unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
