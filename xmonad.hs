@@ -23,14 +23,16 @@ import           XMonad.Hooks.Place
 import           XMonad.Hooks.Rescreen
 import           XMonad.Hooks.ScreenCorners
 import           XMonad.Hooks.UrgencyHook
-import           XMonad.Layout.BinarySpacePartition
+-- import           XMonad.Layout.BinarySpacePartition
 import           XMonad.Layout.DraggingVisualizer
+import           XMonad.Layout.Grid
 import           XMonad.Layout.Maximize
 import           XMonad.Layout.Minimize
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.PerWorkspace
 import           XMonad.Layout.Renamed
 import           XMonad.Layout.Tabbed
+import           XMonad.Layout.ThreeColumns
 import           XMonad.Layout.TwoPane
 import           XMonad.Prompt
 import           XMonad.Prompt.Shell
@@ -177,11 +179,11 @@ main = do
                                 lessBorders OnlyScreenFloat $
                                 onWorkspace winWs (avoidStrutsOn [] Full) $
                                 avoidStruts $
-                                onWorkspace chatWs basic1 $
+                                onWorkspace chatWs basic1a $
                                 onWorkspace mailWs basic2 $
                                 onWorkspace booksWs Full $
                                 onWorkspace refsWs basic2 $
-                                onWorkspace spareWs emptyBSP $
+                                onWorkspace spareWs (GridRatio (4/2)) $ -- emptyBSP $
                                 onWorkspace emacsWs basic2 $
                                 id basic -- shut up hlint (I append layout modifiers for testing a lot)
            ,manageHook        = composeAll
@@ -214,14 +216,19 @@ main = do
                                   mateRegister
                                   spawn "exec picom -cfb --backend=glx"
                                   reApplyARandR
+                                  io $ threadDelay 3000000
+                                  spawn "exec picom -cfb --backend=glx"
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn shellWs
+                                  spawn "gnubiff --noconfigure --systemtray"
                                   -- if I have to restart xmonad because it crashed, these two will complain
                                   -- (hexchat's configured to regain my nick, so it'll get into fights if two
                                   -- are running; emacs complains about emacs-server and desktop file)
                                   -- (found by discovering xmonad-contrib#753)
                                   unlessQuery (appName =? "emacs") $ spawnOn emacsWs "emacs"
-                                  -- unlessQuery (appName =? "sublime_text") $ spawnOn emacsWs "subl"
+                                  io $ threadDelay 1000000
+                                  unlessQuery (appName =? "discord") $ spawnOn chatWs "discord"
+                                  io $ threadDelay 1000000
                                   unlessQuery (appName =? "io.github.NhekoReborn.Nheko") startNheko
                                   io $ threadDelay 3000000
                                   unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
@@ -272,6 +279,7 @@ main = do
            ,("M-C-S-w f",         withFocused $ \w -> spawn $ "xprop -id " ++ show w ++ " | ${XMONAD_XMESSAGE:-xmessage} -file -")
            ,("M-C-S-w i",         withFocused $ \w -> spawn $ "xwininfo -id " ++ show w ++ " -all | ${XMONAD_XMESSAGE:-xmessage} -file -")
            ,("M-b",               toggleBorders >> sendMessage ToggleStruts)
+{-
              -- BSP actions
            ,("M-C-S-p <Left>",    sendMessage $ ExpandTowards L)
            ,("M-C-S-p <Right>",   sendMessage $ ShrinkFrom L)
@@ -287,6 +295,7 @@ main = do
            ,("M-C-S-p e",         sendMessage   Equalize)
            ,("M-C-S-p j",         sendMessage $ SplitShift Prev)
            ,("M-C-S-p k",         sendMessage $ SplitShift Next)
+-}
            ]
            ++
            -- greedyView -> view, so I stop breaking crawl etc. >.>
@@ -321,8 +330,10 @@ doFloatPlace = placeHook myPlaceHook <> doFloat
 
 -- we really need a way to preset a starting point in the layout rotation…
 basic = TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed
-basic1 = Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed ||| TwoPane 0.03 0.5
+-- basic1 = Mirror (TwoPane 0.03 0.5) ||| qSimpleTabbed ||| TwoPane 0.03 0.5
 basic2 = qSimpleTabbed ||| TwoPane 0.03 0.5 ||| Mirror (TwoPane 0.03 0.5)
+
+basic1a = Mirror (ThreeCol 1 0.03 (1/3)) ||| qSimpleTabbed ||| ThreeCol 1 0.03 (1/3)
 
 -- note on the font here and in `myXPConfig`: I've got a QHD laptop. had to
 -- replace the external monitor (formerly fullHD) with QHD to get any semblance
@@ -346,15 +357,17 @@ boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
 startNheko :: X ()
 startNheko =
   -- spawnOn won't work unless the pid is exposed, but I have low confidence in that version
-  -- XDG_CURRENT_DESKTOP works around a crash on right-click
+  -- XDG_CURRENT_DESKTOP works around a crash on right-click (may be fixed in latest nightlies)
   -- spawn "flatpak run --env=TZ=UTC0 io.github.NhekoReborn.Nheko"
   spawn "flatpak run --env=TZ=UTC0 --env=XDG_CURRENT_DESKTOP= --env=QT_SCALE_FACTOR=1.5 im.nheko.Nheko"
   -- getProcessId >>= \p -> spawnOn chatWs ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
   --                                       show p ++ " io.github.NhekoReborn.Nheko")
 
 reApplyARandR :: X ()
-reApplyARandR = spawn "exec \"$HOME/.screenlayout/default.sh\"" -- whoops: worked exactly once
--- reApplyARandR = return () -- apparently MATE finally fixed mate-display-properties!
+reApplyARandR = do
+  spawn "exec \"$HOME/.screenlayout/default.sh\"" -- whoops: worked exactly once
+  -- until this is fixed. there's a new version in the works
+  addScreenCorner SCUpperRight (spawn "mate-screensaver-command --activate")
 
 -- this needs to be cleaned up
 notificationEventHook :: Event -> X All
