@@ -196,7 +196,7 @@ main = do
                                 ,appName =? "im.nheko.Nheko" --> doShift chatWs
                                 ,appName =? "sxiv" --> noTaskbar <> doShift spareWs
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" --> doFloatPlace
-                                ,appName =? "im.nheko.Nheko" <&&> noEwmhType --> doFloatDep (const (W.RationalRect 0.3 0.3 0.6 0.5))
+                                -- ,appName =? "im.nheko.Nheko" <&&> noEwmhType --> doFloatDep (const (W.RationalRect 0.3 0.3 0.6 0.5))
                                 ,manageSpawn
                                 ,namedScratchpadManageHook scratchpads
                                 ,placeHook myPlaceHook
@@ -384,6 +384,7 @@ notificationEventHook MapNotifyEvent {ev_window = w} = do
   return (All True)
 notificationEventHook _ = return (All True)
 
+{-
 -- nheko is not EWMH compliant about its subwindows
 -- (yes, I reported it)
 noEwmhType :: Query Bool
@@ -396,6 +397,7 @@ noEwmhType = ask >>= \w ->
                Just [] -> return True
                _ -> return False
              ))
+-}
 
 myXPConfig :: XPConfig
 myXPConfig = greenXPConfig {promptKeymap = emacsLikeXPKeymap
