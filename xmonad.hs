@@ -212,10 +212,9 @@ main = do
                                 notificationEventHook <>
                                 handleEventHook baseConfig
            ,startupHook       = startupHook baseConfig <>
-                                addScreenCorner SCUpperRight (spawn "mate-screensaver-command --activate") <>
+                                addScreenCorner SCUpperRight (spawn screenSaver) <>
                                 doOnce do
                                   mateRegister
-                                  spawn "exec picom -cfb --backend=glx"
                                   reApplyARandR
                                   io $ threadDelay 3000000
                                   spawn "exec picom -cfb --backend=glx"
@@ -227,8 +226,9 @@ main = do
                                   -- are running; emacs complains about emacs-server and desktop file)
                                   -- (found by discovering xmonad-contrib#753)
                                   unlessQuery (appName =? "emacs") $ spawnOn emacsWs "emacs"
-                                  io $ threadDelay 1000000
-                                  unlessQuery (appName =? "discord") $ spawnOn chatWs "discord"
+                                  -- doing this via xdg startup for the moment
+                                  -- io $ threadDelay 1000000
+                                  -- unlessQuery (appName =? "discord") $ spawnOn chatWs "discord"
                                   io $ threadDelay 1000000
                                   unlessQuery (appName =? "io.github.NhekoReborn.Nheko") startNheko
                                   io $ threadDelay 3000000
@@ -368,7 +368,10 @@ reApplyARandR :: X ()
 reApplyARandR = do
   spawn "exec \"$HOME/.screenlayout/default.sh\"" -- whoops: worked exactly once
   -- until this is fixed. there's a new version in the works
-  addScreenCorner SCUpperRight (spawn "mate-screensaver-command --activate")
+  addScreenCorner SCUpperRight (spawn screenSaver)
+
+screenSaver :: String
+screenSaver = "mate-screensaver-command --lock; xset dpms force standby"
 
 -- this needs to be cleaned up
 notificationEventHook :: Event -> X All
