@@ -372,7 +372,7 @@ reApplyARandR = do
   addScreenCorner SCUpperRight (spawn screenSaver)
 
 screenSaver :: String
-screenSaver = "mate-screensaver-command --lock; xset dpms force standby"
+screenSaver = "mate-screensaver-command --lock; sleep 0.5; xset dpms force standby"
 
 -- this needs to be cleaned up
 notificationEventHook :: Event -> X All
