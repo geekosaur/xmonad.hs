@@ -54,8 +54,11 @@ import qualified XMonad.StackSet                                                
 import           Control.Concurrent                       (threadDelay)
 import           Control.Exception                        (handle
                                                           ,IOException)
+import           Data.List                                (sortOn
+                                                          ,elemIndex)
 import           Data.Maybe                               (catMaybes
-                                                          ,isNothing)
+                                                          ,isNothing
+                                                          ,fromMaybe)
 import           Data.Monoid
 import           Data.Ratio                               ((%))
 import qualified DBus                                                                         as D
@@ -501,8 +504,18 @@ setWorkArea = withDisplay $ \dpy -> do
     a <- getAtom "_NET_WORKAREA"
     c <- getAtom "CARDINAL"
     r <- asks theRoot
+    cws <- gets (fst . head . sortOn snd . sws . windowset)
+    let wa = replicate (length workspacen) [0, 20, 2560, 1440-20-49]
     io $ changeProperty32 dpy r a c propModeReplace
-                          (concat $ replicate (length workspacen) [0, 26, 3840, 1028])
+                          (concat $ rpl cws [0, 20, 2880, 1920-20-49] wa)
+  where
+    sws ws = (wsscr . W.current $ ws) : map wsscr (W.visible ws)
+    wsscr scr = (wsnum . W.tag . W.workspace $ scr, (\(S n) -> n) . W.screen $ scr)
+    wsnum ws = fromMaybe 0 (elemIndex ws workspacen)
+    -- stricter than a proper one, but we're feeding it directly to an IO action
+    rpl _ _ [] = []
+    rpl 0 r (_:xs) = r:xs
+    rpl n r (x:xs) = x:rpl (n-1) r xs
 
 -- run an action only if no windows match a Query Bool.
 -- this is moderately expensive, but sometimes duplicating an action
