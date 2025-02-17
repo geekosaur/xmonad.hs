@@ -214,21 +214,20 @@ main = do
            ,startupHook       = startupHook baseConfig <>
                                 addScreenCorner SCUpperRight (spawn screenSaver) <>
                                 doOnce do
-                                  mateRegister
                                   reApplyARandR
+                                  mateRegister
                                   io $ threadDelay 3000000
                                   spawn "exec picom -cfb --backend=glx"
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn shellWs
-                                  spawn "gnubiff --noconfigure --systemtray"
                                   -- if I have to restart xmonad because it crashed, these two will complain
                                   -- (hexchat's configured to regain my nick, so it'll get into fights if two
                                   -- are running; emacs complains about emacs-server and desktop file)
                                   -- (found by discovering xmonad-contrib#753)
                                   unlessQuery (appName =? "emacs") $ spawnOn emacsWs "emacs"
                                   -- doing this via xdg startup for the moment
-                                  -- io $ threadDelay 1000000
-                                  -- unlessQuery (appName =? "discord") $ spawnOn chatWs "discord"
+                                  io $ threadDelay 1000000
+                                  unlessQuery (appName =? "discord") $ spawnOn chatWs "discord"
                                   io $ threadDelay 1000000
                                   unlessQuery (appName =? "io.github.NhekoReborn.Nheko") startNheko
                                   io $ threadDelay 3000000
@@ -244,8 +243,13 @@ main = do
            ,("M-C-e",             spawnHere "emacsclient -c")
            ,("M-C-S-e",           spawnOn emacsWs "emacs")
            ,("M-C-n",             startNheko)
+           ,("M-C-S-n",           spawnOn chatWs "element-desktop")
+           ,("M-C-S-d",           spawnOn chatWs "discord")
            ,("M-C-v",             spawnOn winWs "vmplayer")
            ,("M-C-s",             spawnOn devWs "codium")
+           ,("M-C-S-u",           spawn "update-manager")
+           ,("M-C-S-s",           spawn "mate-control-center")
+           ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
              -- app.element.io
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                         \ --force-device-scale-factor=1.0 \
@@ -271,9 +275,6 @@ main = do
            ,("M-p",               shellPrompt myXPConfig)
            ,("M-S-q",             mateShutdown)
            ,("M-C-S-q",           mateLogout)
-           ,("M-C-S-u",           spawn "update-manager")
-           ,("M-C-S-s",           spawn "mate-control-center")
-           ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
              -- debug windows; also see M-S-d above
            ,("M-C-S-w r",         withFocused showWinRR)
            ,("M-C-S-w p",         spawn "xprop | ${XMONAD_XMESSAGE:-xmessage} -file -")
