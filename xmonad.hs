@@ -404,7 +404,7 @@ noEwmhType = ask >>= \w ->
 -}
 
 myXPConfig :: XPConfig
-myXPConfig = greenXPConfig {promptKeymap = emacsLikeXPKeymap
+myXPConfig = amberXPConfig {promptKeymap = emacsLikeXPKeymap
                            ,font         = "xft:Mono-6"
                            }
 
