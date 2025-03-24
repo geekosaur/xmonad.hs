@@ -6,12 +6,6 @@ if [ "$count" -eq 1 ]; then
     xrandr --output eDP --primary --mode 2880x1920 --pos 0x0 --rotate normal --output DisplayPort-0 --off --output DisplayPort-1 --off --output DisplayPort-2 --off --output DisplayPort-3 --off --output DisplayPort-4 --off --output DisplayPort-5 --off --output DisplayPort-6 --off --output DisplayPort-7 --off
     exit 0
 fi
-# hack: the monitor on the right turns off its input on suspend,
-# # which triggers this script, which wakes everything back up.
-if [ "$count" -eq 2 ] && [ "$1" \!= "force" ]; then
-    echo screensaver detected
-    exit 0
-fi
 
 # The outputs move around to some extent.
 # eDP is the laptop panel
