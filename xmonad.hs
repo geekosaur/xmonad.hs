@@ -230,10 +230,10 @@ main = do
                                   unlessQuery (appName =? "emacs") $ spawnOn emacsWs "emacs"
                                   -- doing this via xdg startup for the moment
                                   io $ threadDelay 1000000
-                                  unlessQuery (appName =? "discord") $ spawnOn chatWs "discord"
+                                  unlessQuery (appName =? "discord") $ spawnOn chatWs "env TZ=UTC0 discord"
                                   io $ threadDelay 1000000
                                   -- unlessQuery (appName =? "io.github.NhekoReborn.Nheko") startNheko
-                                  unlessQuery (appName =? "element") $ spawnOn chatWs "element-desktop"
+                                  unlessQuery (appName =? "element") $ spawnOn chatWs "env TZ=UTC0 element-desktop"
                                   io $ threadDelay 3000000
                                   unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
                                   io $ threadDelay 3000000
@@ -247,9 +247,9 @@ main = do
            ,("M-C-e",             spawnHere "emacsclient -c")
            ,("M-C-S-e",           spawnOn emacsWs "emacs")
            -- ,("M-C-n",             startNheko)
-           ,("M-C-n",             spawnOn chatWs "element-desktop")
-           ,("M-C-S-n",           spawnOn chatWs "element-desktop")
-           ,("M-C-S-d",           spawnOn chatWs "discord")
+           ,("M-C-n",             spawnOn chatWs "env TZ=UTC0 element-desktop")
+           ,("M-C-S-n",           spawnOn chatWs "env TZ=UTC0 element-desktop")
+           ,("M-C-S-d",           spawnOn chatWs "env TZ=UTC0 discord")
            ,("M-C-v",             spawnOn winWs "vmplayer")
            ,("M-C-s",             spawnOn devWs "codium")
            ,("M-C-S-u",           spawn "update-manager")
