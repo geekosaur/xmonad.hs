@@ -232,8 +232,8 @@ main = do
                                   io $ threadDelay 1000000
                                   unlessQuery (appName =? "discord") $ spawnOn chatWs "env TZ=UTC0 discord"
                                   io $ threadDelay 1000000
-                                  -- unlessQuery (appName =? "io.github.NhekoReborn.Nheko") startNheko
-                                  unlessQuery (appName =? "element") $ spawnOn chatWs "env TZ=UTC0 element-desktop"
+                                  unlessQuery (appName =? "im.nheko.Nheko") startNheko
+                                  -- unlessQuery (appName =? "element") $ spawnOn chatWs "env TZ=UTC0 element-desktop"
                                   io $ threadDelay 3000000
                                   unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
                                   io $ threadDelay 3000000
@@ -246,8 +246,8 @@ main = do
            ,("M-C-S-g",           spawnHere "firefox")
            ,("M-C-e",             spawnHere "emacsclient -c")
            ,("M-C-S-e",           spawnOn emacsWs "emacs")
-           -- ,("M-C-n",             startNheko)
-           ,("M-C-n",             spawnOn chatWs "env TZ=UTC0 element-desktop")
+           ,("M-C-n",             startNheko)
+           -- ,("M-C-n",             spawnOn chatWs "env TZ=UTC0 element-desktop")
            ,("M-C-S-n",           spawnOn chatWs "env TZ=UTC0 element-desktop")
            ,("M-C-S-d",           spawnOn chatWs "env TZ=UTC0 discord")
            ,("M-C-v",             spawnOn winWs "vmplayer")
@@ -361,7 +361,7 @@ sounds = "/usr/share/sounds/freedesktop/stereo"
 boing' :: String -> X ()
 boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
 
-{-
+
 startNheko :: X ()
 startNheko =
   -- spawnOn won't work unless the pid is exposed, but I have low confidence in that version
@@ -370,7 +370,6 @@ startNheko =
   spawn "flatpak run --env=TZ=UTC0 --env=XDG_CURRENT_DESKTOP= --env=QT_SCALE_FACTOR=1.5 im.nheko.Nheko"
   -- getProcessId >>= \p -> spawnOn chatWs ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
   --                                       show p ++ " io.github.NhekoReborn.Nheko")
--}
 
 reApplyARandR :: X ()
 reApplyARandR = do
