@@ -351,8 +351,11 @@ basic1a = Mirror (ThreeCol 1 0.03 (1/3)) ||| qSimpleTabbed ||| ThreeCol 1 0.03 (
 -- reader" mode.
 --
 -- suffice it to say I'm now one of those waiting on xmonad-for-wayland…
+promptFont :: String
+promptFont = "xft:Mono-8"
+
 qSimpleTabbed = renamed [CutWordsRight 1] $
-                tabbed shrinkText def {fontName = "xft:Mono-6"}
+                tabbed shrinkText def {fontName = promptFont}
  
 sounds :: String
 sounds = "/usr/share/sounds/freedesktop/stereo"
@@ -415,7 +418,7 @@ noEwmhType = ask >>= \w ->
 
 myXPConfig :: XPConfig
 myXPConfig = amberXPConfig {promptKeymap = emacsLikeXPKeymap
-                           ,font         = "xft:Mono-6"
+                           ,font         = promptFont
                            }
 
 logTitle :: D.Client -> X ()
