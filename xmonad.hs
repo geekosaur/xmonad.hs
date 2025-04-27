@@ -256,9 +256,11 @@ main = do
            ,("M-C-S-s",           spawn "mate-control-center")
            ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
              -- app.element.io
+{-
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                         \ --force-device-scale-factor=1.0 \
                                                                         \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
+-}
            ,("M-C-c l",           namedScratchpadAction scratchpads "crawl-local")
            ,("M-C-c u e",         namedScratchpadAction scratchpads "crawl-cue")
            ,("M-C-c k o",         namedScratchpadAction scratchpads "crawl-cko")
