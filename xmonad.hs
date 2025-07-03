@@ -196,7 +196,7 @@ main = do
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
                                 -- needed until and unless the new startNheko works
-                                -- ,appName =? "im.nheko.Nheko" --> doShift chatWs
+                                ,appName =? "im.nheko.Nheko" --> doShift chatWs
                                 ,appName =? "sxiv" --> noTaskbar <> doShift spareWs
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" --> doFloatPlace
                                 -- ,appName =? "im.nheko.Nheko" <&&> noEwmhType --> doFloatDep (const (W.RationalRect 0.3 0.3 0.6 0.5))
@@ -370,9 +370,7 @@ boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
 startNheko :: X ()
 startNheko =
   -- spawnOn won't work unless the pid is exposed, but I have low confidence in that version
-  -- XDG_CURRENT_DESKTOP works around a crash on right-click (may be fixed in latest nightlies)
-  -- spawn "flatpak run --env=TZ=UTC0 io.github.NhekoReborn.Nheko"
-  spawn "flatpak run --env=TZ=UTC0 --env=XDG_CURRENT_DESKTOP= --env=QT_SCALE_FACTOR=1.25 im.nheko.Nheko"
+  spawn "flatpak run --env=TZ=UTC0 --env=QT_SCALE_FACTOR=1.25 im.nheko.Nheko"
   -- getProcessId >>= \p -> spawnOn chatWs ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
   --                                       show p ++ " io.github.NhekoReborn.Nheko")
 
