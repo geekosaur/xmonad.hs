@@ -22,5 +22,5 @@ executable xmonad-bsa
                     unix ^>= 2.7,
                     xmonad >= 0.18.0.9 && < 0.19,
                     xmonad-contrib >= 0.18.0.9 && < 0.19,
-                    dbus >= 1.2.22 && < 1.3,
+                    dbus ^>= 1.4,
                     utf8-string >= 1.0.2 && < 1.1
