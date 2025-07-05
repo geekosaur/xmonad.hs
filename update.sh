@@ -1,4 +1,5 @@
 #! /bin/sh
+set -e
 echo "Go update github xmonad and xmonad-contrib; I'll wait…"
 read dummy
 echo '$ cabal update'
