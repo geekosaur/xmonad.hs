@@ -254,7 +254,11 @@ main = do
            ,("M-C-s",             spawnOn devWs "codium")
            ,("M-C-S-u",           spawn "update-manager")
            ,("M-C-S-s",           spawn "mate-control-center")
-           ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
+           -- ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
+           ,("<Print> w",         unGrab >> spawn "sleep 1; scrot -s - | xclip -selection clipboard -target image/png")
+           ,("<Print> s",         unGrab >> spawn "sleep 1; scrot -m - | xclip -selection clipboard -target image/png")
+           ,("<Print> S-w",       unGrab >> spawn "sleep 1; scrot -s ~/Downloads/Screenshot-%Y-%m-%d_%H:%M:%S.png")
+           ,("<Print> S-s",       unGrab >> spawn "sleep 1; scrot -m ~/Downloads/Screenshot-%Y-%m-%d_%H:%M:%S.png")
              -- app.element.io
 {-
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
