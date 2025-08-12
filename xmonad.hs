@@ -386,7 +386,7 @@ reApplyARandR = do
 
 screenSaver :: String
 -- external monitor broke again?! (apparently HDMI2 doesn't work right?)
-screenSaver = "mate-screensaver-command --lock; sleep 0.5; xset dpms force standby"
+screenSaver = "mate-screensaver-command --lock; sleep 1.5; xset dpms force standby"
 -- screenSaver = "mate-screensaver-command --lock"
 
 -- this needs to be cleaned up
