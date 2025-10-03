@@ -8,10 +8,12 @@ for pkg in X11 X11-xft xmonad xmonad-contrib; do
   echo '$ (cd "'"$pkg"'"; git pull)'
   (cd "$pkg" && git pull)
 done
-echo '$ cabal install xmonad --enable-optimization=2 --overwrite-policy=always --install-method=copy'
-cabal install xmonad --enable-optimization=2 --overwrite-policy=always --install-method=copy
+echo '$ cabal install xmonad --enable-optimization=2 --overwrite-policy=always --install-method=copy' ${1+"$@"}
+cabal install xmonad --enable-optimization=2 --overwrite-policy=always --install-method=copy ${1+"$@"}
 hash -r
 echo '$ xmonad --recompile'
+# have to just hope, since there's no other way to squeeze these past `xmonad --recompile`
+BUILD_ARGS="$*" export BUILD_ARGS
 xmonad --recompile
 echo '$ echo :q | cabal repl'
 echo :q | cabal repl

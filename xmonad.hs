@@ -2,7 +2,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas -Wno-x-partial #-} -- `head` is safe where I use it
 {-# HLINT ignore "Use <&>" #-}
 {-# HLINT ignore "Redundant id" #-}
 
@@ -187,7 +187,7 @@ main = do
                                 onWorkspace booksWs Full $
                                 onWorkspace refsWs basic2 $
                                 onWorkspace spareWs (GridRatio (4/2)) $ -- emptyBSP $
-                                onWorkspace emacsWs basic2 $
+                                onWorkspace emacsWs basic $
                                 id basic -- shut up hlint (I append layout modifiers for testing a lot)
            ,manageHook        = composeAll
                                 [appName =? "xmessage" --> doCenterFloat
@@ -223,6 +223,8 @@ main = do
                                   spawn "exec picom -cfb --backend=glx"
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn shellWs
+                                  asks (terminal . config) >>= spawnOn emacsWs
+                                  asks (terminal . config) >>= spawnOn emacsWs
                                   -- if I have to restart xmonad because it crashed, these two will complain
                                   -- (hexchat's configured to regain my nick, so it'll get into fights if two
                                   -- are running; emacs complains about emacs-server and desktop file)

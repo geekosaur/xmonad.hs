@@ -38,14 +38,17 @@ fi
 d="$(dirname "$output")"
 f="$(basename "$output")"
 first=0
+# $BUILD_ARGS is a hack used by update.sh, since it otherwise can't pass
+# through custom build options (e.g. --constraint, --allow-newer)
 for exe in $EXE_NAME; do
-    echo "\$\$ cabal v2-install exe:$EXE_NAME --enable-executable-stripping --enable-optimizations=2 --installdir=$d --overwrite-policy=always --install-method=copy $*"
+    echo "\$\$ cabal v2-install exe:$EXE_NAME --enable-executable-stripping --enable-optimizations=2 --installdir=$d --overwrite-policy=always --install-method=copy ${BUILD_ARGS-} $*"
     cabal v2-install exe:"$EXE_NAME" \
 	  --enable-executable-stripping \
 	  --enable-optimization=2 \
 	  --installdir="$d" \
 	  --overwrite-policy=always \
 	  --install-method=copy \
+          ${BUILD_ARGS-} \
 	  ${1+"$@"}
     # NB. a cabal bug may mean it doesn't actually get stripped
     # we assume the first executable in the list is the new xmonad
