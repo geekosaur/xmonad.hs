@@ -225,11 +225,6 @@ main = do
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn emacsWs
                                   asks (terminal . config) >>= spawnOn emacsWs
-                                  -- if I have to restart xmonad because it crashed, these two will complain
-                                  -- (hexchat's configured to regain my nick, so it'll get into fights if two
-                                  -- are running; emacs complains about emacs-server and desktop file)
-                                  -- (found by discovering xmonad-contrib#753)
-                                  unlessQuery (appName =? "emacs") $ spawnOn emacsWs "emacs"
                                   -- doing this via xdg startup for the moment
                                   io $ threadDelay 1000000
                                   unlessQuery (appName =? "discord") $ spawnOn chatWs "env TZ=UTC0 discord"
@@ -237,6 +232,9 @@ main = do
                                   unlessQuery (appName =? "im.nheko.Nheko") startNheko
                                   -- unlessQuery (appName =? "element") $ spawnOn chatWs "env TZ=UTC0 element-desktop"
                                   io $ threadDelay 3000000
+                                  -- if I have to restart xmonad because it crashed, this will complain
+                                  -- (hexchat's configured to regain my nick, so it'll get into fights if two
+                                  -- are running
                                   unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
                                   io $ threadDelay 3000000
                                   -- @@@ starts multi windows, placing them automatically will not fly :/
