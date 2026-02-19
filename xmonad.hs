@@ -43,6 +43,9 @@ import           XMonad.Util.Run
 import           XMonad.Util.SessionStart
 import           XMonad.Util.WorkspaceCompare
 
+import           XMonad.Actions.Eval
+import           XMonad.Prompt.Eval -- perhaps should reexport defaultEvalConfig, or use `def` since that disaster's in
+
 import           XMonad.Prelude                           (fi
                                                           ,safeGetWindowAttributes
                                                           ,when
@@ -286,6 +289,7 @@ main = do
            ,("M-C-`",             withFocused $ sendMessage . maximizeRestore)
            ,("M-S-p",             mateRun)
            ,("M-p",               shellPrompt myXPConfig)
+           ,("M-C-e",             evalPromptWithOutput defaultEvalConfig myXPConfig (showWithDzen 10000000 []))
            ,("M-S-q",             mateShutdown)
            ,("M-C-S-q",           mateLogout)
              -- debug windows; also see M-S-d above

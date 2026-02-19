@@ -1,10 +1,10 @@
 #! /bin/sh
 set -e
-echo "Go update github xmonad and xmonad-contrib; I'll wait…"
+echo "Go update the github checkouts; I'll wait…"
 read dummy
 echo '$ cabal update'
 cabal update
-for pkg in X11 X11-xft xmonad xmonad-contrib; do
+for pkg in X11 X11-xft xmonad xmonad-contrib xmonad-extras; do
   echo '$ (cd "'"$pkg"'"; git pull)'
   (cd "$pkg" && git pull)
 done

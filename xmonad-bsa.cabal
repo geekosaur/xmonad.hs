@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------
 name:          xmonad-bsa
-version:       0.4
+version:       0.5
 synopsis:      Brandon's xmonad config
 homepage:      http://github.com/geekosaur/xmonad.hs/tree/skkukuk
 license:       BSD2
@@ -21,5 +21,6 @@ executable xmonad-bsa
                     unix ^>= 2.8,
                     xmonad >= 0.18.0.9 && < 0.19,
                     xmonad-contrib >= 0.18.0.9 && < 0.19,
+                    xmonad-extras >= 0.17.2 && < 0.19,
                     dbus ^>= 1.4,
                     utf8-string >= 1.0.2 && < 1.1
