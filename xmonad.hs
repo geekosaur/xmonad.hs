@@ -236,7 +236,8 @@ main = do
                                   -- if I have to restart xmonad because it crashed, this will complain
                                   -- (hexchat's configured to regain my nick, so it'll get into fights if two
                                   -- are running
-                                  unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
+                                  -- unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
+                                  unlessQuery (appName =? "konversation") $ spawnOn chatWs "env TZ=UTC0 konversation"
                                   io $ threadDelay 3000000
                                   -- @@@ starts multi windows, placing them automatically will not fly :/
                                   unlessQuery (appName =? "google-chrome") $ spawnOn mailWs "google-chrome --force-device-scale-factor=1.0"
@@ -245,8 +246,8 @@ main = do
            `additionalKeysP`
            [("M-C-g",             spawnHere "google-chrome --force-device-scale-factor=1.0")
            ,("M-C-S-g",           spawnHere "firefox")
-           ,("M-C-e",             spawnHere "emacsclient -c")
-           ,("M-C-S-e",           spawnOn emacsWs "emacs")
+           -- ,("M-C-e",             spawnHere "emacsclient -c")
+           -- ,("M-C-S-e",           spawnOn emacsWs "emacs")
            ,("M-C-n",             startNheko)
            -- ,("M-C-n",             spawnOn chatWs "env TZ=UTC0 element-desktop")
            ,("M-C-S-n",           spawnOn chatWs "env TZ=UTC0 element-desktop")
