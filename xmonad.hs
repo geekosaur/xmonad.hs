@@ -43,8 +43,7 @@ import           XMonad.Util.Run
 import           XMonad.Util.SessionStart
 import           XMonad.Util.WorkspaceCompare
 
-import           XMonad.Actions.Eval
-import           XMonad.Prompt.Eval -- perhaps should reexport defaultEvalConfig, or use `def` since that disaster's in
+import           XMonad.Prompt.Eval
 
 import           XMonad.Prelude                           (fi
                                                           ,safeGetWindowAttributes
