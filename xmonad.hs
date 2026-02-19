@@ -152,10 +152,11 @@ main :: IO ()
 main = do
   -- gdm is logging to syslog, which is also being mangled by some amdgpu
   -- misconfiguration I'm still trying to sort out
+  -- (it went away at one point, then came back)
   void $ handle (\(_ :: IOException) -> return ()) $ closeFd stdInput
-  void $ openFd "/dev/null" ReadOnly Nothing defaultFileFlags
+  void $ openFd "/dev/null" ReadOnly defaultFileFlags
   void $ handle (\(_ :: IOException) -> return ()) $ closeFd stdOutput
-  void $ openFd "/home/allbery/.cache/xmonad/xmonad.log" ReadWrite (Just 0o644) defaultFileFlags {trunc = True}
+  void $ openFd "/home/allbery/.cache/xmonad/xmonad.log" ReadWrite defaultFileFlags {creat = (Just 0o644), trunc = True}
   void $ handle (\(_ :: IOException) -> return ()) $ closeFd stdError
   void $ dupTo stdOutput stdError
   -- xmonad log applet
