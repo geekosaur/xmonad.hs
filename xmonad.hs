@@ -228,7 +228,8 @@ main = do
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn emacsWs
                                   asks (terminal . config) >>= spawnOn emacsWs
-                                  -- doing this via xdg startup for the moment
+                                  -- doing 1Password via xdg startup for the moment
+                                  -- but it doesn't seem to be working, so may move back here
                                   io $ threadDelay 1000000
                                   unlessQuery (appName =? "discord") $ spawnOn chatWs "env TZ=UTC0 discord"
                                   io $ threadDelay 1000000
