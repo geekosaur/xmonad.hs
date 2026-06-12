@@ -1,0 +1,3 @@
+#! /bin/sh
+. /home/allbery/.config/xmonad/10profile
+exec /usr/bin/ssh-agent -- /usr/bin/mate-session ${1+"$@"}

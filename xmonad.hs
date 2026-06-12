@@ -233,8 +233,9 @@ main = do
                                   io $ threadDelay 1000000
                                   unlessQuery (appName =? "discord") $ spawnOn chatWs "env TZ=UTC0 discord"
                                   io $ threadDelay 1000000
-                                  unlessQuery (appName =? "im.nheko.Nheko") startNheko
-                                  -- unlessQuery (appName =? "element") $ spawnOn chatWs "env TZ=UTC0 element-desktop"
+--                                   unlessQuery (appName =? "im.nheko.Nheko") startNheko
+--                                   unlessQuery (appName =? "element") $ spawnOn chatWs "env TZ=UTC0 element-desktop"
+                                  unlessQuery (appName =? "chat-schildi-revenge-MainKt") $ spawnOn chatWs "env TZ=UTC0 schildichat-revenge"
                                   io $ threadDelay 3000000
                                   -- if I have to restart xmonad because it crashed, this will complain
                                   -- (hexchat's configured to regain my nick, so it'll get into fights if two
@@ -249,17 +250,14 @@ main = do
            `additionalKeysP`
            [("M-C-g",             spawnHere "google-chrome --force-device-scale-factor=1.0")
            ,("M-C-S-g",           spawnHere "firefox")
-           -- ,("M-C-e",             spawnHere "emacsclient -c")
-           -- ,("M-C-S-e",           spawnOn emacsWs "emacs")
-           ,("M-C-n",             startNheko)
-           -- ,("M-C-n",             spawnOn chatWs "env TZ=UTC0 element-desktop")
+           ,("M-C-n",             spawnOn chatWs "env TZ=UTC0 schildichat-revenge")
            ,("M-C-S-n",           spawnOn chatWs "env TZ=UTC0 element-desktop")
            ,("M-C-S-d",           spawnOn chatWs "env TZ=UTC0 discord")
            ,("M-C-v",             spawnOn winWs "vmplayer")
            ,("M-C-s",             spawnOn devWs "codium")
            ,("M-C-S-u",           spawn "update-manager")
            ,("M-C-S-s",           spawn "mate-control-center")
-           -- ,("<Print>",           unGrab >> spawn "xfce4-screenshooter")
+           ,("<Print> <Print>",   unGrab >> spawn "xfce4-screenshooter")
            ,("<Print> w",         unGrab >> spawn "sleep 1; scrot -s - | xclip -selection clipboard -target image/png")
            ,("<Print> s",         unGrab >> spawn "sleep 1; scrot -m - | xclip -selection clipboard -target image/png")
            ,("<Print> S-w",       unGrab >> spawn "sleep 1; scrot -s ~/Downloads/Screenshot-%Y-%m-%d_%H:%M:%S.png")
@@ -361,11 +359,11 @@ basic1a = Mirror (ThreeCol 1 0.03 (1/3)) ||| qSimpleTabbed ||| ThreeCol 1 0.03 (
 -- reader" mode.
 --
 -- suffice it to say I'm now one of those waiting on xmonad-for-wayland…
-promptFont :: String
-promptFont = "xft:Mono-8"
+-- promptFont :: String
+-- promptFont = "xft:Sans Regular-6"
 
 qSimpleTabbed = renamed [CutWordsRight 1] $
-                tabbed shrinkText def {fontName = promptFont}
+                tabbed shrinkText def {fontName = "xft:Roboto Condensed-6"}
  
 sounds :: String
 sounds = "/usr/share/sounds/freedesktop/stereo"
@@ -386,7 +384,7 @@ startNheko =
 
 reApplyARandR :: X ()
 reApplyARandR = do
-  spawn "exec \"$HOME/.screenlayout/default.sh\"" -- whoops: worked exactly once
+  -- spawn "exec \"$HOME/.screenlayout/default.sh\"" -- whoops: worked exactly once
   -- until this is fixed. there's a new version in the works
   addScreenCorner SCUpperRight (spawn screenSaver)
 
@@ -426,7 +424,7 @@ noEwmhType = ask >>= \w ->
 
 myXPConfig :: XPConfig
 myXPConfig = amberXPConfig {promptKeymap = emacsLikeXPKeymap
-                           ,font         = promptFont
+                           ,font         = "xft:Sans Regular-11"
                            }
 
 logTitle :: D.Client -> X ()

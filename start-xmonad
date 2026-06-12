@@ -1,3 +1,2 @@
 #! /bin/zsh
-# . $HOME/.profile -- see 10profile
 exec $HOME/.local/bin/xmonad ${1+"$@"}
