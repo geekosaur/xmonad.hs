@@ -1,4 +1,4 @@
 packages: ./ X11/ X11-xft/ xmonad/ xmonad-contrib/ xmonad-extras/
 
 package xmonad-extras
-  flags: +with_regex_posix +with_hint
+  flags: +with_regex_posix +with_hint -with_sound

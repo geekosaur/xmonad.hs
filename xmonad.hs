@@ -201,6 +201,8 @@ main = do
                                 -- needed until and unless the new startNheko works
                                 ,appName =? "im.nheko.Nheko" --> doShift chatWs
                                 ,appName =? "sxiv" --> noTaskbar <> doShift spareWs
+                                -- @@@ is this what breaks stuff?
+                                -- @@@ turns out, no. need to bisect this to figure out what
                                 ,isInProperty "_NET_WM_STATE" "_NET_WM_STATE_ABOVE" --> doFloatPlace
                                 -- ,appName =? "im.nheko.Nheko" <&&> noEwmhType --> doFloatDep (const (W.RationalRect 0.3 0.3 0.6 0.5))
                                 ,manageSpawn
@@ -222,27 +224,30 @@ main = do
                                 doOnce do
                                   reApplyARandR
                                   mateRegister
-                                  io $ threadDelay 3000000
+                                  -- I have a bug somewhere in here that breaks apps that open unmanaged
+                                  -- windows (or maybe EWMH-special-cased windows?). this among other things
+                                  -- breaks mate-display-manager so I can't easily run it to fix my monitor
+                                  -- order.
+                                  spawn "xrandr --output DisplayPort-2 --left-of eDP"
+                                  -- and there seems to be no convenient way to Xkb this
+                                  spawn "xmodmap -e 'keysym space = space space space"
+                                  io $ threadDelay 1000000
                                   spawn "exec picom -cfb --backend=glx"
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn emacsWs
                                   asks (terminal . config) >>= spawnOn emacsWs
-                                  -- doing 1Password via xdg startup for the moment
-                                  -- but it doesn't seem to be working, so may move back here
+                                  -- @@@ this can't e.g. open links
+                                  unlessQuery (appName =? "discord") $ spawnOn chatWs "flatpak run --env=QT_SCALE_FACTOR=1.25 com.discordapp.Discord"
                                   io $ threadDelay 1000000
-                                  unlessQuery (appName =? "discord") $ spawnOn chatWs "env TZ=UTC0 discord"
-                                  io $ threadDelay 1000000
---                                   unlessQuery (appName =? "im.nheko.Nheko") startNheko
---                                   unlessQuery (appName =? "element") $ spawnOn chatWs "env TZ=UTC0 element-desktop"
-                                  unlessQuery (appName =? "chat-schildi-revenge-MainKt") $ spawnOn chatWs "env TZ=UTC0 schildichat-revenge"
+                                  unlessQuery (appName =? "im.nheko.Nheko") startNheko
+--                                   unlessQuery (appName =? "element") $ spawnOn chatWs "element-desktop"
                                   io $ threadDelay 3000000
                                   -- if I have to restart xmonad because it crashed, this will complain
                                   -- (hexchat's configured to regain my nick, so it'll get into fights if two
                                   -- are running
-                                  -- unlessQuery (appName =? "hexchat") $ spawnOn chatWs "hexchat-utc"
                                   unlessQuery (appName =? "konversation") $ spawnOn chatWs "env TZ=UTC0 konversation"
-                                  io $ threadDelay 3000000
+                                  io $ threadDelay 1000000
                                   -- @@@ starts multi windows, placing them automatically will not fly :/
                                   unlessQuery (appName =? "google-chrome") $ spawnOn mailWs "google-chrome --force-device-scale-factor=1.0"
                                   setSessionStarted
@@ -250,13 +255,13 @@ main = do
            `additionalKeysP`
            [("M-C-g",             spawnHere "google-chrome --force-device-scale-factor=1.0")
            ,("M-C-S-g",           spawnHere "firefox")
-           ,("M-C-n",             spawnOn chatWs "env TZ=UTC0 schildichat-revenge")
-           ,("M-C-S-n",           spawnOn chatWs "env TZ=UTC0 element-desktop")
-           ,("M-C-S-d",           spawnOn chatWs "env TZ=UTC0 discord")
-           ,("M-C-v",             spawnOn winWs "vmplayer")
-           ,("M-C-s",             spawnOn devWs "codium")
-           ,("M-C-S-u",           spawn "update-manager")
+           ,("M-C-n",             startNheko)
+           ,("M-C-S-n",           spawnOn chatWs "element-desktop")
+           ,("M-C-S-d",           spawnOn chatWs "flatpak run --env=QT_SCALE_FACTOR=1.25 com.discordapp.Discord")
+           ,("M-C-v",             spawnOn winWs "virt-manager")
+           ,("M-C-s",             spawn "codium")
            ,("M-C-S-s",           spawn "mate-control-center")
+           ,("M-C-S-u",           spawn "dnfdragora --qt --update-only")
            ,("<Print> <Print>",   unGrab >> spawn "xfce4-screenshooter")
            ,("<Print> w",         unGrab >> spawn "sleep 1; scrot -s - | xclip -selection clipboard -target image/png")
            ,("<Print> s",         unGrab >> spawn "sleep 1; scrot -m - | xclip -selection clipboard -target image/png")
@@ -363,7 +368,7 @@ basic1a = Mirror (ThreeCol 1 0.03 (1/3)) ||| qSimpleTabbed ||| ThreeCol 1 0.03 (
 -- promptFont = "xft:Sans Regular-6"
 
 qSimpleTabbed = renamed [CutWordsRight 1] $
-                tabbed shrinkText def {fontName = "xft:Roboto Condensed-6"}
+                tabbed shrinkText def {fontName = "xft:Roboto Condensed-7"}
  
 sounds :: String
 sounds = "/usr/share/sounds/freedesktop/stereo"
@@ -378,7 +383,7 @@ boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
 startNheko :: X ()
 startNheko =
   -- spawnOn won't work unless the pid is exposed, but I have low confidence in that version
-  spawn "flatpak run --env=TZ=UTC0 --env=QT_SCALE_FACTOR=1.25 im.nheko.Nheko"
+  spawn "flatpak run --env=QT_SCALE_FACTOR=1.25 im.nheko.Nheko"
   -- getProcessId >>= \p -> spawnOn chatWs ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
   --                                       show p ++ " io.github.NhekoReborn.Nheko")
 
@@ -424,7 +429,7 @@ noEwmhType = ask >>= \w ->
 
 myXPConfig :: XPConfig
 myXPConfig = amberXPConfig {promptKeymap = emacsLikeXPKeymap
-                           ,font         = "xft:Sans Regular-11"
+                           ,font         = "xft:Sans Regular-9"
                            }
 
 logTitle :: D.Client -> X ()
