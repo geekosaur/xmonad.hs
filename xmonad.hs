@@ -198,6 +198,7 @@ main = do
                                 ,className =? "Trashapplet" --> doFloatPlace
                                 ,className =? "Evolution-alarm-notify" --> doFloatPlace
                                 ,className =? "Update-manager" --> doFloatPlace
+                                ,className =? "Free42dec" --> doFloatPlace
                                 -- needed until and unless the new startNheko works
                                 ,appName =? "im.nheko.Nheko" --> doShift chatWs
                                 ,appName =? "sxiv" --> noTaskbar <> doShift spareWs
@@ -228,25 +229,26 @@ main = do
                                   -- windows (or maybe EWMH-special-cased windows?). this among other things
                                   -- breaks mate-display-manager so I can't easily run it to fix my monitor
                                   -- order.
-                                  spawn "xrandr --output DisplayPort-2 --left-of eDP"
+                                  -- (back to using arandr via reApplyARandR for now)
+                                  -- spawn "xrandr --output DisplayPort-2 --left-of eDP"
                                   -- and there seems to be no convenient way to Xkb this
                                   spawn "xmodmap -e 'keysym space = space space space"
-                                  io $ threadDelay 1000000
+                                  -- dnfdragora-updater is crashy
+                                  spawn "$HOME/.local/bin/dnfdragora-pinger"
                                   spawn "exec picom -cfb --backend=glx"
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn shellWs
                                   asks (terminal . config) >>= spawnOn emacsWs
-                                  asks (terminal . config) >>= spawnOn emacsWs
+                                  -- asks (terminal . config) >>= spawnOn emacsWs
                                   -- @@@ this can't e.g. open links
                                   unlessQuery (appName =? "discord") $ spawnOn chatWs "flatpak run --env=QT_SCALE_FACTOR=1.25 com.discordapp.Discord"
                                   io $ threadDelay 1000000
                                   unlessQuery (appName =? "im.nheko.Nheko") startNheko
 --                                   unlessQuery (appName =? "element") $ spawnOn chatWs "element-desktop"
-                                  io $ threadDelay 3000000
-                                  -- if I have to restart xmonad because it crashed, this will complain
-                                  -- (hexchat's configured to regain my nick, so it'll get into fights if two
-                                  -- are running
+                                  io $ threadDelay 2000000
                                   unlessQuery (appName =? "konversation") $ spawnOn chatWs "env TZ=UTC0 konversation"
+                                  io $ threadDelay 1000000
+                                  spawnOn refsWs "emacs-gtk+x11"
                                   io $ threadDelay 1000000
                                   -- @@@ starts multi windows, placing them automatically will not fly :/
                                   unlessQuery (appName =? "google-chrome") $ spawnOn mailWs "google-chrome --force-device-scale-factor=1.0"
@@ -260,15 +262,18 @@ main = do
            ,("M-C-S-d",           spawnOn chatWs "flatpak run --env=QT_SCALE_FACTOR=1.25 com.discordapp.Discord")
            ,("M-C-v",             spawnOn winWs "virt-manager")
            ,("M-C-s",             spawn "codium")
-           ,("M-C-S-s",           spawn "mate-control-center")
+           ,("M-C-S-s",           spawn "skanpage") -- NB. used to be mate-control-center but I usually use the menu
            ,("M-C-S-u",           spawn "dnfdragora --qt --update-only")
+           ,("M-C-S-m",           spawn "kmag")
+           ,("M-C-S-c",           spawn "kdeconnect-app")
+           ,("M-C-e",             spawn "emacs-gtk+x11")
            ,("<Print> <Print>",   unGrab >> spawn "xfce4-screenshooter")
            ,("<Print> w",         unGrab >> spawn "sleep 1; scrot -s - | xclip -selection clipboard -target image/png")
            ,("<Print> s",         unGrab >> spawn "sleep 1; scrot -m - | xclip -selection clipboard -target image/png")
            ,("<Print> S-w",       unGrab >> spawn "sleep 1; scrot -s ~/Downloads/Screenshot-%Y-%m-%d_%H:%M:%S.png")
            ,("<Print> S-s",       unGrab >> spawn "sleep 1; scrot -m ~/Downloads/Screenshot-%Y-%m-%d_%H:%M:%S.png")
-             -- app.element.io
 {-
+             -- app.element.io
            ,("M-C-S-n",           spawn "/opt/google/chrome/google-chrome --profile-directory=Default \
                                                                         \ --force-device-scale-factor=1.0 \
                                                                         \ --app-id=ejhkdoiecgkmdpomoahkdihbcldkgjci")
@@ -292,7 +297,7 @@ main = do
            ,("M-C-`",             withFocused $ sendMessage . maximizeRestore)
            ,("M-S-p",             mateRun)
            ,("M-p",               shellPrompt myXPConfig)
-           ,("M-C-e",             evalPromptWithOutput defaultEvalConfig myXPConfig (showWithDzen 10000000 []))
+           ,("M-C-S-e",             evalPromptWithOutput defaultEvalConfig myXPConfig (showWithDzen 10000000 []))
            ,("M-S-q",             mateShutdown)
            ,("M-C-S-q",           mateLogout)
              -- debug windows; also see M-S-d above
@@ -379,17 +384,16 @@ sounds = "/usr/share/sounds/freedesktop/stereo"
 boing' :: String -> X ()
 boing' sound = spawn $ "paplay " ++ sounds ++ "/" ++ sound ++ ".oga"
 
-
 startNheko :: X ()
 startNheko =
   -- spawnOn won't work unless the pid is exposed, but I have low confidence in that version
   spawn "flatpak run --env=QT_SCALE_FACTOR=1.25 im.nheko.Nheko"
   -- getProcessId >>= \p -> spawnOn chatWs ("flatpak run --env=TZ=UTC0 --parent-expose-pids --parent-pid=" ++
-  --                                       show p ++ " io.github.NhekoReborn.Nheko")
+  --                                       show p ++ " io.nheko.Nheko")
 
 reApplyARandR :: X ()
 reApplyARandR = do
-  -- spawn "exec \"$HOME/.screenlayout/default.sh\"" -- whoops: worked exactly once
+  spawn "exec \"$HOME/.screenlayout/default.sh\""
   -- until this is fixed. there's a new version in the works
   addScreenCorner SCUpperRight (spawn screenSaver)
 
@@ -412,24 +416,9 @@ notificationEventHook MapNotifyEvent {ev_window = w} = do
   return (All True)
 notificationEventHook _ = return (All True)
 
-{-
--- nheko is not EWMH compliant about its subwindows
--- (yes, I reported it)
-noEwmhType :: Query Bool
-noEwmhType = ask >>= \w ->
-             liftX (withDisplay (\d ->
-             getAtom "_NET_WM_WINDOW_TYPE" >>=
-             io . getWindowProperty32 d w >>=
-             \case
-               Nothing -> return True
-               Just [] -> return True
-               _ -> return False
-             ))
--}
-
 myXPConfig :: XPConfig
 myXPConfig = amberXPConfig {promptKeymap = emacsLikeXPKeymap
-                           ,font         = "xft:Sans Regular-9"
+                           ,font         = "xft:Sans Regular-7"
                            }
 
 logTitle :: D.Client -> X ()
